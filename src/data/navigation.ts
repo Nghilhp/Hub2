@@ -19,12 +19,12 @@ export const hubTabs: HubTabItem[] = [
 ]
 
 export const localSections: NavItem[] = [
-  { id: 'introduction', label: 'Introduction' },
-  { id: 'goal', label: 'Goal' },
-  { id: 'definition-and-scope', label: 'Definition and Scope' },
-  { id: 'information-priority-levels', label: 'Information Priority Levels' },
-  { id: 'how-to-use-this-framework', label: 'How to Use This Framework' },
-  { id: 'ui-principles', label: 'UI Principles' },
-  { id: 'related-guidelines', label: 'Related Guidelines' },
-  { id: 'design-review-checklist', label: 'Design Review Checklist' },
+  { id: 'introduction', label: 'Giới thiệu' },
+  { id: 'goal', label: 'Mục tiêu' },
+  { id: 'definition-and-scope', label: 'Định nghĩa và phạm vi' },
+  { id: 'information-priority-levels', label: 'Các cấp độ ưu tiên thông tin' },
+  { id: 'how-to-use-this-framework', label: 'Cách sử dụng framework này' },
+  { id: 'ui-principles', label: 'Nguyên tắc UI' },
+  { id: 'related-guidelines', label: 'Guideline liên quan' },
+  { id: 'design-review-checklist', label: 'Checklist review thiết kế' },
 ]

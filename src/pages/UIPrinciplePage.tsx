@@ -13,8 +13,15 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { localSections } from '@/data/navigation'
 import {
+  confirmTransferPriorityExample,
+  frameworkQuestions,
+  frameworkUsage,
+  inScopeItems,
+  outOfScopeItems,
   priorityLevels,
+  projectGoals,
   relatedGuidelines,
+  reviewDecisionRules,
   reviewChecklist,
   uiPrinciples,
 } from '@/data/ui-principles'
@@ -69,164 +76,318 @@ export function UIPrinciplePage({
   }, [onActiveSectionChange])
 
   return (
-    <main className="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-8">
-      <article className="mx-auto max-w-3xl space-y-12">
+    <main className="min-w-0 flex-1 px-5 py-10 sm:px-8 lg:px-10 xl:px-14">
+      <article className="mx-auto max-w-[1160px] space-y-20">
         <section className="scroll-mt-24" id="introduction">
-          <Badge className="mb-4 bg-blue-600 text-white hover:bg-blue-600">
+          <Badge className="mb-8 h-8 rounded-full bg-blue-600 px-4 text-base text-white hover:bg-blue-600">
             UI Principle
           </Badge>
-          <h1 className="text-4xl font-semibold tracking-normal">
-            ZaloPay UI Principles
+          <h1 className="max-w-[980px] text-5xl font-semibold leading-[1.1] tracking-normal text-[#050505] sm:text-6xl lg:text-7xl">
+            Zalopay UI principle document
           </h1>
-          <p className="mt-4 text-lg leading-8 text-muted-foreground">
-            A practical framework for reviewing, designing, and discussing
-            product interfaces across ZaloPay journeys. It focuses on hierarchy,
-            clarity, trust, feedback, accessibility, and brand expression.
+          <p className="mt-10 max-w-[1080px] text-2xl font-medium leading-[1.8] text-[#727272]">
+            Bộ nguyên tắc định hướng chất lượng UI của Zalopay, giúp Product
+            Design thiết kế, review và audit UI để đảm bảo clarity,
+            consistency, utility và bản sắc riêng của Zalopay trên toàn bộ sản
+            phẩm.
           </p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          <div className="mt-14 grid gap-5 sm:grid-cols-3">
             {[
-              { icon: BookOpen, label: 'Readable docs' },
-              { icon: ShieldCheck, label: 'Trust-first flows' },
-              { icon: FileText, label: 'Review-ready rules' },
+              { icon: BookOpen, label: 'Clarity' },
+              { icon: ShieldCheck, label: 'Consistency' },
+              { icon: FileText, label: 'Utility' },
             ].map((item) => (
               <div
-                className="flex items-center gap-3 rounded-lg border bg-card p-4 text-sm"
+                className="flex min-h-24 items-center gap-6 rounded-lg border border-[#e1e1e1] bg-white px-7 py-6 text-2xl font-medium text-[#0b0b0b]"
                 key={item.label}
               >
-                <item.icon className="size-4 text-blue-600" />
+                <item.icon className="size-6 shrink-0 text-blue-600" />
                 <span>{item.label}</span>
               </div>
             ))}
           </div>
         </section>
 
-        <Separator />
+        <Separator className="bg-[#dedede]" />
 
-        <section className="scroll-mt-24 space-y-4" id="goal">
-          <h2 className="text-2xl font-semibold">Goal</h2>
-          <p className="leading-7 text-muted-foreground">
-            Help product teams make faster and more consistent UI decisions,
-            especially in money-moving flows where confidence, readability, and
-            safety matter. The framework gives designers and reviewers a shared
-            vocabulary instead of relying on personal preference.
+        <section className="scroll-mt-24 space-y-8" id="goal">
+          <h2 className="text-4xl font-semibold tracking-normal text-[#050505]">
+            Mục tiêu dự án
+          </h2>
+          <p className="text-2xl font-medium leading-[1.65] text-[#727272]">
+            Mục đích của UI Principle nhằm chuẩn hóa cách Product Design thiết
+            kế, review và audit UI để đảm bảo clarity, consistency, utility và
+            bản sắc riêng của Zalopay trên toàn bộ sản phẩm.
           </p>
+          <ul className="grid gap-5">
+            {projectGoals.map((goal) => (
+              <li
+                className="flex gap-6 rounded-lg border border-[#e1e1e1] bg-white px-7 py-6"
+                key={goal}
+              >
+                <CheckCircle2 className="mt-1 size-5 shrink-0 text-blue-600" />
+                <span className="text-xl leading-9 text-[#111111]">{goal}</span>
+              </li>
+            ))}
+          </ul>
         </section>
 
-        <section className="scroll-mt-24 space-y-4" id="definition-and-scope">
-          <h2 className="text-2xl font-semibold">Definition and Scope</h2>
-          <Card>
-            <CardContent className="space-y-4 p-5 leading-7 text-muted-foreground">
+        <section className="scroll-mt-24 space-y-8" id="definition-and-scope">
+          <h2 className="text-4xl font-semibold tracking-normal text-[#050505]">
+            Định nghĩa và phạm vi
+          </h2>
+          <Card className="rounded-lg border-[#e1e1e1] shadow-none">
+            <CardContent className="space-y-5 px-7 py-6 text-xl leading-9 text-[#727272]">
               <p>
-                UI Principles are decision rules for screen structure,
-                component behavior, content emphasis, visual states, and trust
-                cues. They are not a replacement for the design system, UX
-                pattern library, or product requirements.
+                UI Principle là bộ nguyên tắc định hướng chất lượng UI của
+                Zalopay. Nó mô tả UI tốt cần đạt những tiêu chí nào để rõ ràng,
+                nhất quán, đáng tin và có khả năng scale qua nhiều feature.
               </p>
               <p>
-                Use this document when reviewing new features, redesigning core
-                journeys, or resolving design tradeoffs between clarity,
-                conversion, risk, and brand expression.
+                UI Principle không phải list bug UI, không thay thế Design
+                System component guideline, không phải full UX journey
+                framework, không phải brand guideline độc lập và không phải
+                checklist làm đẹp giao diện.
               </p>
+            </CardContent>
+          </Card>
+          <div className="grid gap-5 md:grid-cols-2">
+            <Card className="rounded-lg border-[#e1e1e1] shadow-none">
+              <CardHeader>
+                <CardTitle className="text-2xl">In scope</CardTitle>
+                <CardDescription className="text-base leading-7">
+                  Những yếu tố mà bộ nguyên tắc này sẽ tập trung hướng dẫn và
+                  kiểm soát.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="grid gap-3">
+                  {inScopeItems.map((item) => (
+                    <li className="text-base leading-7" key={item.title}>
+                      <span className="font-medium">{item.title}</span>
+                      <span className="text-muted-foreground">
+                        {' '}
+                        - {item.description}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="rounded-lg border-[#e1e1e1] shadow-none">
+              <CardHeader>
+                <CardTitle className="text-2xl">Out of scope</CardTitle>
+                <CardDescription className="text-base leading-7">
+                  Những phần không nằm trong phạm vi tài liệu này, hoặc sẽ được
+                  xử lý ở tài liệu/hệ thống khác.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="grid gap-3">
+                  {outOfScopeItems.map((item) => (
+                    <li className="text-base leading-7" key={item.title}>
+                      <span className="font-medium">{item.title}</span>
+                      <span className="text-muted-foreground">
+                        {' '}
+                        - {item.description}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <section
+          className="scroll-mt-24 space-y-8"
+          id="information-priority-levels"
+        >
+          <h2 className="text-4xl font-semibold tracking-normal text-[#050505]">
+            Phân cấp mức độ quan trọng của thông tin trên UI
+          </h2>
+          <p className="text-2xl font-medium leading-[1.65] text-[#727272]">
+            Phần này định nghĩa cách designer xác định mức độ quan trọng của
+            thông tin trên UI. Mục tiêu là giúp team thống nhất: thông tin nào
+            phải được nhìn thấy trước, thông tin nào bắt buộc để hoàn thành
+            task, và thông tin nào chỉ nên đóng vai trò hỗ trợ.
+          </p>
+          <Card className="rounded-lg border-blue-200 bg-blue-50/70 shadow-none">
+            <CardContent className="px-7 py-6 text-lg leading-8 text-blue-950">
+              <span className="font-semibold">Core rule: </span>
+              Trong các flow utility hoặc tài chính, thứ tự ưu tiên mặc định là
+              P0 &gt; P1 &gt; P2 &gt; P3 &gt; P4. Promotion không được nổi bật
+              hơn thông tin tiền, trạng thái, rủi ro hoặc hành động chính.
+            </CardContent>
+          </Card>
+          <div className="grid gap-5">
+            {priorityLevels.map((priority) => (
+              <Card
+                className="rounded-lg border-[#e1e1e1] shadow-none"
+                key={priority.level}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge className="h-7 rounded-full px-3 text-sm" variant="secondary">
+                      {priority.level}
+                    </Badge>
+                    <CardTitle className="text-2xl">{priority.title}</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4 text-base leading-7">
+                  <p className="text-muted-foreground">{priority.meaning}</p>
+                  <p>
+                    <span className="font-medium">Ví dụ trong Zalopay: </span>
+                    <span className="text-muted-foreground">
+                      {priority.examples}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="font-medium">UI Rule: </span>
+                    <span className="text-muted-foreground">
+                      {priority.uiRule}
+                    </span>
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <Card className="rounded-lg border-[#e1e1e1] shadow-none">
+            <CardHeader>
+              <CardTitle className="text-2xl">Ví dụ: Confirm transfer</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="grid gap-3">
+                {confirmTransferPriorityExample.map((item) => (
+                  <li className="text-base leading-7 text-muted-foreground" key={item}>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </CardContent>
           </Card>
         </section>
 
         <section
-          className="scroll-mt-24 space-y-4"
-          id="information-priority-levels"
-        >
-          <h2 className="text-2xl font-semibold">Information Priority Levels</h2>
-          <div className="grid gap-3">
-            {priorityLevels.map((priority) => (
-              <Card key={priority.level}>
-                <CardHeader className="pb-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Badge variant="secondary">{priority.level}</Badge>
-                    <CardTitle className="text-base">{priority.title}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-sm leading-6">
-                    {priority.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        <section
-          className="scroll-mt-24 space-y-4"
+          className="scroll-mt-24 space-y-8"
           id="how-to-use-this-framework"
         >
-          <h2 className="text-2xl font-semibold">How to Use This Framework</h2>
-          <div className="grid gap-3">
-            {[
-              'Start with the user task and identify the highest-risk decision.',
-              'Map screen content into P0 to P3 priority levels before polishing visuals.',
-              'Review the eight principles and note which ones are most relevant to the flow.',
-              'Capture exceptions and unresolved tradeoffs in design review notes.',
-            ].map((step, index) => (
+          <h2 className="text-4xl font-semibold tracking-normal text-[#050505]">
+            Cách sử dụng framework này
+          </h2>
+          <div className="grid gap-5">
+            {frameworkUsage.map((step, index) => (
               <div
-                className="flex gap-3 rounded-lg border bg-card p-4"
-                key={step}
+                className="flex gap-6 rounded-lg border border-[#e1e1e1] bg-white px-7 py-6"
+                key={step.timing}
               >
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-medium text-blue-700 dark:bg-blue-950/40 dark:text-blue-200">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-base font-semibold text-blue-700 dark:bg-blue-950/40 dark:text-blue-200">
                   {index + 1}
                 </span>
-                <p className="text-sm leading-6">{step}</p>
+                <div>
+                  <h3 className="text-xl font-semibold">{step.timing}</h3>
+                  <p className="mt-2 text-base leading-7 text-muted-foreground">
+                    {step.description}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
+          <Card className="rounded-lg border-[#e1e1e1] shadow-none">
+            <CardHeader>
+              <CardTitle className="text-2xl">Câu hỏi cốt lõi</CardTitle>
+              <CardDescription className="text-base leading-7">
+                Trước khi đi vào chi tiết visual, cần trả lời tối thiểu các câu
+                hỏi về mục tiêu, thông tin và hành động của màn hình.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="grid gap-3">
+                {frameworkQuestions.map((question) => (
+                  <li className="flex gap-4 text-base leading-7" key={question}>
+                    <CheckCircle2 className="mt-1 size-5 shrink-0 text-blue-600" />
+                    <span>{question}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
         </section>
 
-        <section className="scroll-mt-24 space-y-5" id="ui-principles">
+        <section className="scroll-mt-24 space-y-8" id="ui-principles">
           <div>
-            <h2 className="text-2xl font-semibold">UI Principles</h2>
-            <p className="mt-2 leading-7 text-muted-foreground">
-              The eight principles below are designed to be scanned quickly in a
-              review meeting and still provide enough detail for implementation
-              follow-up.
+            <h2 className="text-4xl font-semibold tracking-normal text-[#050505]">
+              8 UI Principles
+            </h2>
+            <p className="mt-5 text-2xl font-medium leading-[1.65] text-[#727272]">
+              Các nguyên tắc dưới đây dùng để định hướng chất lượng UI, giúp
+              team review dựa trên principle và tiêu chí cụ thể thay vì góp ý
+              cảm tính.
             </p>
           </div>
-          <div className="space-y-5">
+          <div className="space-y-6">
             {uiPrinciples.map((principle) => (
               <PrincipleSection key={principle.number} principle={principle} />
             ))}
           </div>
         </section>
 
-        <section className="scroll-mt-24 space-y-4" id="related-guidelines">
-          <h2 className="text-2xl font-semibold">Related Guidelines</h2>
-          <ul className="grid gap-3">
+        <section className="scroll-mt-24 space-y-8" id="related-guidelines">
+          <h2 className="text-4xl font-semibold tracking-normal text-[#050505]">
+            Heuristic Evaluation
+          </h2>
+          <ul className="grid gap-5">
             {relatedGuidelines.map((guideline) => (
-              <li className="flex gap-3 rounded-lg border bg-card p-4" key={guideline}>
-                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-blue-600" />
-                <span className="text-sm leading-6">{guideline}</span>
+              <li
+                className="flex gap-6 rounded-lg border border-[#e1e1e1] bg-white px-7 py-6"
+                key={guideline}
+              >
+                <CheckCircle2 className="mt-1 size-5 shrink-0 text-blue-600" />
+                <span className="text-xl leading-9 text-[#111111]">
+                  {guideline}
+                </span>
               </li>
             ))}
           </ul>
         </section>
 
         <section
-          className="scroll-mt-24 space-y-4 pb-16"
+          className="scroll-mt-24 space-y-8 pb-20"
           id="design-review-checklist"
         >
-          <h2 className="text-2xl font-semibold">Design Review Checklist</h2>
-          <Card>
-            <CardContent className="p-5">
-              <ul className="grid gap-3">
+          <h2 className="text-4xl font-semibold tracking-normal text-[#050505]">
+            Design review checklist
+          </h2>
+          <Card className="rounded-lg border-[#e1e1e1] shadow-none">
+            <CardContent className="px-7 py-6">
+              <ul className="grid gap-5">
                 {reviewChecklist.map((item) => (
-                  <li className="flex gap-3 text-sm leading-6" key={item}>
-                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-blue-600" />
+                  <li className="flex gap-6 text-xl leading-9" key={item}>
+                    <CheckCircle2 className="mt-1 size-5 shrink-0 text-blue-600" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </CardContent>
           </Card>
+          <Card className="rounded-lg border-blue-200 bg-blue-50/70 shadow-none">
+            <CardHeader>
+              <CardTitle className="text-2xl text-blue-950">
+                Decision rule
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="grid gap-3">
+                {reviewDecisionRules.map((rule) => (
+                  <li className="text-lg leading-8 text-blue-950" key={rule}>
+                    {rule}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
           <p className="text-sm text-muted-foreground">
-            Current section: {activeSection.replaceAll('-', ' ')}
+            Mục hiện tại: {activeSection.replaceAll('-', ' ')}
           </p>
         </section>
       </article>
