@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { BRAND_NAME } from '@/data/brand'
 import { localSections } from '@/data/navigation'
 import {
   priorityLevels,
@@ -76,11 +77,11 @@ export function UIPrinciplePage({
             UI Principle
           </Badge>
           <h1 className="text-4xl font-semibold tracking-normal">
-            ZaloPay UI Principles
+            {BRAND_NAME} UI Principles
           </h1>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">
             A practical framework for reviewing, designing, and discussing
-            product interfaces across ZaloPay journeys. It focuses on hierarchy,
+            product interfaces across {BRAND_NAME} journeys. It focuses on hierarchy,
             clarity, trust, feedback, accessibility, and brand expression.
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">

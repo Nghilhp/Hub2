@@ -20,6 +20,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { HUB_NAME } from '@/data/brand'
 import { hubTabs, type HubTab } from '@/data/navigation'
 import { cn } from '@/lib/utils'
 
@@ -52,7 +53,7 @@ export function Header({
           </SheetTrigger>
           <SheetContent className="w-[86vw] max-w-sm" side="left">
             <SheetHeader>
-              <SheetTitle>ZaloPay UI Hub</SheetTitle>
+              <SheetTitle>{HUB_NAME}</SheetTitle>
               <SheetDescription>Navigate UI Principle sections.</SheetDescription>
             </SheetHeader>
             <div className="border-t px-3 py-4">
@@ -73,7 +74,7 @@ export function Header({
             ZP
           </span>
           <span className="hidden text-sm font-semibold sm:inline">
-            ZaloPay UI Hub
+            {HUB_NAME}
           </span>
         </button>
 

@@ -3,10 +3,11 @@ import { Agentation } from 'agentation'
 
 import { HubLayout } from '@/components/hub/HubLayout'
 import { NotFound } from '@/components/hub/NotFound'
+import { BRAND_STORAGE_NAMESPACE } from '@/data/brand'
 import type { HubTab } from '@/data/navigation'
 import { LoginPage } from '@/pages/LoginPage'
 
-const AUTH_KEY = 'zalopay-ui-hub-authenticated'
+const AUTH_KEY = `${BRAND_STORAGE_NAMESPACE}-authenticated`
 
 function getInitialPath() {
   return window.location.pathname

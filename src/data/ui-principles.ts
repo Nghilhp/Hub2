@@ -1,3 +1,5 @@
+import { BRAND_NAME } from '@/data/brand'
+
 export type PriorityLevel = {
   level: string
   title: string
@@ -93,7 +95,7 @@ export const uiPrinciples: Principle[] = [
     summary:
       'Reuse patterns, language, components, and behavior across similar tasks.',
     description:
-      'Consistency lets users transfer knowledge from one ZaloPay journey to another. It also makes review faster because teams can focus on exceptions.',
+      `Consistency lets users transfer knowledge from one ${BRAND_NAME} journey to another. It also makes review faster because teams can focus on exceptions.`,
     guidelines: [
       'Use shared components for buttons, inputs, status, dialogs, and navigation.',
       'Keep naming consistent for the same concept across entry points.',
@@ -148,14 +150,14 @@ export const uiPrinciples: Principle[] = [
   },
   {
     number: 6,
-    title: 'ZaloPay Identity in UI',
-    vietnameseTitle: 'Bản sắc ZaloPay trong giao diện',
+    title: `${BRAND_NAME} Identity in UI`,
+    vietnameseTitle: `Bản sắc ${BRAND_NAME} trong giao diện`,
     summary:
       'Express the brand through purposeful color, tone, motion, and trust signals.',
     description:
-      'Brand identity should support usability. It should make important ZaloPay moments recognizable without weakening readability or trust.',
+      `Brand identity should support usability. It should make important ${BRAND_NAME} moments recognizable without weakening readability or trust.`,
     guidelines: [
-      'Use ZaloPay-inspired blue as an accent for focus, selection, and primary moments.',
+      `Use ${BRAND_NAME}-inspired blue as an accent for focus, selection, and primary moments.`,
       'Keep illustration, icon, and motion aligned with the task context.',
       'Balance product personality with clarity in financial decisions.',
       'Use brand elements to reinforce trust, not to decorate every surface.',
@@ -221,6 +223,6 @@ export const reviewChecklist = [
   'Are amount, recipient, fee, and risk information visible before confirmation?',
   'Do disabled, loading, error, success, and empty states exist?',
   'Can the flow be completed on mobile without overlap or horizontal scroll?',
-  'Are labels, terminology, and components consistent with nearby ZaloPay flows?',
+  `Are labels, terminology, and components consistent with nearby ${BRAND_NAME} flows?`,
   'Is there a clear recovery or support path for critical failures?',
 ]

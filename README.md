@@ -1,32 +1,157 @@
-# React + TypeScript + Vite
+# Zalopay UI Hub
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Website MVP để xem và tra cứu UI Principles cho Zalopay UI Hub / Design Hub.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React
+- TypeScript
+- Vite
+- Tailwind CSS v4
+- shadcn/ui
+- Agentation, chỉ bật khi chạy local dev
 
-## React Compiler
+## Setup Lần Đầu
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Clone repo bằng GitHub Desktop, sau đó mở Terminal tại folder project và chạy:
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Chạy website local:
+
+```bash
+npm run dev
+```
+
+Terminal sẽ hiện link dạng:
+
+```text
+http://127.0.0.1:5173/
+```
+
+Trang login:
+
+```text
+http://127.0.0.1:5173/login
+```
+
+Nếu port khác, dùng đúng port Terminal hiển thị.
+
+## Scripts
+
+```bash
+npm run dev
+npm run typecheck
+npm run build
+npm run lint
+```
+
+## Branding
+
+Tên thương hiệu chuẩn là **Zalopay**.
+
+Khi viết UI copy hoặc data trong code, ưu tiên dùng file:
+
+```text
+src/data/brand.ts
+```
+
+Các constant hiện có:
+
+```ts
+BRAND_NAME = 'Zalopay'
+HUB_NAME = 'Zalopay UI Hub'
+HUB_DESCRIPTION = 'Design Hub'
+INTERNAL_EMAIL_DOMAIN = '@vng.com.vn'
+```
+
+Không gõ hardcode các biến thể như `ZaloPay`, `Zalo Pay`, hoặc `zaloPay` trong text hiển thị. Lowercase chỉ dùng cho technical namespace/key, ví dụ localStorage key.
+
+## Login MVP
+
+Login hiện là mock authentication, không có backend thật.
+
+Validation hiện có:
+
+- Email bắt buộc nhập.
+- Password bắt buộc nhập.
+- Email phải kết thúc bằng `@vng.com.vn`.
+- Submit hợp lệ sẽ loading ngắn rồi vào UI Hub.
+
+File chính:
+
+```text
+src/pages/LoginPage.tsx
+src/components/hub/LoginForm.tsx
+```
+
+## Agentation
+
+Agentation là tool feedback visual để click vào UI, ghi chú, rồi copy selector/context cho người build.
+
+Nó chỉ hiện khi chạy local dev:
+
+```tsx
+{import.meta.env.DEV && <Agentation />}
+```
+
+Khi mở web bằng `npm run dev`, toolbar sẽ nằm ở góc dưới phải.
+
+## Workflow Làm Chung
+
+Không làm trực tiếp trên `main`.
+
+Mỗi task tạo một branch riêng:
+
+```text
+feature/login-page
+feature/ui-principle-page
+fix/mobile-sidebar
+```
+
+Luồng làm việc:
+
+1. Chọn `main`.
+2. Bấm `Fetch origin` / `Pull origin`.
+3. Tạo branch mới cho task.
+4. Làm thay đổi.
+5. Commit.
+6. Push branch.
+7. Create Pull Request.
+8. Reviewer review và merge vào `main`.
+
+## Người Mới Pull Update
+
+Khi có update trên `main`, người cộng tác làm:
+
+1. Chọn branch `main` trong GitHub Desktop.
+2. Bấm `Fetch origin`.
+3. Bấm `Pull origin` nếu có.
+4. Chạy lại:
+
+```bash
+npm install
+npm run dev
+```
+
+`npm install` cần chạy lại khi project có thêm package mới.
+
+## Folder Ghi Chú
+
+Folder `Web` dùng để quản lý ghi chú theo từng phần của website.
+
+Ví dụ:
+
+```text
+Web/Login/
+```
+
+Nếu cần thêm khu vực mới, có thể tạo:
+
+```text
+Web/UI-Principle/
+Web/Header/
+Web/Sidebar/
+```
