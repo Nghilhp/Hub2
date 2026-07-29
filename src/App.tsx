@@ -5,6 +5,7 @@ import { HubLayout } from '@/components/hub/HubLayout'
 import { NotFound } from '@/components/hub/NotFound'
 import { BRAND_STORAGE_NAMESPACE } from '@/data/brand'
 import type { HubTab } from '@/data/navigation'
+import { LoadingPage } from '@/pages/LoadingPage'
 import { LoginPage } from '@/pages/LoginPage'
 
 const AUTH_KEY = `${BRAND_STORAGE_NAMESPACE}-authenticated`
@@ -62,7 +63,17 @@ function App() {
 
   let pageContent
 
-  if (path !== '/' && path !== '/login') {
+  if (path === '/loading') {
+    const loadingParams = new URLSearchParams(window.location.search)
+    const isLoadingLoop = loadingParams.get('loop') === 'true'
+
+    pageContent = (
+      <LoadingPage
+        isLooping={isLoadingLoop}
+        onComplete={() => navigate('/login')}
+      />
+    )
+  } else if (path !== '/' && path !== '/login') {
     pageContent = <NotFound onGoHome={handleGoHome} />
   } else if (!isAuthenticated || path === '/login') {
     pageContent = <LoginPage onLogin={handleLogin} />
