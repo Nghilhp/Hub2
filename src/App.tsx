@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Agentation } from 'agentation'
 
 import { HubLayout } from '@/components/hub/HubLayout'
 import { NotFound } from '@/components/hub/NotFound'
@@ -58,22 +59,29 @@ function App() {
     navigate('/#introduction')
   }
 
-  if (path !== '/' && path !== '/login') {
-    return <NotFound onGoHome={handleGoHome} />
-  }
+  let pageContent
 
-  if (!isAuthenticated || path === '/login') {
-    return <LoginPage onLogin={handleLogin} />
+  if (path !== '/' && path !== '/login') {
+    pageContent = <NotFound onGoHome={handleGoHome} />
+  } else if (!isAuthenticated || path === '/login') {
+    pageContent = <LoginPage onLogin={handleLogin} />
+  } else {
+    pageContent = (
+      <HubLayout
+        activeSection={activeSection}
+        activeTab={activeTab}
+        onLogout={handleLogout}
+        onSectionChange={setActiveSection}
+        onTabChange={setActiveTab}
+      />
+    )
   }
 
   return (
-    <HubLayout
-      activeSection={activeSection}
-      activeTab={activeTab}
-      onLogout={handleLogout}
-      onSectionChange={setActiveSection}
-      onTabChange={setActiveTab}
-    />
+    <>
+      {pageContent}
+      {import.meta.env.DEV && <Agentation />}
+    </>
   )
 }
 
