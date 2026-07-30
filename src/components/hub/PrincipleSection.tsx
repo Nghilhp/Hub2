@@ -17,73 +17,68 @@ type PrincipleSectionProps = {
 export function PrincipleSection({ principle }: PrincipleSectionProps) {
   return (
     <article
-      className="rounded-lg border border-[#e1e1e1] bg-white"
+      className="rounded-lg border border-[#E4EEFF] bg-card"
       id={`principle-${principle.number}`}
     >
-      <Card className="rounded-lg border-0 shadow-none">
-        <CardHeader className="gap-5 px-7 pt-7">
+      <Card className="rounded-lg border-0 shadow-none ring-foreground/5">
+        <CardHeader className="gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge className="h-7 rounded-full bg-blue-600 px-3 text-sm text-white hover:bg-blue-600">
+            <Badge className="bg-[#0033C9] text-white hover:bg-[#0033C9]">
               Principle {principle.number}
             </Badge>
-            {principle.vietnameseTitle && (
-              <Badge className="h-7 rounded-full px-3 text-sm" variant="secondary">
-                {principle.vietnameseTitle}
-              </Badge>
-            )}
+            <Badge variant="secondary">{principle.vietnameseTitle}</Badge>
           </div>
           <div>
-            <CardTitle className="text-3xl font-semibold tracking-normal">
+            <CardTitle className="font-sf-pro-display text-2xl">
               {principle.title}
             </CardTitle>
-            <CardDescription className="mt-3 text-lg leading-8">
+            <CardDescription className="mt-2 text-base leading-7">
               {principle.summary}
             </CardDescription>
           </div>
         </CardHeader>
-        <CardContent className="space-y-7 px-7 pb-7">
-          <p className="text-lg leading-8 text-muted-foreground">
+        <CardContent className="space-y-5">
+          <p className="leading-7 text-muted-foreground">
             {principle.description}
           </p>
 
           <div>
-            <h4 className="mb-4 text-lg font-semibold">Nguyên tắc áp dụng</h4>
-            <ul className="grid gap-3">
+            <h4 className="mb-3 text-sm font-semibold">Nguyên tắc áp dụng</h4>
+            <ul className="grid gap-2 md:grid-cols-2">
               {principle.guidelines.map((guideline) => (
-                <li className="flex gap-4 text-base leading-7" key={guideline}>
-                  <Check className="mt-1 size-5 shrink-0 text-blue-600" />
+                <li className="flex gap-3 text-sm leading-6" key={guideline}>
+                  <Check className="mt-1 size-4 shrink-0 text-[#00A957]" />
                   <span>{guideline}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2">
-            <div className="rounded-lg border border-[#e7e7e7] bg-background p-5">
-              <h4 className="mb-4 text-lg font-semibold">Tiêu chí</h4>
-              <ul className="space-y-3">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-lg border border-[#E4EEFF] bg-background p-4">
+              <h4 className="mb-3 text-sm font-semibold">Tiêu chí</h4>
+              <ul className="space-y-2">
                 {principle.criteria.map((item) => (
-                  <li className="flex gap-3 text-base leading-7" key={item}>
-                    <Check className="mt-1 size-5 shrink-0 text-blue-600" />
+                  <li className="flex gap-2 text-sm leading-6" key={item}>
+                    <Check className="mt-1 size-4 shrink-0 text-[#00A957]" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="rounded-lg border border-[#e7e7e7] bg-background p-5">
-              <h4 className="mb-4 text-lg font-semibold">Lý do</h4>
-              <ul className="space-y-3">
+            <div className="rounded-lg border border-[#E4EEFF] bg-background p-4">
+              <h4 className="mb-3 text-sm font-semibold">Lý do</h4>
+              <ul className="space-y-2">
                 {principle.reasons.map((item) => (
-                  <li className="flex gap-3 text-base leading-7" key={item}>
-                    <Check className="mt-1 size-5 shrink-0 text-blue-600" />
+                  <li className="flex gap-2 text-sm leading-6" key={item}>
+                    <Check className="mt-1 size-4 shrink-0 text-[#00A957]" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
-
         </CardContent>
       </Card>
     </article>

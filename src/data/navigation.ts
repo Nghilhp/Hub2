@@ -22,9 +22,11 @@ export const localSections: NavItem[] = [
   { id: 'introduction', label: 'Giới thiệu' },
   { id: 'goal', label: 'Mục tiêu' },
   { id: 'definition-and-scope', label: 'Định nghĩa và phạm vi' },
-  { id: 'information-priority-levels', label: 'Các cấp độ ưu tiên thông tin' },
+  {
+    id: 'information-priority-levels',
+    label: 'Phân loại mức độ ưu tiên thông tin',
+  },
   { id: 'how-to-use-this-framework', label: 'Cách sử dụng framework này' },
-  { id: 'ui-principles', label: 'Nguyên tắc UI' },
   { id: 'related-guidelines', label: 'Guideline liên quan' },
   { id: 'design-review-checklist', label: 'Checklist review thiết kế' },
 ]
