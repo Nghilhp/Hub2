@@ -40,6 +40,27 @@ function validateVngEmail(email: string) {
   return /^[^\s@]+@vng\.com\.vn$/.test(email.trim().toLowerCase())
 }
 
+function buildVngEmail(emailInput: string) {
+  const trimmedEmailInput = emailInput.trim()
+
+  if (trimmedEmailInput.includes('@')) {
+    return trimmedEmailInput
+  }
+
+  return `${trimmedEmailInput}${INTERNAL_EMAIL_DOMAIN}`
+}
+
+function getEmailDomainInput(email: string) {
+  const trimmedEmail = email.trim()
+  const normalizedEmail = trimmedEmail.toLowerCase()
+
+  if (normalizedEmail.endsWith(INTERNAL_EMAIL_DOMAIN)) {
+    return trimmedEmail.slice(0, -INTERNAL_EMAIL_DOMAIN.length)
+  }
+
+  return trimmedEmail
+}
+
 function getRememberedLogin(): RememberedLogin | null {
   try {
     const rememberedLogin = window.localStorage.getItem(REMEMBERED_LOGIN_KEY)
@@ -68,7 +89,9 @@ export function LoginForm({ isFlat = false, onLogin, titleId }: LoginFormProps) 
   const passwordFieldRef = useRef<HTMLDivElement>(null)
   const submitButtonRef = useRef<HTMLButtonElement>(null)
   const [rememberedLogin] = useState(getRememberedLogin)
-  const [email, setEmail] = useState(() => rememberedLogin?.email ?? '')
+  const [email, setEmail] = useState(() =>
+    getEmailDomainInput(rememberedLogin?.email ?? '')
+  )
   const [password, setPassword] = useState(() => rememberedLogin?.password ?? '')
   const [rememberMe, setRememberMe] = useState(() => Boolean(rememberedLogin))
   const [errors, setErrors] = useState<LoginErrors>({})
@@ -130,9 +153,11 @@ export function LoginForm({ isFlat = false, onLogin, titleId }: LoginFormProps) 
 
     const nextErrors: LoginErrors = {}
 
+    const fullEmail = buildVngEmail(email)
+
     if (!email.trim()) {
       nextErrors.email = 'Vui lòng nhập email VNG'
-    } else if (!validateVngEmail(email)) {
+    } else if (!validateVngEmail(fullEmail)) {
       nextErrors.email = `Vui lòng sử dụng email VNG có đuôi ${INTERNAL_EMAIL_DOMAIN}`
     }
 
@@ -152,7 +177,7 @@ export function LoginForm({ isFlat = false, onLogin, titleId }: LoginFormProps) 
       window.localStorage.setItem(
         REMEMBERED_LOGIN_KEY,
         JSON.stringify({
-          email,
+          email: fullEmail,
           password,
         })
       )
@@ -205,18 +230,21 @@ export function LoginForm({ isFlat = false, onLogin, titleId }: LoginFormProps) 
               <Input
                 aria-describedby={errors.email ? 'email-error' : undefined}
                 aria-invalid={Boolean(errors.email)}
-                autoComplete={rememberMe ? 'email' : 'off'}
-                className="login-input h-14 rounded-[14px] border-[#f2f6f7] bg-white px-[22px] text-sm font-normal text-[#001f3e] shadow-none transition-colors placeholder:font-normal placeholder:text-[#001f3e]/28 focus-visible:border-[#0033c9] focus-visible:ring-3 focus-visible:ring-[#0033c9]/15 focus-visible:ring-inset aria-invalid:ring-inset"
+                autoComplete={rememberMe ? 'username' : 'off'}
+                className="login-input h-14 rounded-[14px] border-[#f2f6f7] bg-white pl-[22px] pr-[126px] text-sm font-normal text-[#001f3e] shadow-none transition-colors placeholder:font-normal placeholder:text-[#001f3e]/28 focus-visible:border-[#0033c9] focus-visible:ring-3 focus-visible:ring-[#0033c9]/15 focus-visible:ring-inset aria-invalid:ring-inset"
                 data-completed={email.trim() ? 'true' : undefined}
                 id="email"
                 onChange={(event) => {
-                  setEmail(event.target.value)
+                  setEmail(getEmailDomainInput(event.target.value))
                   setErrors((current) => ({ ...current, email: undefined }))
                 }}
-                placeholder="domain@vng.com.vn"
-                type="email"
+                placeholder="domain"
+                type="text"
                 value={email}
               />
+              <span className="pointer-events-none absolute right-[22px] top-[calc(50%+4px)] -translate-y-1/2 text-sm font-semibold text-[#001f3e]">
+                {INTERNAL_EMAIL_DOMAIN}
+              </span>
             </div>
             {errors.email && (
               <p className="mt-2 px-1 text-xs text-destructive" id="email-error">

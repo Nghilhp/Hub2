@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
+@import "@fontsource-variable/manrope";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -954,8 +955,9 @@ body {
 
 .login-split-copy {
   color: #ffffff;
-  font-family: 'Aeonik Pro', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  max-width: 38rem;
+  font-family: 'Manrope Variable', 'Manrope', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  max-width: 100%;
+  width: fit-content;
 }
 
 .login-split-eyebrow {
@@ -969,11 +971,15 @@ body {
 
 .login-split-copy h2 {
   color: #ffffff;
+  font-family: 'Manrope Variable', 'Manrope', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: clamp(2rem, 3.35vw, 3.8rem);
   font-weight: 800;
   letter-spacing: 0;
   line-height: 1.08;
   margin: 0;
+  max-width: min(100%, 54rem);
+  text-wrap: balance;
+  width: fit-content;
 }
 
 .login-split-copy p:last-child {
@@ -983,6 +989,7 @@ body {
   line-height: 1.65;
   margin: 1.25rem 0 0;
   max-width: 34rem;
+  width: fit-content;
 }
 
 .login-split-form-panel {
@@ -992,7 +999,7 @@ body {
   justify-content: center;
   min-height: 100svh;
   overflow: hidden;
-  padding: 2rem 1.5rem;
+  padding: clamp(24px, 7vw, 40px) clamp(20px, 6vw, 32px);
   position: relative;
 }
 
@@ -1052,6 +1059,7 @@ body {
 
 @media (min-width: 1024px) {
   .login-split-page {
+    --login-panel-width: clamp(680px, 38vw, 900px);
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -1069,22 +1077,22 @@ body {
     margin: 0;
     min-height: auto;
     min-width: auto;
-    padding: 40px;
-    width: 640px;
+    padding: 56px;
+    width: var(--login-panel-width);
     z-index: 2;
   }
 
   .login-layout-shell {
     align-items: center;
     display: grid;
-    gap: clamp(56px, 5.6vw, 96px);
+    gap: clamp(96px, 5vw, 128px);
     grid-column: 1 / -1;
     grid-row: 1;
-    grid-template-columns: minmax(0, 1fr) 640px;
+    grid-template-columns: minmax(0, 1fr) var(--login-panel-width);
     height: clamp(560px, calc(100svh - 106px), 720px);
     justify-self: center;
     min-height: auto;
-    width: min(calc(100vw - 104px), 1360px);
+    width: min(calc(100vw - 208px), 1760px);
   }
 
   .login-brand-panel {
