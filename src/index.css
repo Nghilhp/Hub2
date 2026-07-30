@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
 @import "@fontsource-variable/manrope";
 
 @custom-variant dark (&:is(.dark *));
@@ -426,13 +427,12 @@ body {
 .login-split-copy h2 {
   color: #ffffff;
   font-family: 'Manrope Variable', 'Manrope', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: clamp(2rem, 3.05rem, 3.05rem);
+  font-size: clamp(2rem, 3.35vw, 3.8rem);
   font-weight: 800;
   letter-spacing: 0;
-  line-height: 1.2;
-  margin: -0.12em 0;
+  line-height: 1.08;
+  margin: 0;
   max-width: min(100%, 54rem);
-  padding-block: 0.12em;
   text-wrap: balance;
   width: fit-content;
 }
@@ -444,6 +444,7 @@ body {
   line-height: 1.65;
   margin: 1.25rem 0 0;
   max-width: 34rem;
+  width: fit-content;
 }
 
 .login-split-form-panel {
@@ -531,7 +532,7 @@ body {
     margin: 0;
     min-height: auto;
     min-width: auto;
-    padding: 40px;
+    padding: 56px;
     width: var(--login-panel-width);
     z-index: 2;
   }
@@ -539,21 +540,14 @@ body {
   .login-layout-shell {
     align-items: center;
     display: grid;
-    gap: clamp(40px, 4vw, 88px);
+    gap: clamp(96px, 5vw, 128px);
     grid-column: 1 / -1;
     grid-row: 1;
     grid-template-columns: minmax(0, 1fr) var(--login-panel-width);
-    height: clamp(
-      560px,
-      calc(100svh - var(--login-shell-pad-y) - var(--login-shell-pad-y)),
-      1280px
-    );
+    height: clamp(560px, calc(100svh - 106px), 720px);
     justify-self: center;
     min-height: auto;
-    width: min(
-      calc(100vw - var(--login-shell-pad-x) - var(--login-shell-pad-x)),
-      2240px
-    );
+    width: min(calc(100vw - 208px), 1760px);
   }
 
   .login-brand-panel {
