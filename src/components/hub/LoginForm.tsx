@@ -199,7 +199,7 @@ export function LoginForm({ isFlat = false, onLogin, titleId }: LoginFormProps) 
     >
       <CardHeader className="gap-3 px-0 pb-8 text-center" data-login-stagger="header">
         <p
-          className="font-['Aeonik_Pro','SF_Pro_Display',-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] text-[25.6px] font-bold leading-8 text-[#0033c9]"
+          className="font-['Manrope_Variable','Manrope','SF_Pro_Display',-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] text-[25.6px] font-bold leading-8 text-[#0033c9]"
           id={titleId}
         >
           Chào Mừng tới <span className="text-[#00a655]">Design Hub</span>

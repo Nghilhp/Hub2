@@ -476,7 +476,7 @@ export function Header({
           />
           <span className="hidden items-center gap-3 sm:flex">
             <span className="h-4 w-px bg-foreground/15" aria-hidden="true" />
-            <span className="font-aeonik-pro text-sm font-medium leading-none text-foreground">
+            <span className="font-manrope text-sm font-medium leading-none text-foreground">
               Design Hub
             </span>
           </span>

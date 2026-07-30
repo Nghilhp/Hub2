@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "@fontsource-variable/manrope";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -332,6 +333,8 @@ body {
 }
 
 .login-split-page {
+  --login-shell-pad-x: clamp(24px, 4vw, 80px);
+  --login-shell-pad-y: clamp(24px, 6svh, 80px);
   --login-you-cursor-opacity: 0;
   --login-you-cursor-x: 50%;
   --login-you-cursor-y: 50%;
@@ -406,8 +409,9 @@ body {
 
 .login-split-copy {
   color: #ffffff;
-  font-family: 'Aeonik Pro', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  max-width: 38rem;
+  font-family: 'Manrope Variable', 'Manrope', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  max-width: 100%;
+  width: fit-content;
 }
 
 .login-split-eyebrow {
@@ -421,11 +425,16 @@ body {
 
 .login-split-copy h2 {
   color: #ffffff;
-  font-size: clamp(2rem, 3.35vw, 3.8rem);
+  font-family: 'Manrope Variable', 'Manrope', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: clamp(2rem, 3.05rem, 3.05rem);
   font-weight: 800;
   letter-spacing: 0;
-  line-height: 1.08;
-  margin: 0;
+  line-height: 1.2;
+  margin: -0.12em 0;
+  max-width: min(100%, 54rem);
+  padding-block: 0.12em;
+  text-wrap: balance;
+  width: fit-content;
 }
 
 .login-split-copy p:last-child {
@@ -444,7 +453,7 @@ body {
   justify-content: center;
   min-height: 100svh;
   overflow: hidden;
-  padding: 2rem 1.5rem;
+  padding: clamp(24px, 7vw, 40px) clamp(20px, 6vw, 32px);
   position: relative;
 }
 
@@ -504,6 +513,7 @@ body {
 
 @media (min-width: 1024px) {
   .login-split-page {
+    --login-panel-width: clamp(680px, 38vw, 900px);
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -522,21 +532,28 @@ body {
     min-height: auto;
     min-width: auto;
     padding: 40px;
-    width: 640px;
+    width: var(--login-panel-width);
     z-index: 2;
   }
 
   .login-layout-shell {
     align-items: center;
     display: grid;
-    gap: clamp(56px, 5.6vw, 96px);
+    gap: clamp(40px, 4vw, 88px);
     grid-column: 1 / -1;
     grid-row: 1;
-    grid-template-columns: minmax(0, 1fr) 640px;
-    height: clamp(560px, calc(100svh - 106px), 720px);
+    grid-template-columns: minmax(0, 1fr) var(--login-panel-width);
+    height: clamp(
+      560px,
+      calc(100svh - var(--login-shell-pad-y) - var(--login-shell-pad-y)),
+      1280px
+    );
     justify-self: center;
     min-height: auto;
-    width: min(calc(100vw - 104px), 1360px);
+    width: min(
+      calc(100vw - var(--login-shell-pad-x) - var(--login-shell-pad-x)),
+      2240px
+    );
   }
 
   .login-brand-panel {
@@ -859,8 +876,8 @@ body {
   font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.font-aeonik-pro {
-  font-family: "Aeonik Pro", "Aeonik", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+.font-manrope {
+  font-family: "Manrope Variable", "Manrope", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .hub-global-tabs {
