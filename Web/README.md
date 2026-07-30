@@ -1,6 +1,6 @@
 # Web
 
-Folder này dùng để quản lý các ghi chú liên quan đến website **ZaloPay UI Hub**.
+Folder này dùng để quản lý các ghi chú liên quan đến website **Zalopay UI Hub**.
 
 Gợi ý cách dùng:
 
@@ -15,4 +15,3 @@ feature/update-login-page
 feature/add-principle-content
 fix/mobile-sidebar
 ```
-

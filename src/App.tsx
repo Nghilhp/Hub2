@@ -1,11 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { Agentation } from 'agentation'
 
 import { HubLayout } from '@/components/hub/HubLayout'
 import { NotFound } from '@/components/hub/NotFound'
+import { BRAND_STORAGE_NAMESPACE } from '@/data/brand'
 import type { HubTab } from '@/data/navigation'
+import { LoadingPage } from '@/pages/LoadingPage'
 import { LoginPage } from '@/pages/LoginPage'
 
-const AUTH_KEY = 'zalopay-ui-hub-authenticated'
+const AUTH_KEY = `${BRAND_STORAGE_NAMESPACE}-authenticated`
+const LOGIN_INTRO_KEY = `${BRAND_STORAGE_NAMESPACE}-login-intro-shown`
 
 function getInitialPath() {
   return window.location.pathname
@@ -17,6 +21,10 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     () => window.localStorage.getItem(AUTH_KEY) === 'true'
   )
+  const [hasShownLoginIntro, setHasShownLoginIntro] = useState(
+    () => window.sessionStorage.getItem(LOGIN_INTRO_KEY) === 'true'
+  )
+  const [isLoginIntroRevealing, setIsLoginIntroRevealing] = useState(false)
   const [path, setPath] = useState(getInitialPath)
 
   useEffect(() => {
@@ -33,15 +41,32 @@ function App() {
     setPath(new URL(nextUrl, window.location.origin).pathname)
   }
 
+  const handleLoginIntroExitStart = useCallback(() => {
+    setIsLoginIntroRevealing(true)
+  }, [])
+
+  const handleLoginIntroComplete = useCallback(() => {
+    window.sessionStorage.setItem(LOGIN_INTRO_KEY, 'true')
+    setHasShownLoginIntro(true)
+    setIsLoginIntroRevealing(false)
+
+    if (path !== '/login') {
+      window.history.pushState(null, '', '/login')
+      setPath('/login')
+    }
+  }, [path])
+
   function handleLogin() {
     window.localStorage.setItem(AUTH_KEY, 'true')
     setIsAuthenticated(true)
+    setIsLoginIntroRevealing(false)
     navigate('/')
   }
 
   function handleLogout() {
     window.localStorage.removeItem(AUTH_KEY)
     setIsAuthenticated(false)
+    setIsLoginIntroRevealing(false)
     setActiveTab('ui-principle')
     setActiveSection('introduction')
     navigate('/login')
@@ -49,6 +74,7 @@ function App() {
 
   function handleGoHome() {
     if (!isAuthenticated) {
+      setIsLoginIntroRevealing(false)
       navigate('/login')
       return
     }
@@ -58,22 +84,67 @@ function App() {
     navigate('/#introduction')
   }
 
-  if (path !== '/' && path !== '/login') {
-    return <NotFound onGoHome={handleGoHome} />
-  }
+  let pageContent
+  const shouldShowLoginIntro =
+    !isAuthenticated && !hasShownLoginIntro && (path === '/' || path === '/login')
+  const loginIntroContent = (
+    <div className="login-intro-stack">
+      <div
+        aria-hidden={!isLoginIntroRevealing}
+        className="login-intro-page"
+      >
+        <LoginPage
+          entrance={isLoginIntroRevealing ? 'enter' : 'pre-enter'}
+          onLogin={handleLogin}
+        />
+      </div>
+      <div className="login-intro-loading">
+        <LoadingPage
+          onExitStart={handleLoginIntroExitStart}
+          onComplete={handleLoginIntroComplete}
+        />
+      </div>
+    </div>
+  )
 
-  if (!isAuthenticated || path === '/login') {
-    return <LoginPage onLogin={handleLogin} />
+  if (path === '/loading') {
+    const loadingParams = new URLSearchParams(window.location.search)
+    const isLoadingLoop = loadingParams.get('loop') === 'true'
+
+    pageContent = isLoadingLoop ? (
+      <LoadingPage
+        isLooping={isLoadingLoop}
+        onComplete={handleLoginIntroComplete}
+      />
+    ) : loginIntroContent
+  } else if (shouldShowLoginIntro) {
+    pageContent = loginIntroContent
+  } else if (path !== '/' && path !== '/login') {
+    pageContent = <NotFound onGoHome={handleGoHome} />
+  } else if (!isAuthenticated || path === '/login') {
+    pageContent = (
+      <LoginPage
+        entrance={hasShownLoginIntro ? 'none' : 'enter'}
+        onLogin={handleLogin}
+      />
+    )
+  } else {
+    pageContent = (
+      <HubLayout
+        activeSection={activeSection}
+        activeTab={activeTab}
+        onLogout={handleLogout}
+        onSectionChange={setActiveSection}
+        onTabChange={setActiveTab}
+      />
+    )
   }
 
   return (
-    <HubLayout
-      activeSection={activeSection}
-      activeTab={activeTab}
-      onLogout={handleLogout}
-      onSectionChange={setActiveSection}
-      onTabChange={setActiveTab}
-    />
+    <>
+      {pageContent}
+      {import.meta.env.DEV && <Agentation />}
+    </>
   )
 }
 

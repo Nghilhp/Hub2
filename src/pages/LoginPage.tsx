@@ -1,131 +1,215 @@
-import { useState, type FormEvent } from 'react'
-import { Sparkles } from 'lucide-react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent,
+} from 'react'
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import DotGrid from '@/components/DotGrid'
+import { LoginForm } from '@/components/hub/LoginForm'
 
 type LoginPageProps = {
+  entrance?: 'enter' | 'pre-enter' | 'none'
   onLogin: () => void
 }
 
-export function LoginPage({ onLogin }: LoginPageProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export function LoginPage({ entrance = 'enter', onLogin }: LoginPageProps) {
+  const pageRef = useRef<HTMLElement>(null)
+  const visualRef = useRef<HTMLElement>(null)
+  const [shouldRenderCollabCursor, setShouldRenderCollabCursor] = useState(false)
+  const entranceClass =
+    entrance === 'enter'
+      ? 'login-form-enter'
+      : entrance === 'pre-enter'
+        ? 'login-pre-enter'
+        : ''
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setIsSubmitting(true)
-    window.setTimeout(() => {
-      setIsSubmitting(false)
-      onLogin()
-    }, 600)
-  }
+  const canMoveBackground = useCallback(() => {
+    if (typeof window === 'undefined') {
+      return false
+    }
+
+    return (
+      window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    )
+  }, [])
+
+  const handleVisualPointerMove = useCallback(
+    (event: PointerEvent<HTMLElement>) => {
+      if (!canMoveBackground()) {
+        return
+      }
+
+      const visualElement = visualRef.current
+
+      if (!visualElement) {
+        return
+      }
+
+      const bounds = visualElement.getBoundingClientRect()
+      const x = event.clientX - bounds.left
+      const y = event.clientY - bounds.top
+      const normalizedX = x / bounds.width - 0.5
+      const normalizedY = y / bounds.height - 0.5
+
+      visualElement.style.setProperty('--login-cursor-opacity', '1')
+      visualElement.style.setProperty('--login-cursor-x', `${x}px`)
+      visualElement.style.setProperty('--login-cursor-y', `${y}px`)
+      visualElement.style.setProperty('--login-blob-1-x', `${normalizedX * 16}px`)
+      visualElement.style.setProperty('--login-blob-1-y', `${normalizedY * 12}px`)
+      visualElement.style.setProperty('--login-blob-2-x', `${normalizedX * -22}px`)
+      visualElement.style.setProperty('--login-blob-2-y', `${normalizedY * -16}px`)
+      visualElement.style.setProperty('--login-blob-3-x', `${normalizedX * 10}px`)
+      visualElement.style.setProperty('--login-blob-3-y', `${normalizedY * -20}px`)
+      visualElement.style.setProperty('--login-blob-4-x', `${normalizedX * -12}px`)
+      visualElement.style.setProperty('--login-blob-4-y', `${normalizedY * 24}px`)
+    },
+    [canMoveBackground]
+  )
+
+  const handleVisualPointerLeave = useCallback(() => {
+    const visualElement = visualRef.current
+
+    if (!visualElement) {
+      return
+    }
+
+    visualElement.style.setProperty('--login-cursor-opacity', '0')
+    visualElement.style.setProperty('--login-blob-1-x', '0px')
+    visualElement.style.setProperty('--login-blob-1-y', '0px')
+    visualElement.style.setProperty('--login-blob-2-x', '0px')
+    visualElement.style.setProperty('--login-blob-2-y', '0px')
+    visualElement.style.setProperty('--login-blob-3-x', '0px')
+    visualElement.style.setProperty('--login-blob-3-y', '0px')
+    visualElement.style.setProperty('--login-blob-4-x', '0px')
+    visualElement.style.setProperty('--login-blob-4-y', '0px')
+  }, [])
+
+  useEffect(() => {
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const pointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)')
+
+    function updateCollabCursorPreference() {
+      setShouldRenderCollabCursor(pointerQuery.matches && !motionQuery.matches)
+    }
+
+    updateCollabCursorPreference()
+    motionQuery.addEventListener('change', updateCollabCursorPreference)
+    pointerQuery.addEventListener('change', updateCollabCursorPreference)
+
+    return () => {
+      motionQuery.removeEventListener('change', updateCollabCursorPreference)
+      pointerQuery.removeEventListener('change', updateCollabCursorPreference)
+    }
+  }, [])
+
+  const handlePagePointerMove = useCallback(
+    (event: PointerEvent<HTMLElement>) => {
+      if (!shouldRenderCollabCursor) {
+        return
+      }
+
+      const pageElement = pageRef.current
+
+      if (!pageElement) {
+        return
+      }
+
+      const bounds = pageElement.getBoundingClientRect()
+      const x = event.clientX - bounds.left
+      const y = event.clientY - bounds.top
+
+      pageElement.style.setProperty('--login-you-cursor-opacity', '1')
+      pageElement.style.setProperty('--login-you-cursor-x', `${x}px`)
+      pageElement.style.setProperty('--login-you-cursor-y', `${y}px`)
+    },
+    [shouldRenderCollabCursor]
+  )
+
+  const handlePagePointerLeave = useCallback(() => {
+    const pageElement = pageRef.current
+
+    if (!pageElement) {
+      return
+    }
+
+    pageElement.style.setProperty('--login-you-cursor-opacity', '0')
+  }, [])
 
   return (
-    <main className="flex min-h-svh flex-col bg-[#F8FBFF] text-[#1d1d1f]">
-      <div className="flex min-h-11 items-center justify-center border-b border-[#E4EEFF] bg-[#F1F7FF] px-4 text-center text-sm font-medium text-[#0033C9] sm:text-base">
-        <span>ZaloPay UI Hub is in MVP preview.</span>
-        <a
-          className="ml-2 underline underline-offset-4 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-          href="#login"
-        >
-          Read the guideline note
-        </a>
-      </div>
+    <main
+      className={`login-split-page ${entranceClass} ${
+        shouldRenderCollabCursor ? 'login-collab-cursor-enabled' : ''
+      } text-foreground`}
+      onPointerLeave={handlePagePointerLeave}
+      onPointerMove={handlePagePointerMove}
+      ref={pageRef}
+    >
+      <section
+        aria-hidden="true"
+        className="login-split-visual"
+        onPointerLeave={handleVisualPointerLeave}
+        onPointerMove={handleVisualPointerMove}
+        ref={visualRef}
+      >
+        <DotGrid
+          activeColor="#3dff1e"
+          baseColor="#354154"
+          dotSize={5}
+          gap={20}
+          maxSpeed={3600}
+          proximity={128}
+          resistance={980}
+          returnDuration={1.2}
+          shockRadius={190}
+          shockStrength={3.2}
+          speedTrigger={110}
+        />
+        <div className="login-ambient-blobs">
+          <div className="login-cursor-glow" />
+          <div className="login-ambient-blob login-ambient-blob-1" />
+          <div className="login-ambient-blob login-ambient-blob-2" />
+          <div className="login-ambient-blob login-ambient-blob-3" />
+          <div className="login-ambient-blob login-ambient-blob-4" />
+        </div>
+        <div className="login-split-visual-overlay" />
+      </section>
 
-      <section className="grid flex-1 p-2 lg:grid-cols-2">
-        <aside className="relative hidden min-h-[calc(100svh-6.5rem)] overflow-hidden bg-[#0033C9] text-white lg:block">
-          <div className="absolute left-6 top-6 z-10 flex size-8 items-center justify-center rounded-full bg-white/15">
-            <Sparkles className="size-5" />
-          </div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_78%,rgba(0,207,106,0.9),transparent_20%),radial-gradient(circle_at_22%_18%,rgba(255,255,255,0.18),transparent_32%),linear-gradient(135deg,#0033C9_0%,#0033C9_56%,#002798_100%)]" />
-          <div className="absolute inset-0 opacity-[0.12] [background-image:linear-gradient(0deg,rgba(255,255,255,.45)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.32)_1px,transparent_1px)] [background-size:3px_3px]" />
-          <div className="relative z-10 flex h-full items-center justify-center px-16">
-            <blockquote className="max-w-xl text-center text-2xl font-medium leading-[1.7] text-white/92">
-              “A shared UI language helps every team design faster, review with
-              clarity, and protect user trust in every payment moment.”
-              <footer className="mt-7 text-sm font-normal text-white/45">
-                ZaloPay Product Design · Vietnam
-              </footer>
-            </blockquote>
-          </div>
-        </aside>
-
-        <section
-          className="flex min-h-[calc(100svh-8rem)] items-center justify-center bg-white px-5 py-12 sm:px-8"
-          id="login"
-        >
-          <div className="w-full max-w-[568px]">
-            <div className="mx-auto max-w-[420px]">
-              <div className="mb-12 text-center">
-                <h1 className="font-serif text-3xl font-medium tracking-normal">
-                  Welcome to ZaloPay UI Hub
-                </h1>
-                <p className="mt-5 text-base text-black/45">
-                  Sign in or create an account
-                </p>
-              </div>
-
-              <form className="space-y-5" onSubmit={handleSubmit}>
-                <label className="sr-only" htmlFor="email">
-                  Email
-                </label>
-                <Input
-                  autoComplete="email"
-                  className="h-12 rounded-none border-[#E4EEFF] bg-white px-4 text-base text-[#1d1d1f] shadow-none focus-visible:border-[#00CF6A] focus-visible:ring-0"
-                  defaultValue="uihub@zalopay.vn"
-                  id="email"
-                  required
-                  type="email"
-                />
-                <Button
-                  className="h-13 w-full rounded-none bg-[#0033C9] text-base font-medium text-white hover:bg-[#002798]"
-                  disabled={isSubmitting}
-                  type="submit"
-                >
-                  {isSubmitting ? 'Continuing...' : 'Continue'}
-                </Button>
-
-                <div className="flex items-center gap-4 py-5 text-sm text-black/40">
-                  <span className="h-px flex-1 bg-black/8" />
-                  <span>or</span>
-                  <span className="h-px flex-1 bg-black/8" />
-                </div>
-
-                <Button
-                  className="h-13 w-full rounded-none bg-[#00A957] text-base font-medium text-white hover:bg-[#008F4A]"
-                  type="button"
-                >
-                  Show other options
-                </Button>
-              </form>
-            </div>
-
-            <p className="mt-28 text-center text-sm text-black/45 max-sm:mt-12">
-              By signing in you agree to our{' '}
-              <a className="underline underline-offset-4" href="#terms">
-                Terms of service
-              </a>{' '}
-              &{' '}
-              <a className="underline underline-offset-4" href="#privacy">
-                Privacy policy
-              </a>
+      <div className="login-layout-shell">
+        <section aria-hidden="true" className="login-brand-panel">
+          <img
+            alt=""
+            className="login-split-logo"
+            src="/zalopay-design-hub-logo-dark.svg"
+          />
+          <div className="login-split-copy">
+            <p className="login-split-eyebrow">Internal workspace</p>
+            <h2>Một ngôn ngữ chung cho trải nghiệm nhất quán</h2>
+            <p>
+              Design System - UI Principles - Knowledge Hub dành cho đội ngũ sản
+              phẩm Zalopay
             </p>
           </div>
         </section>
-      </section>
 
-      <footer className="flex min-h-16 items-center justify-between gap-4 bg-[#0033C9] px-6 py-4 text-white">
-        <div className="flex items-center gap-3">
-          <span className="flex size-8 items-center justify-center rounded-md bg-[#00CF6A] text-xs font-semibold text-[#0033C9]">
-            ZP
-          </span>
-          <span className="text-xl font-semibold">ZaloPay UI Hub</span>
+        <section
+          aria-labelledby="login-title"
+          className="login-split-form-panel"
+        >
+          <div className="login-form-content w-full">
+            <LoginForm isFlat onLogin={onLogin} titleId="login-title" />
+          </div>
+        </section>
+      </div>
+
+      {shouldRenderCollabCursor && (
+        <div className="login-you-cursor" aria-hidden="true">
+          <div className="login-you-cursor-arrow" />
+          <div className="login-you-cursor-pill">You</div>
         </div>
-        <div className="hidden items-center gap-3 text-lg font-semibold sm:flex">
-          <span className="text-white/75">curated by</span>
-          <span>Product Design</span>
-        </div>
-      </footer>
+      )}
     </main>
   )
 }
