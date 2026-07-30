@@ -1,5 +1,3 @@
-import { BRAND_NAME } from '@/data/brand'
-
 export type PriorityLevel = {
   level: string
   title: string
