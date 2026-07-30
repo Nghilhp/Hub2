@@ -36,6 +36,15 @@ function getString(value: unknown) {
   return typeof value === 'string' ? value : ''
 }
 
+function isFailedZaloPayload(value: unknown) {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'ok' in value &&
+    (value as { ok?: unknown }).ok === false
+  )
+}
+
 function formatFeedbackMessage(payload: Record<string, unknown>) {
   const identity =
     payload.identity === 'domain' && payload.domain
@@ -184,7 +193,7 @@ function feedbackApiPlugin(env: Record<string, string>): Plugin {
             .json()
             .catch(() => ({ message: 'Unable to parse Zalo response' }))
 
-          if (!zaloResponse.ok) {
+          if (!zaloResponse.ok || isFailedZaloPayload(zaloPayload)) {
             sendJson(response, 502, {
               error: 'Không thể gửi thông báo cập nhật đến Zalo Bot.',
               detail: zaloPayload,
@@ -249,7 +258,7 @@ function feedbackApiPlugin(env: Record<string, string>): Plugin {
             .json()
             .catch(() => ({ message: 'Unable to parse Zalo response' }))
 
-          if (!zaloResponse.ok) {
+          if (!zaloResponse.ok || isFailedZaloPayload(zaloPayload)) {
             sendJson(response, 502, {
               error: 'Không thể gửi góp ý đến Zalo Bot.',
               detail: zaloPayload,

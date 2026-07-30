@@ -93,7 +93,7 @@ export default async function handler(request, response) {
       .json()
       .catch(() => ({ message: 'Unable to parse Zalo response' }))
 
-    if (!zaloResponse.ok) {
+    if (!zaloResponse.ok || zaloPayload?.ok === false) {
       sendJson(response, 502, {
         error: 'Không thể gửi góp ý đến Zalo Bot.',
         detail: zaloPayload,
