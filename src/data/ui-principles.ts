@@ -31,8 +31,7 @@ export const projectGoals = [
   'Nâng cao trải nghiệm người dùng (UX): Giúp người dùng thực hiện tác vụ nhanh chóng, dễ dàng và giảm thiểu lỗi.',
   'Tạo sự nhất quán (Consistency): Đảm bảo các thành phần giao diện như nút, màu sắc, phông chữ đồng bộ trên toàn bộ sản phẩm, giúp người dùng không bị bối rối.',
   'Tăng khả năng tương tác và thu hút: Tạo ra giao diện không chỉ hoạt động tốt mà còn đẹp mắt, thu hút người dùng muốn tương tác lâu hơn.',
-  'Định hướng người dùng: Giúp người dùng hiểu rõ hệ thống đang làm gì, trạng thái hệ thống ra sao và họ có thể làm gì tiếp theo.',
-  'Tối ưu hóa hiệu suất: Giảm thiểu thời gian học cách sử dụng ứng dụng/website, làm cho quy trình làm việc hiệu quả hơn.',
+  'Định hướng người dùng và tối ưu hóa hiệu suất: Giúp người dùng hiểu rõ hệ thống đang làm gì, trạng thái hệ thống ra sao, họ có thể làm gì tiếp theo và giảm thời gian học cách sử dụng sản phẩm.',
 ]
 
 export const inScopeItems: ScopeItem[] = [
@@ -191,16 +190,15 @@ export const frameworkQuestions = [
 export const uiPrinciples: Principle[] = [
   {
     number: 1,
-    title: 'Clear Hierarchy',
+    title: 'Clear Hierarchy - Phân cấp thông tin rõ ràng',
     vietnameseTitle: 'Phân cấp thông tin rõ ràng',
     summary:
-      'Clear Hierarchy là nguyên tắc giúp giao diện sắp xếp thông tin theo mức độ quan trọng.',
+      'Nguyên tắc này giúp user biết nên nhìn vào đâu trước, đâu là nội dung chính và hành động nào cần thực hiện tiếp theo. Mục tiêu là giảm nhiễu, giảm phân vân và giúp user ra quyết định nhanh hơn.',
     description:
       'Nguyên tắc này giúp user biết nên nhìn vào đâu trước, đâu là nội dung chính và hành động nào cần thực hiện tiếp theo. Mục tiêu là giảm nhiễu, giảm phân vân và giúp user ra quyết định nhanh hơn.',
     guidelines: [
       'Mỗi màn hình hoặc section chỉ nên có một điểm nhấn chính.',
-      'CTA chính phải nổi bật hơn action phụ.',
-      'Title, subtitle, nội dung hỗ trợ và metadata cần có thứ bậc rõ ràng.',
+      'Title, subtitle, nội dung hỗ trợ và metadata cần có thứ bậc rõ ràng.\nCTA chính phải nổi bật hơn CTA phụ.',
       'Nội dung quan trọng không bị campaign, banner hoặc decorative content lấn át.',
       'Các thông tin quan trọng như số tiền, trạng thái, cảnh báo, bước tiếp theo phải được ưu tiên hiển thị đúng mức.',
     ],
@@ -217,7 +215,7 @@ export const uiPrinciples: Principle[] = [
   },
   {
     number: 2,
-    title: 'Structured Simplicity',
+    title: 'Structured Simplicity - Cấu trúc tối giản',
     vietnameseTitle: 'Cấu trúc tối giản',
     summary:
       'Structured Simplicity là nguyên tắc giúp giao diện trở nên đơn giản nhưng vẫn có cấu trúc rõ ràng.',
@@ -243,7 +241,7 @@ export const uiPrinciples: Principle[] = [
   },
   {
     number: 3,
-    title: 'Consistent Experience',
+    title: 'Consistent Experience - Trải nghiệm nhất quán',
     vietnameseTitle: 'Trải nghiệm nhất quán',
     summary:
       'Consistency là mức độ đồng bộ trong toàn bộ hệ thống giao diện.',
@@ -269,7 +267,7 @@ export const uiPrinciples: Principle[] = [
   },
   {
     number: 4,
-    title: 'Action Clarity',
+    title: 'Action Clarity - Rõ ràng hành động chính',
     vietnameseTitle: 'Rõ ràng hành động chính',
     summary:
       'Action Clarity đảm bảo mỗi màn hình truyền đạt rõ người dùng đang ở đâu, cần làm gì và điều gì sẽ xảy ra sau khi thao tác.',
@@ -295,8 +293,8 @@ export const uiPrinciples: Principle[] = [
   },
   {
     number: 5,
-    title: 'Feedback & System Status',
-    vietnameseTitle: 'Trạng thái và phản hồi',
+    title: 'Feedback & System Status - Trạng thái & Phản hồi',
+    vietnameseTitle: 'Trạng thái & Phản hồi',
     summary:
       'Feedback & System Status đảm bảo hệ thống luôn cho người dùng biết chuyện gì đang xảy ra.',
     description:
@@ -321,7 +319,7 @@ export const uiPrinciples: Principle[] = [
   },
   {
     number: 6,
-    title: 'ZaloPay Identity in Utility',
+    title: 'Zalopay Identify in Utility - Brand không chỉ là hình ảnh mà phải thể hiện qua giá trị sử dụng',
     vietnameseTitle: 'Brand không chỉ là hình ảnh mà phải thể hiện qua giá trị sử dụng',
     summary:
       'ZaloPay Identity in Utility đảm bảo bản sắc thương hiệu được thể hiện thông qua chất lượng trải nghiệm và tính hữu ích.',
@@ -346,7 +344,7 @@ export const uiPrinciples: Principle[] = [
   },
   {
     number: 7,
-    title: 'Accessibility & Adaptability',
+    title: 'Accessibility & Adaptability - Dễ tiếp cận và tính linh hoạt',
     vietnameseTitle: 'Dễ tiếp cận và tính linh hoạt',
     summary:
       'Accessibility & Adaptability đảm bảo giao diện có thể được tiếp cận, đọc hiểu và sử dụng tốt bởi nhiều nhóm người dùng.',
@@ -372,7 +370,7 @@ export const uiPrinciples: Principle[] = [
   },
   {
     number: 8,
-    title: 'Trust & Safety',
+    title: 'Trust & Safety - Tin cậy và an toàn',
     vietnameseTitle: 'Tin cậy và an toàn',
     summary:
       'Trust & Safety giúp giao diện tạo cảm giác an tâm, minh bạch và đáng tin cậy.',
