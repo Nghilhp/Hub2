@@ -1,13 +1,11 @@
-import { useState, type FormEvent } from 'react'
 import {
-  ArrowRight,
-  Eye,
-  EyeOff,
-  LoaderCircle,
-  LockKeyhole,
-  Mail,
-  ShieldCheck,
-} from 'lucide-react'
+  useEffect,
+  useRef,
+  useState,
+  type FocusEvent,
+  type FormEvent,
+} from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -15,13 +13,14 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { INTERNAL_EMAIL_DOMAIN } from '@/data/brand'
+import { BRAND_STORAGE_NAMESPACE, INTERNAL_EMAIL_DOMAIN } from '@/data/brand'
 
 type LoginFormProps = {
+  isFlat?: boolean
   onLogin: () => void
+  titleId?: string
 }
 
 type LoginErrors = {
@@ -29,17 +28,101 @@ type LoginErrors = {
   password?: string
 }
 
-function validateVngEmail(email: string) {
-  return email.trim().toLowerCase().endsWith(INTERNAL_EMAIL_DOMAIN)
+const REMEMBERED_LOGIN_KEY = `${BRAND_STORAGE_NAMESPACE}-remembered-login`
+
+type RememberedLogin = {
+  email: string
+  password: string
 }
 
-export function LoginForm({ onLogin }: LoginFormProps) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [rememberMe, setRememberMe] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+function validateVngEmail(email: string) {
+  return /^[^\s@]+@vng\.com\.vn$/.test(email.trim().toLowerCase())
+}
+
+function getRememberedLogin(): RememberedLogin | null {
+  try {
+    const rememberedLogin = window.localStorage.getItem(REMEMBERED_LOGIN_KEY)
+
+    if (!rememberedLogin) {
+      return null
+    }
+
+    const parsedLogin = JSON.parse(rememberedLogin) as Partial<RememberedLogin>
+
+    if (typeof parsedLogin.email !== 'string' || typeof parsedLogin.password !== 'string') {
+      return null
+    }
+
+    return {
+      email: parsedLogin.email,
+      password: parsedLogin.password,
+    }
+  } catch {
+    return null
+  }
+}
+
+export function LoginForm({ isFlat = false, onLogin, titleId }: LoginFormProps) {
+  const emailFieldRef = useRef<HTMLDivElement>(null)
+  const passwordFieldRef = useRef<HTMLDivElement>(null)
+  const submitButtonRef = useRef<HTMLButtonElement>(null)
+  const [rememberedLogin] = useState(getRememberedLogin)
+  const [email, setEmail] = useState(() => rememberedLogin?.email ?? '')
+  const [password, setPassword] = useState(() => rememberedLogin?.password ?? '')
+  const [rememberMe, setRememberMe] = useState(() => Boolean(rememberedLogin))
   const [errors, setErrors] = useState<LoginErrors>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+
+  function clearErrorOnFieldExit(
+    field: keyof LoginErrors,
+    event: FocusEvent<HTMLDivElement>
+  ) {
+    const nextFocusedElement = event.relatedTarget
+
+    if (
+      nextFocusedElement instanceof Node &&
+      event.currentTarget.contains(nextFocusedElement)
+    ) {
+      return
+    }
+
+    setErrors((current) => ({ ...current, [field]: undefined }))
+  }
+
+  function clearErrorsOutsideClickedFields(clickedElement: Node) {
+    if (submitButtonRef.current?.contains(clickedElement)) {
+      return
+    }
+
+    setErrors((current) => ({
+      email:
+        current.email && !emailFieldRef.current?.contains(clickedElement)
+          ? undefined
+          : current.email,
+      password:
+        current.password && !passwordFieldRef.current?.contains(clickedElement)
+          ? undefined
+          : current.password,
+    }))
+  }
+
+  useEffect(() => {
+    function handleDocumentPointerDown(event: globalThis.PointerEvent) {
+      const clickedElement = event.target
+
+      if (!(clickedElement instanceof Node)) {
+        return
+      }
+
+      clearErrorsOutsideClickedFields(clickedElement)
+    }
+
+    document.addEventListener('pointerdown', handleDocumentPointerDown)
+
+    return () => {
+      document.removeEventListener('pointerdown', handleDocumentPointerDown)
+    }
+  }, [])
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -53,7 +136,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
     }
 
     if (!password.trim()) {
-      nextErrors.password = 'Vui lòng nhập mật khẩu dùng chung'
+      nextErrors.password = 'Vui lòng nhập mật khẩu'
     }
 
     setErrors(nextErrors)
@@ -62,68 +145,103 @@ export function LoginForm({ onLogin }: LoginFormProps) {
       return
     }
 
-    setIsSubmitting(true)
-    window.setTimeout(() => {
-      setIsSubmitting(false)
-      onLogin()
-    }, 700)
+    if (rememberMe) {
+      window.localStorage.setItem(
+        REMEMBERED_LOGIN_KEY,
+        JSON.stringify({
+          email,
+          password,
+        })
+      )
+    } else {
+      window.localStorage.removeItem(REMEMBERED_LOGIN_KEY)
+    }
+
+    onLogin()
   }
 
   return (
     <Card
-      className="rounded-lg border-border/80 bg-white shadow-sm"
+      className={`w-full gap-0 overflow-visible border-0 text-[#001f3e] ring-0 ${
+        isFlat
+          ? 'rounded-none bg-transparent px-0 py-0 shadow-none'
+          : 'rounded-[32px] bg-white px-8 py-10 shadow-[0_28px_80px_rgb(0_51_201_/_14%)] sm:px-12 sm:py-12'
+      }`}
       data-login-stagger="form"
     >
-      <CardHeader className="space-y-2 pb-5">
-        <CardTitle className="text-3xl font-semibold">
-          Đăng nhập
-        </CardTitle>
-        <CardDescription className="text-base leading-7">
-          Dùng email VNG và mật khẩu được cấp để tiếp tục.
+      <CardHeader className="gap-3 px-0 pb-8 text-center" data-login-stagger="header">
+        <p
+          className="font-['Aeonik_Pro','SF_Pro_Display',-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] text-[25.6px] font-bold leading-8 text-[#0033c9]"
+          id={titleId}
+        >
+          Chào Mừng tới <span className="text-[#00a655]">Design Hub</span>
+        </p>
+        <CardDescription className="mx-auto w-fit max-w-full text-[14.4px] font-medium leading-6 text-[#001f3e]/55 sm:whitespace-nowrap">
+          Dùng tài khoản VNG của bạn để tiếp tục vào Zalopay UI Hub.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form className="space-y-5" noValidate onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <label className="text-sm font-semibold" htmlFor="email">
-              Email VNG
+      <CardContent className="px-0">
+        <form
+          autoComplete="off"
+          className="space-y-0"
+          noValidate
+          onSubmit={handleSubmit}
+        >
+          <div data-login-stagger="email">
+            <label
+              className="block px-1 text-sm font-bold text-[#001f3e]"
+              htmlFor="email"
+            >
+              Email VNG <span className="text-[#e3173c]">*</span>
             </label>
-            <div className="relative">
-              <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <div
+              className="login-input-shell relative pt-2"
+              onBlur={(event) => clearErrorOnFieldExit('email', event)}
+              ref={emailFieldRef}
+            >
               <Input
                 aria-describedby={errors.email ? 'email-error' : undefined}
                 aria-invalid={Boolean(errors.email)}
-                autoComplete="email"
-                className="h-12 bg-slate-50 pl-10 text-base focus-visible:border-blue-600 focus-visible:ring-blue-600/20"
+                autoComplete={rememberMe ? 'email' : 'off'}
+                className="login-input h-14 rounded-[14px] border-[#f2f6f7] bg-white px-[22px] text-sm font-normal text-[#001f3e] shadow-none transition-colors placeholder:font-normal placeholder:text-[#001f3e]/28 focus-visible:border-[#0033c9] focus-visible:ring-3 focus-visible:ring-[#0033c9]/15 focus-visible:ring-inset aria-invalid:ring-inset"
+                data-completed={email.trim() ? 'true' : undefined}
                 id="email"
                 onChange={(event) => {
                   setEmail(event.target.value)
                   setErrors((current) => ({ ...current, email: undefined }))
                 }}
-                placeholder="ten.cua.ban@vng.com.vn"
+                placeholder="domain@vng.com.vn"
                 type="email"
                 value={email}
               />
             </div>
             {errors.email && (
-              <p className="text-sm text-destructive" id="email-error">
+              <p className="mt-2 px-1 text-xs text-destructive" id="email-error">
                 {errors.email}
               </p>
             )}
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold" htmlFor="password">
-              Mật khẩu dùng chung
+          <div className="pt-5" data-login-stagger="password">
+            <label
+              className="block px-1 text-sm font-bold text-[#001f3e]"
+              htmlFor="password"
+            >
+              Mật khẩu <span className="text-[#e3173c]">*</span>
             </label>
-            <div className="relative">
+            <div
+              className="login-input-shell relative pt-2"
+              onBlur={(event) => clearErrorOnFieldExit('password', event)}
+              ref={passwordFieldRef}
+            >
               <Input
                 aria-describedby={
                   errors.password ? 'password-error' : undefined
                 }
                 aria-invalid={Boolean(errors.password)}
-                autoComplete="current-password"
-                className="h-12 bg-slate-50 pl-10 pr-11 text-base focus-visible:border-blue-600 focus-visible:ring-blue-600/20"
+                autoComplete={rememberMe ? 'current-password' : 'new-password'}
+                className="login-input h-14 rounded-[14px] border-[#f2f6f7] bg-white pl-[22px] pr-[58px] text-sm font-normal text-[#001f3e] shadow-none transition-colors placeholder:font-normal placeholder:text-[#001f3e]/28 focus-visible:border-[#0033c9] focus-visible:ring-3 focus-visible:ring-[#0033c9]/15 focus-visible:ring-inset aria-invalid:ring-inset"
+                data-completed={password.trim() ? 'true' : undefined}
                 id="password"
                 onChange={(event) => {
                   setPassword(event.target.value)
@@ -133,64 +251,68 @@ export function LoginForm({ onLogin }: LoginFormProps) {
                   }))
                 }}
                 placeholder="Nhập mật khẩu"
-                type={showPassword ? 'text' : 'password'}
+                type={isPasswordVisible ? 'text' : 'password'}
                 value={password}
               />
-              <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-              <Button
-                aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
-                onClick={() => setShowPassword((current) => !current)}
-                size="icon-sm"
+              <button
+                aria-label={
+                  isPasswordVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'
+                }
+                className="absolute right-4 top-[calc(50%+4px)] inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-[#001f3e]/45 transition-colors hover:bg-[#f5f9ff] hover:text-[#001f3e] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[#0033c9]/15"
+                onClick={() => setIsPasswordVisible((current) => !current)}
                 type="button"
-                variant="ghost"
               >
-                {showPassword ? <EyeOff /> : <Eye />}
-              </Button>
+                {isPasswordVisible ? (
+                  <EyeOff aria-hidden="true" className="size-4" />
+                ) : (
+                  <Eye aria-hidden="true" className="size-4" />
+                )}
+              </button>
             </div>
             {errors.password && (
-              <p className="text-sm text-destructive" id="password-error">
+              <p className="mt-2 px-1 text-xs text-destructive" id="password-error">
                 {errors.password}
               </p>
             )}
           </div>
 
-          <label className="flex cursor-pointer items-center gap-3 text-sm text-muted-foreground">
+          <label
+            className="flex h-16 cursor-pointer items-center gap-2 px-1 pb-5 pt-6 text-sm font-normal leading-[18px] text-[#001f3e]"
+            data-login-stagger="remember"
+          >
             <input
               checked={rememberMe}
-              className="size-5 rounded border border-input accent-blue-600 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-600/20"
-              onChange={(event) => setRememberMe(event.target.checked)}
+              className="login-checkbox"
+              onChange={(event) => {
+                setRememberMe(event.target.checked)
+
+                if (!event.target.checked) {
+                  window.localStorage.removeItem(REMEMBERED_LOGIN_KEY)
+                }
+              }}
               type="checkbox"
             />
             <span>Ghi nhớ cho lần đăng nhập sau</span>
           </label>
 
           <Button
-            className="h-12 w-full gap-2 bg-blue-700 text-base font-semibold hover:bg-blue-800"
-            disabled={isSubmitting}
+            className="login-submit-button mt-3 h-14 w-full rounded-[14px] bg-[#0033c9] text-[15.36px] font-bold text-white shadow-none transition-colors disabled:opacity-70"
+            data-login-stagger="cta"
+            ref={submitButtonRef}
             type="submit"
           >
-            {isSubmitting ? (
-              <>
-                <LoaderCircle className="size-4 animate-spin" />
-                Đang đăng nhập
-              </>
-            ) : (
-              <>
-                Đăng nhập
-                <ArrowRight className="size-4" />
-              </>
-            )}
+            Đăng nhập
           </Button>
 
-          <p className="flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm leading-6 text-emerald-800">
-            <ShieldCheck
-              aria-hidden="true"
-              className="mt-0.5 size-4 shrink-0"
-            />
-            <span>
-              Chỉ email có đuôi {INTERNAL_EMAIL_DOMAIN} được phép truy cập
-            </span>
+          <p
+            className="mx-auto w-fit max-w-full px-0 pt-9 text-center text-sm font-medium leading-6 text-[#001f3e]/45"
+            data-login-stagger="note"
+          >
+            Chỉ email có đuôi{' '}
+            <span className="font-semibold text-[#001f3e]">
+              {INTERNAL_EMAIL_DOMAIN}
+            </span>{' '}
+            được phép truy cập
           </p>
         </form>
       </CardContent>

@@ -1,149 +1,215 @@
 import {
-  BadgeCheck,
-  BookOpenCheck,
-  Layers3,
-  SearchCheck,
-  ShieldCheck,
-} from 'lucide-react'
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent,
+} from 'react'
 
+import DotGrid from '@/components/DotGrid'
 import { LoginForm } from '@/components/hub/LoginForm'
-import { BRAND_NAME, HUB_DESCRIPTION, HUB_NAME } from '@/data/brand'
 
 type LoginPageProps = {
+  entrance?: 'enter' | 'pre-enter' | 'none'
   onLogin: () => void
 }
 
-export function LoginPage({ onLogin }: LoginPageProps) {
+export function LoginPage({ entrance = 'enter', onLogin }: LoginPageProps) {
+  const pageRef = useRef<HTMLElement>(null)
+  const visualRef = useRef<HTMLElement>(null)
+  const [shouldRenderCollabCursor, setShouldRenderCollabCursor] = useState(false)
+  const entranceClass =
+    entrance === 'enter'
+      ? 'login-form-enter'
+      : entrance === 'pre-enter'
+        ? 'login-pre-enter'
+        : ''
+
+  const canMoveBackground = useCallback(() => {
+    if (typeof window === 'undefined') {
+      return false
+    }
+
+    return (
+      window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    )
+  }, [])
+
+  const handleVisualPointerMove = useCallback(
+    (event: PointerEvent<HTMLElement>) => {
+      if (!canMoveBackground()) {
+        return
+      }
+
+      const visualElement = visualRef.current
+
+      if (!visualElement) {
+        return
+      }
+
+      const bounds = visualElement.getBoundingClientRect()
+      const x = event.clientX - bounds.left
+      const y = event.clientY - bounds.top
+      const normalizedX = x / bounds.width - 0.5
+      const normalizedY = y / bounds.height - 0.5
+
+      visualElement.style.setProperty('--login-cursor-opacity', '1')
+      visualElement.style.setProperty('--login-cursor-x', `${x}px`)
+      visualElement.style.setProperty('--login-cursor-y', `${y}px`)
+      visualElement.style.setProperty('--login-blob-1-x', `${normalizedX * 16}px`)
+      visualElement.style.setProperty('--login-blob-1-y', `${normalizedY * 12}px`)
+      visualElement.style.setProperty('--login-blob-2-x', `${normalizedX * -22}px`)
+      visualElement.style.setProperty('--login-blob-2-y', `${normalizedY * -16}px`)
+      visualElement.style.setProperty('--login-blob-3-x', `${normalizedX * 10}px`)
+      visualElement.style.setProperty('--login-blob-3-y', `${normalizedY * -20}px`)
+      visualElement.style.setProperty('--login-blob-4-x', `${normalizedX * -12}px`)
+      visualElement.style.setProperty('--login-blob-4-y', `${normalizedY * 24}px`)
+    },
+    [canMoveBackground]
+  )
+
+  const handleVisualPointerLeave = useCallback(() => {
+    const visualElement = visualRef.current
+
+    if (!visualElement) {
+      return
+    }
+
+    visualElement.style.setProperty('--login-cursor-opacity', '0')
+    visualElement.style.setProperty('--login-blob-1-x', '0px')
+    visualElement.style.setProperty('--login-blob-1-y', '0px')
+    visualElement.style.setProperty('--login-blob-2-x', '0px')
+    visualElement.style.setProperty('--login-blob-2-y', '0px')
+    visualElement.style.setProperty('--login-blob-3-x', '0px')
+    visualElement.style.setProperty('--login-blob-3-y', '0px')
+    visualElement.style.setProperty('--login-blob-4-x', '0px')
+    visualElement.style.setProperty('--login-blob-4-y', '0px')
+  }, [])
+
+  useEffect(() => {
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const pointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)')
+
+    function updateCollabCursorPreference() {
+      setShouldRenderCollabCursor(pointerQuery.matches && !motionQuery.matches)
+    }
+
+    updateCollabCursorPreference()
+    motionQuery.addEventListener('change', updateCollabCursorPreference)
+    pointerQuery.addEventListener('change', updateCollabCursorPreference)
+
+    return () => {
+      motionQuery.removeEventListener('change', updateCollabCursorPreference)
+      pointerQuery.removeEventListener('change', updateCollabCursorPreference)
+    }
+  }, [])
+
+  const handlePagePointerMove = useCallback(
+    (event: PointerEvent<HTMLElement>) => {
+      if (!shouldRenderCollabCursor) {
+        return
+      }
+
+      const pageElement = pageRef.current
+
+      if (!pageElement) {
+        return
+      }
+
+      const bounds = pageElement.getBoundingClientRect()
+      const x = event.clientX - bounds.left
+      const y = event.clientY - bounds.top
+
+      pageElement.style.setProperty('--login-you-cursor-opacity', '1')
+      pageElement.style.setProperty('--login-you-cursor-x', `${x}px`)
+      pageElement.style.setProperty('--login-you-cursor-y', `${y}px`)
+    },
+    [shouldRenderCollabCursor]
+  )
+
+  const handlePagePointerLeave = useCallback(() => {
+    const pageElement = pageRef.current
+
+    if (!pageElement) {
+      return
+    }
+
+    pageElement.style.setProperty('--login-you-cursor-opacity', '0')
+  }, [])
+
   return (
-    <main className="min-h-svh bg-[#f6f8fb] text-foreground">
-      <section className="mx-auto grid min-h-svh w-full max-w-7xl items-center gap-8 px-5 py-8 sm:px-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(380px,440px)] lg:gap-14 lg:py-10">
-        <div className="hidden min-h-[680px] flex-col justify-between overflow-hidden rounded-lg border border-slate-200 bg-white p-8 shadow-sm lg:flex">
-          <div>
-            <div className="mb-12 flex items-center gap-3">
-              <div className="flex size-11 items-center justify-center rounded-lg bg-blue-700 text-white shadow-sm">
-                <ShieldCheck className="size-5" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-slate-950">
-                  {HUB_NAME}
-                </p>
-                <p className="text-sm text-slate-500">
-                  {HUB_DESCRIPTION} nội bộ
-                </p>
-              </div>
-            </div>
-
-            <div className="max-w-2xl">
-              <p className="mb-4 text-sm font-semibold text-blue-700">
-                UI Principles and Design System
-              </p>
-              <h1 className="text-5xl font-semibold leading-tight text-slate-950">
-                Một nơi gọn gàng để review, tra cứu và thống nhất UI.
-              </h1>
-              <p className="mt-5 max-w-xl text-lg leading-8 text-slate-600">
-                Truy cập nhanh các principle, pattern và guideline dùng trong
-                quá trình thiết kế sản phẩm {BRAND_NAME}.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid gap-4">
-            <div className="grid grid-cols-3 gap-4">
-              {[
-                {
-                  label: 'Principles',
-                  value: '10+',
-                },
-                {
-                  label: 'Patterns',
-                  value: 'Core',
-                },
-                {
-                  label: 'Access',
-                  value: 'VNG',
-                },
-              ].map((item) => (
-                <div
-                  className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-4"
-                  key={item.label}
-                >
-                  <p className="text-2xl font-semibold text-slate-950">
-                    {item.value}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-500">{item.label}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              {[
-                {
-                  icon: BookOpenCheck,
-                  title: 'Review',
-                  text: 'Ngôn ngữ chung cho critique.',
-                },
-                {
-                  icon: SearchCheck,
-                  title: 'Tra cứu',
-                  text: 'Tìm guideline theo ngữ cảnh.',
-                },
-                {
-                  icon: Layers3,
-                  title: 'Hệ thống',
-                  text: 'Kết nối principle và pattern.',
-                },
-              ].map((item) => {
-                const Icon = item.icon
-
-                return (
-                  <div
-                    className="rounded-lg border border-slate-200 bg-white p-4"
-                    key={item.title}
-                  >
-                    <Icon className="mb-4 size-5 text-blue-700" />
-                    <p className="font-semibold text-slate-950">
-                      {item.title}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-slate-500">
-                      {item.text}
-                    </p>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
+    <main
+      className={`login-split-page ${entranceClass} ${
+        shouldRenderCollabCursor ? 'login-collab-cursor-enabled' : ''
+      } text-foreground`}
+      onPointerLeave={handlePagePointerLeave}
+      onPointerMove={handlePagePointerMove}
+      ref={pageRef}
+    >
+      <section
+        aria-hidden="true"
+        className="login-split-visual"
+        onPointerLeave={handleVisualPointerLeave}
+        onPointerMove={handleVisualPointerMove}
+        ref={visualRef}
+      >
+        <DotGrid
+          activeColor="#3dff1e"
+          baseColor="#354154"
+          dotSize={5}
+          gap={20}
+          maxSpeed={3600}
+          proximity={128}
+          resistance={980}
+          returnDuration={1.2}
+          shockRadius={190}
+          shockStrength={3.2}
+          speedTrigger={110}
+        />
+        <div className="login-ambient-blobs">
+          <div className="login-cursor-glow" />
+          <div className="login-ambient-blob login-ambient-blob-1" />
+          <div className="login-ambient-blob login-ambient-blob-2" />
+          <div className="login-ambient-blob login-ambient-blob-3" />
+          <div className="login-ambient-blob login-ambient-blob-4" />
         </div>
-
-        <div className="login-form-enter mx-auto w-full max-w-[440px]">
-          <div className="login-stagger-1 mb-7">
-            <div className="mb-7 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex size-11 items-center justify-center rounded-lg bg-blue-700 text-white shadow-sm">
-                  <ShieldCheck className="size-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-slate-950">
-                    {HUB_NAME}
-                  </p>
-                  <p className="text-sm text-slate-500">{HUB_DESCRIPTION}</p>
-                </div>
-              </div>
-              <div className="hidden items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 sm:flex">
-                <BadgeCheck className="size-4" />
-                Nội bộ
-              </div>
-            </div>
-            <p className="mb-3 text-sm font-semibold uppercase text-blue-700">
-              Chào mừng tới Design Hub
-            </p>
-            <h2 className="text-4xl font-semibold leading-tight text-slate-950">
-              Đăng nhập để vào không gian UI nội bộ.
-            </h2>
-          </div>
-
-          <LoginForm onLogin={onLogin} />
-        </div>
+        <div className="login-split-visual-overlay" />
       </section>
+
+      <div className="login-layout-shell">
+        <section aria-hidden="true" className="login-brand-panel">
+          <img
+            alt=""
+            className="login-split-logo"
+            src="/zalopay-design-hub-logo-dark.svg"
+          />
+          <div className="login-split-copy">
+            <p className="login-split-eyebrow">Internal workspace</p>
+            <h2>Một ngôn ngữ chung cho trải nghiệm nhất quán</h2>
+            <p>
+              Design System - UI Principles - Knowledge Hub dành cho đội ngũ sản
+              phẩm Zalopay
+            </p>
+          </div>
+        </section>
+
+        <section
+          aria-labelledby="login-title"
+          className="login-split-form-panel"
+        >
+          <div className="login-form-content w-full">
+            <LoginForm isFlat onLogin={onLogin} titleId="login-title" />
+          </div>
+        </section>
+      </div>
+
+      {shouldRenderCollabCursor && (
+        <div className="login-you-cursor" aria-hidden="true">
+          <div className="login-you-cursor-arrow" />
+          <div className="login-you-cursor-pill">You</div>
+        </div>
+      )}
     </main>
   )
 }
