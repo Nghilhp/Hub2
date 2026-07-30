@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 # Zalopay Design Hub
 
 Web nội bộ để quản lý nội dung Design Hub, UI Principle, guideline và các luồng review UI cho Zalopay Product Design.
+=======
+# Zalopay UI Hub
+
+Website MVP để xem và tra cứu UI Principles cho Zalopay UI Hub / Design Hub.
+>>>>>>> origin/Web/Introduction
 
 ## Tech Stack
 
@@ -21,25 +27,66 @@ npm install
 npm run dev -- --host 127.0.0.1
 ```
 
+<<<<<<< HEAD
 Link local:
+=======
+Chạy website local:
+
+```bash
+npm run dev
+```
+
+Terminal sẽ hiện link dạng:
+>>>>>>> origin/Web/Introduction
 
 ```text
 http://127.0.0.1:5173/
 ```
 
 Trang login:
+<<<<<<< HEAD
 
 ```text
 http://127.0.0.1:5173/login
 ```
 
 Landing / Introduction:
+=======
+>>>>>>> origin/Web/Introduction
 
 ```text
-http://127.0.0.1:5173/#introduction
+http://127.0.0.1:5173/login
 ```
 
 Trang loading loop:
+<<<<<<< HEAD
+=======
+
+```text
+http://127.0.0.1:5173/loading?loop=true
+```
+
+Trang loading rồi transition vào login:
+
+```text
+http://127.0.0.1:5173/loading
+```
+
+Nếu port khác, dùng đúng port Terminal hiển thị.
+
+## Scripts
+
+```bash
+npm run dev
+npm run typecheck
+npm run build
+npm run lint
+```
+
+## Zalo Bot
+
+Form `Góp ý cải thiện` gửi dữ liệu tới endpoint nội bộ:
+>>>>>>> origin/Web/Introduction
 
 ```text
 http://127.0.0.1:5173/loading?loop=true
@@ -67,12 +114,47 @@ npm run preview
 
 Tên thương hiệu chuẩn là **Zalopay**.
 
+<<<<<<< HEAD
 Brand constants nằm tại:
+=======
+```text
+https://your-domain.example/api/zalo-webhook
+```
+
+Khi set webhook, dùng `ZALO_WEBHOOK_SECRET` làm secret token. Sau đó mention bot
+trong group một lần và xem server log; log sẽ in `ZALO_GROUP_CHAT_ID=...`.
+
+Gọi thử thông báo cập nhật:
+
+```bash
+curl -X POST http://127.0.0.1:5173/api/update \
+  -H "Content-Type: application/json" \
+  -H "X-Zalo-Notify-Secret: $ZALO_NOTIFY_SECRET" \
+  -d '{
+    "title": "Design Hub vừa cập nhật",
+    "description": "Đã bổ sung nội dung mới cho UI Principles.",
+    "pageUrl": "http://127.0.0.1:5173/#introduction",
+    "author": "Design Hub"
+  }'
+```
+
+Local có thể copy `.env.example` thành `.env.local` rồi điền giá trị thật. Khi
+deploy Vercel, set các biến Zalo này trong Project Settings → Environment Variables.
+Sau khi thêm hoặc đổi env ở local, cần restart `npm run dev` để Vite nạp lại
+biến môi trường.
+
+## Branding
+
+Tên thương hiệu chuẩn là **Zalopay**.
+
+Khi viết UI copy hoặc data trong code, ưu tiên dùng file:
+>>>>>>> origin/Web/Introduction
 
 ```text
 src/data/brand.ts
 ```
 
+<<<<<<< HEAD
 Các constant chính:
 
 ```ts
@@ -112,6 +194,18 @@ Nguyên tắc phối màu:
 - Dùng `#0033C9` cho trạng thái active, tiêu đề hoặc nhấn điều hướng.
 - Dùng `#00CF6A` hoặc biến thể đậm hơn cho marker/check/status tích cực.
 - Tránh đưa tím làm màu chủ đạo trong light UI, trừ khi có task riêng cho màu phụ tím.
+=======
+Các constant hiện có:
+
+```ts
+BRAND_NAME = 'Zalopay'
+HUB_NAME = 'Zalopay UI Hub'
+HUB_DESCRIPTION = 'Design Hub'
+INTERNAL_EMAIL_DOMAIN = '@vng.com.vn'
+```
+
+Không gõ hardcode các biến thể như `ZaloPay`, `Zalo Pay`, hoặc `zaloPay` trong text hiển thị. Lowercase chỉ dùng cho technical namespace/key, ví dụ localStorage key.
+>>>>>>> origin/Web/Introduction
 
 ## Login MVP
 
