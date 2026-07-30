@@ -29,6 +29,7 @@ type LoginErrors = {
 }
 
 const REMEMBERED_LOGIN_KEY = `${BRAND_STORAGE_NAMESPACE}-remembered-login`
+const SHARED_LOGIN_PASSWORD = 'designhub'
 
 type RememberedLogin = {
   email: string
@@ -137,6 +138,8 @@ export function LoginForm({ isFlat = false, onLogin, titleId }: LoginFormProps) 
 
     if (!password.trim()) {
       nextErrors.password = 'Vui lòng nhập mật khẩu'
+    } else if (password !== SHARED_LOGIN_PASSWORD) {
+      nextErrors.password = 'Mật khẩu không đúng'
     }
 
     setErrors(nextErrors)
@@ -263,9 +266,9 @@ export function LoginForm({ isFlat = false, onLogin, titleId }: LoginFormProps) 
                 type="button"
               >
                 {isPasswordVisible ? (
-                  <EyeOff aria-hidden="true" className="size-4" />
-                ) : (
                   <Eye aria-hidden="true" className="size-4" />
+                ) : (
+                  <EyeOff aria-hidden="true" className="size-4" />
                 )}
               </button>
             </div>

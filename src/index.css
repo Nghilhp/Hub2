@@ -246,6 +246,14 @@ body {
   transform: scale(1);
 }
 
+.login-input[aria-invalid='true'],
+.login-input[aria-invalid='true']:focus,
+.login-input-shell:hover .login-input[aria-invalid='true'],
+.login-input-shell:focus-within .login-input[aria-invalid='true'] {
+  border-color: #e3173c;
+  box-shadow: 0 0 0 3px rgb(227 23 60 / 14%) inset;
+}
+
 .login-input:-webkit-autofill,
 .login-input:-webkit-autofill:hover,
 .login-input:-webkit-autofill:focus {
