@@ -322,7 +322,7 @@ export const uiPrinciples: Principle[] = [
     title: 'Zalopay Identify in Utility - Brand không chỉ là hình ảnh mà phải thể hiện qua giá trị sử dụng',
     vietnameseTitle: 'Brand không chỉ là hình ảnh mà phải thể hiện qua giá trị sử dụng',
     summary:
-      'ZaloPay Identity in Utility đảm bảo bản sắc thương hiệu được thể hiện thông qua chất lượng trải nghiệm và tính hữu ích.',
+      'Zalopay Identity in Utility đảm bảo bản sắc thương hiệu được thể hiện thông qua chất lượng trải nghiệm và tính hữu ích.',
     description:
       'Mục tiêu là mọi yếu tố thương hiệu đều phải hỗ trợ clarity, speed và trust, không làm ảnh hưởng đến khả năng hoàn thành task của người dùng.',
     guidelines: [

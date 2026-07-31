@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Agentation } from 'agentation'
 
-import { HubLayout } from '@/components/hub/HubLayout'
 import { NotFound } from '@/components/hub/NotFound'
 import { BRAND_STORAGE_NAMESPACE } from '@/data/brand'
-import type { HubTab } from '@/data/navigation'
+import { IntroductionPage } from '@/pages/IntroductionPage'
 import { LoadingPage } from '@/pages/LoadingPage'
 import { LoginPage } from '@/pages/LoginPage'
 
@@ -16,8 +15,6 @@ function getInitialPath() {
 }
 
 function App() {
-  const [activeSection, setActiveSection] = useState('introduction')
-  const [activeTab, setActiveTab] = useState<HubTab>('ui-principle')
   const [isAuthenticated, setIsAuthenticated] = useState(
     () => window.localStorage.getItem(AUTH_KEY) === 'true'
   )
@@ -63,15 +60,6 @@ function App() {
     navigate('/')
   }
 
-  function handleLogout() {
-    window.localStorage.removeItem(AUTH_KEY)
-    setIsAuthenticated(false)
-    setIsLoginIntroRevealing(false)
-    setActiveTab('ui-principle')
-    setActiveSection('introduction')
-    navigate('/login')
-  }
-
   function handleGoHome() {
     if (!isAuthenticated) {
       setIsLoginIntroRevealing(false)
@@ -79,8 +67,6 @@ function App() {
       return
     }
 
-    setActiveTab('ui-principle')
-    setActiveSection('introduction')
     navigate('/#introduction')
   }
 
@@ -129,15 +115,7 @@ function App() {
       />
     )
   } else {
-    pageContent = (
-      <HubLayout
-        activeSection={activeSection}
-        activeTab={activeTab}
-        onLogout={handleLogout}
-        onSectionChange={setActiveSection}
-        onTabChange={setActiveTab}
-      />
-    )
+    pageContent = <IntroductionPage />
   }
 
   return (

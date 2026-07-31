@@ -1,6 +1,6 @@
 # Web/Landing
 
-Landing của ZaloPay UI Hub hiện được định nghĩa tại section `#introduction`
+Landing của Zalopay UI Hub hiện được định nghĩa tại section `#introduction`
 trên web chính.
 
 Local preview:
