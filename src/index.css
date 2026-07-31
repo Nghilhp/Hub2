@@ -411,8 +411,17 @@ body {
 
 .mobile-card-nav-logo {
   align-items: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
   display: flex;
   min-width: 0;
+  padding: 0;
+}
+
+.zalopay-logo-target {
+  margin: -0.75rem;
+  padding: 0.75rem;
 }
 
 .mobile-card-nav-menu {
@@ -569,6 +578,11 @@ body {
   padding-bottom: 2rem;
 }
 
+.our-team-hero {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
 .overview-layer-grid {
   display: grid;
   gap: 1rem;
@@ -596,6 +610,18 @@ body {
   border-color: var(--ds-border-zpblue-subtle);
   outline: none;
   transform: translate3d(0, -3px, 0);
+}
+
+.our-team-static-card-grid .overview-layer-card {
+  cursor: default;
+  transition: none;
+}
+
+.our-team-static-card-grid .overview-layer-card:hover,
+.our-team-static-card-grid .overview-layer-card:focus-visible {
+  background: var(--ds-background-primary);
+  border-color: var(--ds-border-stroke2);
+  transform: none;
 }
 
 .overview-layer-card h4 {
@@ -1763,6 +1789,110 @@ body {
 
 .hub-intro-sidebar-line .line-sidebar__label {
   font-weight: 400;
+}
+
+.hub-landing-empty {
+  align-items: center;
+  display: grid;
+  justify-items: center;
+  min-height: calc(100svh - 260px);
+  text-align: center;
+}
+
+.hub-landing-empty__animation {
+  height: 132px;
+  position: relative;
+  width: 180px;
+}
+
+.hub-landing-empty__bubble {
+  animation: hub-landing-float 2400ms ease-in-out infinite;
+  background: #f5f9ff;
+  border: 1px solid #d8e9ff;
+  border-radius: 999px;
+  display: block;
+  position: absolute;
+}
+
+.hub-landing-empty__bubble--one {
+  height: 72px;
+  left: 52px;
+  top: 34px;
+  width: 72px;
+}
+
+.hub-landing-empty__bubble--two {
+  animation-delay: 180ms;
+  height: 42px;
+  left: 18px;
+  top: 58px;
+  width: 42px;
+}
+
+.hub-landing-empty__bubble--three {
+  animation-delay: 320ms;
+  height: 34px;
+  right: 20px;
+  top: 22px;
+  width: 34px;
+}
+
+.hub-landing-empty__sparkle span {
+  animation: hub-landing-twinkle 1500ms ease-in-out infinite;
+  background: #0033c9;
+  border-radius: 999px;
+  display: block;
+  height: 6px;
+  position: absolute;
+  width: 6px;
+}
+
+.hub-landing-empty__sparkle span:nth-child(1) {
+  left: 44px;
+  top: 22px;
+}
+
+.hub-landing-empty__sparkle span:nth-child(2) {
+  animation-delay: 180ms;
+  right: 50px;
+  top: 88px;
+}
+
+.hub-landing-empty__sparkle span:nth-child(3) {
+  animation-delay: 320ms;
+  left: 92px;
+  top: 8px;
+}
+
+.hub-landing-empty__copy p {
+  color: var(--ds-text-primary);
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+@keyframes hub-landing-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(0, -10px, 0) scale(1.035);
+  }
+}
+
+@keyframes hub-landing-twinkle {
+  0%,
+  100% {
+    opacity: 0.32;
+    transform: scale(0.76);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
 }
 
 @keyframes hub-tab-panel-enter {

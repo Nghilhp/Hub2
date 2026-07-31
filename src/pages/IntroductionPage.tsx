@@ -18,6 +18,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { LineSidebar } from '@/components/hub/LineSidebar'
+import { TargetCursor } from '@/components/hub/TargetCursor'
 import {
   uiTeamPrinciples,
   type UITeamPrinciple,
@@ -25,6 +26,10 @@ import {
 import { cn } from '@/lib/utils'
 
 const topNavItems = ['Our team here', 'UI Team', 'UX Team', 'Motion Hub'] as const
+const ourTeamSections = [
+  { id: 'overview', label: 'Tổng quan' },
+  { id: 'focus-areas', label: 'Focus Areas' },
+] as const
 const pendingSections = ['UI Pattern', 'Design System', 'Illus System']
 const sidebarMainGroupKeys = {
   'Our team here': 'ourTeam',
@@ -43,6 +48,31 @@ const pageTitleClassName =
 const headerIconButtonClassName =
   'rounded-full bg-[var(--ds-background-secondary)] text-[var(--ds-text-secondary)] hover:bg-[var(--ds-component-item-hover)] hover:text-[var(--ds-text-primary)]'
 
+function animateLogoClick(element: HTMLElement | null) {
+  if (!element) {
+    return
+  }
+
+  gsap.killTweensOf(element)
+  gsap
+    .timeline()
+    .to(element, {
+      duration: 0.1,
+      ease: 'power2.out',
+      scale: 0.94,
+    })
+    .to(element, {
+      duration: 0.18,
+      ease: 'back.out(2)',
+      scale: 1.04,
+    })
+    .to(element, {
+      duration: 0.12,
+      ease: 'power2.out',
+      scale: 1,
+    })
+}
+
 type ActiveView =
   | { type: 'overview' }
   | { type: 'principles' }
@@ -50,6 +80,7 @@ type ActiveView =
   | { type: 'pending'; label: string }
 
 type TeamTab = (typeof topNavItems)[number]
+type OurTeamView = (typeof ourTeamSections)[number]['id']
 
 const overviewIntroParagraphs = [
   'Trước khi đi vào từng lớp, hãy bắt đầu bằng một tình huống quen thuộc: ngã tư có đèn giao thông.',
@@ -272,13 +303,18 @@ type MobileCardNavItem = {
 
 function MobileCardNav({
   activeTeamTab,
+  isLandingActive,
   items,
+  onOpenLanding,
 }: {
   activeTeamTab: TeamTab
+  isLandingActive: boolean
   items: MobileCardNavItem[]
+  onOpenLanding: () => void
 }) {
   const [isExpanded, setIsExpanded] = useState(false)
   const navRef = useRef<HTMLElement | null>(null)
+  const logoRef = useRef<HTMLButtonElement | null>(null)
   const cardsRef = useRef<Array<HTMLElement | null>>([])
   const timelineRef = useRef<gsap.core.Timeline | null>(null)
 
@@ -419,13 +455,23 @@ function MobileCardNav({
         ref={navRef}
       >
         <div className="mobile-card-nav-top">
-          <div className="mobile-card-nav-logo">
+          <button
+            aria-label="Open landing"
+            className="mobile-card-nav-logo zalopay-logo-target"
+            onClick={() => {
+              animateLogoClick(logoRef.current)
+              onOpenLanding()
+              closeMenu()
+            }}
+            ref={logoRef}
+            type="button"
+          >
             <img
               alt="Zalopay"
               className="h-8 w-auto"
               src="/zalopay-logo-horizontal.png"
             />
-          </div>
+          </button>
           <button
             aria-expanded={isExpanded}
             aria-label={isExpanded ? 'Close navigation' : 'Open navigation'}
@@ -446,7 +492,7 @@ function MobileCardNav({
             <article
               className={cn(
                 'mobile-card-nav-card',
-                item.label === activeTeamTab && 'is-active'
+                !isLandingActive && item.label === activeTeamTab && 'is-active'
               )}
               key={item.label}
               ref={(element) => {
@@ -478,22 +524,30 @@ function MobileCardNav({
 
 function PageHeader({
   activeTeamTab,
+  isLandingActive,
+  onOpenLanding,
+  onOurTeamViewChange,
   onTeamTabChange,
   onViewChange,
 }: {
   activeTeamTab: TeamTab
+  isLandingActive: boolean
+  onOpenLanding: () => void
+  onOurTeamViewChange: (view: OurTeamView) => void
   onTeamTabChange: (tab: TeamTab) => void
   onViewChange: (view: ActiveView) => void
 }) {
+  const desktopLogoRef = useRef<HTMLButtonElement | null>(null)
   const mobileNavItems: MobileCardNavItem[] = [
     {
       label: 'Our team here',
-      links: [
-        {
-          label: 'Overview',
-          onSelect: () => onTeamTabChange('Our team here'),
+      links: ourTeamSections.map((section) => ({
+        label: section.label,
+        onSelect: () => {
+          onTeamTabChange('Our team here')
+          onOurTeamViewChange(section.id)
         },
-      ],
+      })),
     },
     {
       label: 'UI Team',
@@ -543,15 +597,37 @@ function PageHeader({
 
   return (
     <header className="fixed inset-x-0 top-0 z-30 border-b border-transparent bg-transparent lg:bg-[var(--ds-background-primary)] lg:shadow-[0_2px_16px_rgba(0,31,62,0.06)] lg:backdrop-blur">
-      <MobileCardNav activeTeamTab={activeTeamTab} items={mobileNavItems} />
+      <TargetCursor
+        cursorColor="#2377ff"
+        cursorColorOnTarget="#2377ff"
+        hideDefaultCursor={false}
+        targetSelector=".zalopay-logo-target"
+      />
+      <MobileCardNav
+        activeTeamTab={activeTeamTab}
+        isLandingActive={isLandingActive}
+        items={mobileNavItems}
+        onOpenLanding={onOpenLanding}
+      />
 
       <div className="mx-auto hidden h-24 max-w-[1500px] items-center gap-5 px-5 sm:px-8 lg:flex lg:px-14">
         <div className="flex flex-1 items-center gap-3">
-          <img
-            alt="Zalopay"
-            className="h-8 w-auto sm:h-9"
-            src="/zalopay-logo-horizontal.png"
-          />
+          <button
+            aria-label="Open landing"
+            className="zalopay-logo-target rounded-md focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[var(--ds-border-zpblue-subtle)]"
+            onClick={() => {
+              animateLogoClick(desktopLogoRef.current)
+              onOpenLanding()
+            }}
+            ref={desktopLogoRef}
+            type="button"
+          >
+            <img
+              alt="Zalopay"
+              className="h-8 w-auto sm:h-9"
+              src="/zalopay-logo-horizontal.png"
+            />
+          </button>
         </div>
 
         <nav
@@ -562,7 +638,7 @@ function PageHeader({
             <button
               className={cn(
                 'team-pill-button h-10 min-w-36 rounded-full px-6',
-                item === activeTeamTab
+                !isLandingActive && item === activeTeamTab
                   ? 'team-tab-button-active is-active'
                   : 'text-[var(--ds-text-primary)]'
               )}
@@ -613,14 +689,18 @@ function PrincipleThumbnail({ principle }: { principle: UITeamPrinciple }) {
 
 function SidebarContent({
   activeTeamTab,
+  activeOurTeamView,
   activeView,
   compact = false,
+  onOurTeamViewSelect,
   onTeamTabSelect,
   onSelect,
 }: {
   activeTeamTab: TeamTab
+  activeOurTeamView: OurTeamView
   activeView?: ActiveView
   compact?: boolean
+  onOurTeamViewSelect?: (view: OurTeamView) => void
   onTeamTabSelect?: (tab: TeamTab) => void
   onSelect?: (view: ActiveView) => void
 }) {
@@ -694,6 +774,10 @@ function SidebarContent({
     activeTeamTab === 'UI Team' && activeView?.type === 'pending'
       ? pendingSections.indexOf(activeView.label)
       : null
+  const activeOurTeamChildIndex =
+    activeTeamTab === 'Our team here'
+      ? ourTeamSections.findIndex((section) => section.id === activeOurTeamView)
+      : null
 
   function selectUITeamView(view: ActiveView) {
     onTeamTabSelect?.('UI Team')
@@ -704,18 +788,23 @@ function SidebarContent({
     onTeamTabSelect?.(tab)
   }
 
+  function selectOurTeamView(view: OurTeamView) {
+    onTeamTabSelect?.('Our team here')
+    onOurTeamViewSelect?.(view)
+  }
+
   function handleMainTabClick(tab: TeamTab) {
     const isCurrentTab = activeTeamTab === tab
 
-    if (tab === 'UI Team' && isCurrentTab) {
-      toggleGroup('uiTeam')
+    if ((tab === 'Our team here' || tab === 'UI Team') && isCurrentTab) {
+      toggleGroup(sidebarMainGroupKeys[tab])
       return
     }
 
-    if (tab === 'UI Team') {
+    if (tab === 'Our team here' || tab === 'UI Team') {
       setOpenGroups((current) => ({
         ...current,
-        uiTeam: true,
+        [sidebarMainGroupKeys[tab]]: true,
       }))
     }
 
@@ -725,16 +814,16 @@ function SidebarContent({
   function renderMainTab(tab: TeamTab) {
     const groupKey = sidebarMainGroupKeys[tab]
     const isActive = activeTeamTab === tab
-    const hasChildren = tab === 'UI Team'
+    const hasChildren = tab === 'Our team here' || tab === 'UI Team'
 
     return (
       <button
-        aria-expanded={hasChildren ? openGroups.uiTeam : undefined}
+        aria-expanded={hasChildren ? openGroups[groupKey] : undefined}
         data-sidebar-active={isActive}
         className={cn(
-          'flex h-12 w-full items-center justify-between rounded-xl px-4 text-left text-base font-medium leading-6 transition-colors hover:bg-[#F5FAFF] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[var(--ds-border-zpblue-subtle)]',
+          'flex h-12 w-full items-center justify-between rounded-xl px-4 text-left text-base font-medium leading-6 transition-colors hover:bg-[#F7FBFF] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[var(--ds-border-zpblue-subtle)]',
           isActive
-            ? 'font-bold text-[var(--ds-text-primary)]'
+            ? 'bg-[#FAFCFF] font-bold text-[var(--ds-text-primary)]'
             : 'text-[var(--ds-text-tertiary)]'
         )}
         onClick={() => handleMainTabClick(tab)}
@@ -847,6 +936,24 @@ function SidebarContent({
       <div className={sidebarSpacing.mainGroupGapClass}>
         <div>
           {renderMainTab('Our team here')}
+
+          <div
+            className="hub-sidebar-accordion"
+            data-state={openGroups.ourTeam ? 'open' : 'closed'}
+          >
+            <div className="hub-sidebar-accordion-content">
+              {renderPrimaryChildList({
+                activeIndex:
+                  activeOurTeamChildIndex !== null &&
+                  activeOurTeamChildIndex >= 0
+                    ? activeOurTeamChildIndex
+                    : null,
+                items: ourTeamSections.map((section) => section.label),
+                onItemClick: (index) =>
+                  selectOurTeamView(ourTeamSections[index].id),
+              })}
+            </div>
+          </div>
         </div>
 
         <div>
@@ -1184,13 +1291,7 @@ function OverviewBulletList({ items }: { items: string[] }) {
   )
 }
 
-function OurTeamContent() {
-  function handleFocusCardClick(index: number) {
-    document
-      .getElementById(`our-team-focus-${index + 1}`)
-      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
+function OurTeamContent({ activeView }: { activeView: OurTeamView }) {
   return (
     <section>
       <h1 className={pageTitleClassName}>
@@ -1199,133 +1300,130 @@ function OurTeamContent() {
       <Separator className="mt-9 bg-[var(--ds-border-zpblue-subtle)]" />
 
       <article className="overview-article our-team-article mt-14 max-w-6xl">
-        <section className="overview-hero">
-          <h2 className="max-w-4xl text-2xl font-bold leading-9 text-[var(--ds-text-primary)] md:text-[2rem] md:leading-[2.75rem]">
-            Một đội ngũ cùng xây dựng trải nghiệm tài chính đơn giản, gần gũi
-            và đáng tin cậy.
-          </h2>
-        </section>
+        {activeView === 'overview' ? (
+          <>
+            <section className="overview-hero our-team-hero">
+              <h2 className="max-w-4xl text-2xl font-bold leading-9 text-[var(--ds-text-primary)] md:text-[2rem] md:leading-[2.75rem]">
+                Một đội ngũ cùng xây dựng trải nghiệm tài chính đơn giản, gần
+                gũi và đáng tin cậy.
+              </h2>
+            </section>
 
-        <section className="mt-10">
-          <h3 className="text-xl font-bold leading-8 text-[var(--ds-text-primary)]">
-            Product Design @ Zalopay
-          </h3>
-          <div className="mt-5 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-            <div className="space-y-4 text-base leading-8 text-[var(--ds-text-primary)]">
-              <p>
-                Product Design kết nối nhiều chuyên môn để biến những nghiệp vụ
-                tài chính phức tạp thành hành trình rõ ràng, nhất quán và dễ sử
-                dụng hơn cho người Việt.
-              </p>
-              <p>
-                Chúng tôi cùng xây dựng một ngôn ngữ thiết kế chung, nơi mỗi
-                luồng trải nghiệm, giao diện, chuyển động, hình ảnh và câu chữ
-                hỗ trợ lẫn nhau.
-              </p>
-            </div>
-            <div className="overview-callout">
-              <p className="text-sm font-bold leading-6 text-[var(--ds-text-primary)]">
-                Mục tiêu của team:
-              </p>
-              <OverviewBulletList
-                items={[
-                  'Giúp người dùng hiểu rõ thông tin.',
-                  'Tự tin đưa ra quyết định.',
-                  'Cảm thấy an tâm trong mỗi giao dịch.',
-                ]}
-              />
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-14">
-          <div className="max-w-3xl">
-            <h3 className="text-xl font-bold leading-8 text-[var(--ds-text-primary)]">
-              Một đội ngũ, nhiều góc nhìn
-            </h3>
-            <p className="mt-2 text-base leading-8 text-[var(--ds-text-secondary)]">
-              Mỗi nhóm tiếp cận trải nghiệm từ một vai trò khác nhau, nhưng cùng
-              chia sẻ một tiêu chuẩn thiết kế chung.
-            </p>
-          </div>
-          <div className="overview-layer-grid mt-6">
-            {productDesignDisciplines.map((item) => (
-              <article className="overview-layer-card" key={item.name}>
-                <span className="overview-layer-number">Team</span>
-                <h4>{item.name}</h4>
-                <p>{item.summary}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-14">
-          <div className="max-w-3xl">
-            <h3 className="text-xl font-bold leading-8 text-[var(--ds-text-primary)]">
-              Những việc chúng tôi tập trung làm tốt
-            </h3>
-            <p className="mt-2 text-base leading-8 text-[var(--ds-text-secondary)]">
-              Trang này không đi sâu vào từng quy trình. Nó giúp bạn nắm nhanh
-              cách Product Design tạo ra chất lượng trải nghiệm ở Zalopay.
-            </p>
-          </div>
-          <div className="overview-layer-grid mt-6">
-            {productDesignFocusAreas.map((item, index) => (
-              <button
-                className="overview-layer-card"
-                key={item.title}
-                onClick={() => handleFocusCardClick(index)}
-                type="button"
-              >
-                <span className="overview-layer-number">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <h4>{item.title}</h4>
-                <p>{item.body}</p>
-              </button>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-14 space-y-7">
-          {productDesignFocusAreas.map((item, index) => (
-            <OurTeamFocusSection index={index} item={item} key={item.title} />
-          ))}
-        </section>
-
-        <OverviewArticleSection title="Design System là nền tảng của ngôn ngữ chung">
-          <p>
-            Khi sản phẩm mở rộng, sự nhất quán không thể chỉ phụ thuộc vào kinh
-            nghiệm cá nhân. Design System kết nối principle, component, pattern,
-            nội dung, chuyển động và tài liệu hướng dẫn thành một hệ thống chung.
-          </p>
-          <div className="overview-closing-block">
-            <span>Mục đích chính:</span>
-            <p>
-              Giúp Product, Design và Engineering phối hợp hiệu quả hơn, hạn chế
-              giải quyết lại những vấn đề đã có lời giải và duy trì chất lượng
-              trải nghiệm trên quy mô lớn.
-            </p>
-          </div>
-        </OverviewArticleSection>
-
-        <OverviewArticleSection title="Thông điệp của chúng tôi">
-          <div className="overview-checklist-grid">
-            {productDesignPrinciples.map((item) => (
-              <div className="overview-checklist-item" key={item}>
-                {item}
+            <section className="mt-10">
+              <h3 className="text-xl font-bold leading-8 text-[var(--ds-text-primary)]">
+                Product Design @ Zalopay
+              </h3>
+              <div className="mt-5 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+                <div className="space-y-4 text-base leading-8 text-[var(--ds-text-primary)]">
+                  <p>
+                    Product Design kết nối nhiều chuyên môn để biến những
+                    nghiệp vụ tài chính phức tạp thành hành trình rõ ràng, nhất
+                    quán và dễ sử dụng hơn cho người Việt.
+                  </p>
+                  <p>
+                    Chúng tôi cùng xây dựng một ngôn ngữ thiết kế chung, nơi
+                    mỗi luồng trải nghiệm, giao diện, chuyển động, hình ảnh và
+                    câu chữ hỗ trợ lẫn nhau.
+                  </p>
+                </div>
+                <div className="overview-callout">
+                  <p className="text-sm font-bold leading-6 text-[var(--ds-text-primary)]">
+                    Mục tiêu của team:
+                  </p>
+                  <OverviewBulletList
+                    items={[
+                      'Giúp người dùng hiểu rõ thông tin.',
+                      'Tự tin đưa ra quyết định.',
+                      'Cảm thấy an tâm trong mỗi giao dịch.',
+                    ]}
+                  />
+                </div>
               </div>
-            ))}
-          </div>
-          <div className="overview-closing-block">
-            <span>Mục đích chính:</span>
-            <p>
-              Dù đến từ những chuyên môn và góc nhìn khác nhau, chúng tôi cùng
-              chia sẻ một mục tiêu: kiến tạo những trải nghiệm tài chính đơn
-              giản, gần gũi và đáng tin cậy cho người Việt.
-            </p>
-          </div>
-        </OverviewArticleSection>
+            </section>
+
+            <section className="mt-14">
+              <div className="max-w-3xl">
+                <h3 className="text-xl font-bold leading-8 text-[var(--ds-text-primary)]">
+                  Một đội ngũ, nhiều góc nhìn
+                </h3>
+                <p className="mt-2 text-base leading-8 text-[var(--ds-text-secondary)]">
+                  Mỗi nhóm tiếp cận trải nghiệm từ một vai trò khác nhau, nhưng
+                  cùng chia sẻ một tiêu chuẩn thiết kế chung.
+                </p>
+              </div>
+              <div className="overview-layer-grid our-team-static-card-grid mt-6">
+                {productDesignDisciplines.map((item) => (
+                  <article className="overview-layer-card" key={item.name}>
+                    <span className="overview-layer-number">Team</span>
+                    <h4>{item.name}</h4>
+                    <p>{item.summary}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+          </>
+        ) : (
+          <>
+            <section>
+              <div className="max-w-3xl">
+                <h3 className="text-xl font-bold leading-8 text-[var(--ds-text-primary)]">
+                  Những việc chúng tôi tập trung làm tốt
+                </h3>
+                <p className="mt-2 text-base leading-8 text-[var(--ds-text-secondary)]">
+                  Trang này không đi sâu vào từng quy trình. Nó giúp bạn nắm
+                  nhanh cách Product Design tạo ra chất lượng trải nghiệm ở
+                  Zalopay.
+                </p>
+              </div>
+            </section>
+
+            <section className="mt-8 space-y-7">
+              {productDesignFocusAreas.map((item, index) => (
+                <OurTeamFocusSection
+                  index={index}
+                  item={item}
+                  key={item.title}
+                />
+              ))}
+            </section>
+
+            <OverviewArticleSection title="Design System là nền tảng của ngôn ngữ chung">
+              <p>
+                Khi sản phẩm mở rộng, sự nhất quán không thể chỉ phụ thuộc vào
+                kinh nghiệm cá nhân. Design System kết nối principle, component,
+                pattern, nội dung, chuyển động và tài liệu hướng dẫn thành một
+                hệ thống chung.
+              </p>
+              <div className="overview-closing-block">
+                <span>Mục đích chính:</span>
+                <p>
+                  Giúp Product, Design và Engineering phối hợp hiệu quả hơn,
+                  hạn chế giải quyết lại những vấn đề đã có lời giải và duy trì
+                  chất lượng trải nghiệm trên quy mô lớn.
+                </p>
+              </div>
+            </OverviewArticleSection>
+
+            <OverviewArticleSection title="Thông điệp của chúng tôi">
+              <div className="overview-checklist-grid">
+                {productDesignPrinciples.map((item) => (
+                  <div className="overview-checklist-item" key={item}>
+                    {item}
+                  </div>
+                ))}
+              </div>
+              <div className="overview-closing-block">
+                <span>Mục đích chính:</span>
+                <p>
+                  Dù đến từ những chuyên môn và góc nhìn khác nhau, chúng tôi
+                  cùng chia sẻ một mục tiêu: kiến tạo những trải nghiệm tài
+                  chính đơn giản, gần gũi và đáng tin cậy cho người Việt.
+                </p>
+              </div>
+            </OverviewArticleSection>
+          </>
+        )}
       </article>
     </section>
   )
@@ -1515,6 +1613,26 @@ function SectionHeading({
   )
 }
 
+function LandingContent() {
+  return (
+    <section className="hub-landing-empty">
+      <div className="hub-landing-empty__animation" aria-hidden="true">
+        <span className="hub-landing-empty__bubble hub-landing-empty__bubble--one" />
+        <span className="hub-landing-empty__bubble hub-landing-empty__bubble--two" />
+        <span className="hub-landing-empty__bubble hub-landing-empty__bubble--three" />
+        <div className="hub-landing-empty__sparkle">
+          <span />
+          <span />
+          <span />
+        </div>
+      </div>
+      <div className="hub-landing-empty__copy">
+        <p>To be update</p>
+      </div>
+    </section>
+  )
+}
+
 function PendingContent({ label }: { label: string }) {
   return (
     <section>
@@ -1533,7 +1651,10 @@ function PendingContent({ label }: { label: string }) {
 
 export function IntroductionPage() {
   const [activeTeamTab, setActiveTeamTab] = useState<TeamTab>('UI Team')
+  const [activeOurTeamView, setActiveOurTeamView] =
+    useState<OurTeamView>('overview')
   const [activeView, setActiveView] = useState<ActiveView>(getInitialView)
+  const [isLandingActive, setIsLandingActive] = useState(true)
   const selectedPrinciple = useMemo(
     () =>
       activeView.type === 'principle'
@@ -1547,13 +1668,27 @@ export function IntroductionPage() {
   }, [])
 
   function handleViewChange(view: ActiveView) {
+    setIsLandingActive(false)
     setActiveView(view)
     updateHash(view)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  function handleOurTeamViewChange(view: OurTeamView) {
+    setIsLandingActive(false)
+    setActiveOurTeamView(view)
+    window.history.replaceState(null, '', `#our-team-${view}`)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   function handleTeamTabChange(tab: TeamTab) {
+    setIsLandingActive(false)
     setActiveTeamTab(tab)
+
+    if (tab === 'Our team here') {
+      setActiveOurTeamView('overview')
+      window.history.replaceState(null, '', '#our-team-overview')
+    }
 
     if (tab === 'UI Team') {
       const overviewView: ActiveView = { type: 'overview' }
@@ -1564,28 +1699,43 @@ export function IntroductionPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  function handleOpenLanding() {
+    setIsLandingActive(true)
+    window.history.replaceState(null, '', '#landing')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <div className="min-h-svh bg-[var(--ds-background-primary)] font-sf-pro-display text-[var(--ds-text-primary)]">
       <PageHeader
         activeTeamTab={activeTeamTab}
+        isLandingActive={isLandingActive}
+        onOpenLanding={handleOpenLanding}
+        onOurTeamViewChange={handleOurTeamViewChange}
         onTeamTabChange={handleTeamTabChange}
         onViewChange={handleViewChange}
       />
 
       <div className="mx-auto max-w-[1500px] px-5 pb-24 pt-32 sm:px-8 lg:px-14 lg:pt-[180px]">
-        <aside className="hub-sidebar-scroll fixed left-[max(3.5rem,calc((100vw-1500px)/2+3.5rem))] top-24 hidden max-h-[calc(100svh-6rem)] w-72 overflow-x-hidden overflow-y-auto pr-3 pt-[84px] lg:block">
-          <SidebarContent
-            activeTeamTab={activeTeamTab}
-            activeView={activeView}
-            onSelect={handleViewChange}
-            onTeamTabSelect={handleTeamTabChange}
-          />
-        </aside>
+        {!isLandingActive && (
+          <aside className="hub-sidebar-scroll fixed left-[max(3.5rem,calc((100vw-1500px)/2+3.5rem))] top-24 hidden max-h-[calc(100svh-6rem)] w-72 overflow-x-hidden overflow-y-auto pr-3 pt-[84px] lg:block">
+            <SidebarContent
+              activeTeamTab={activeTeamTab}
+              activeOurTeamView={activeOurTeamView}
+              activeView={activeView}
+              onOurTeamViewSelect={handleOurTeamViewChange}
+              onSelect={handleViewChange}
+              onTeamTabSelect={handleTeamTabChange}
+            />
+          </aside>
+        )}
 
-        <main className="min-w-0 lg:ml-[23rem]">
+        <main className={cn('min-w-0', !isLandingActive && 'lg:ml-[19rem]')}>
           <div>
-            {activeTeamTab === 'Our team here' ? (
-              <OurTeamContent />
+            {isLandingActive ? (
+              <LandingContent />
+            ) : activeTeamTab === 'Our team here' ? (
+              <OurTeamContent activeView={activeOurTeamView} />
             ) : activeTeamTab !== 'UI Team' ? (
               <PendingContent label={activeTeamTab} />
             ) : (

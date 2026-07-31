@@ -212,6 +212,7 @@ Trạng thái hiện tại:
 
 - Desktop sidebar fixed dưới header, không scroll theo page content.
 - Top của sidebar và content bằng nhau, hiện dùng `top-[180px]` và content `lg:pt-[180px]`.
+- Content desktop offset hiện dùng `lg:ml-[19rem]` để giảm khoảng trống giữa sidebar và main content, trừ landing page.
 - Sidebar vẫn tự scroll bên trong nếu danh sách dài hơn viewport.
 - Font sidebar hiện inherit từ `IntroductionPage`: `SF Pro Display`, fallback `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `sans-serif`.
 - Sidebar spacing được gom trong `sidebarSpacing` tại `src/pages/IntroductionPage.tsx` để tránh phải đọc class kiểu `pt-1`, `pt-2`:
@@ -224,10 +225,33 @@ Trạng thái hiện tại:
   - `.hub-intro-sidebar-line .line-sidebar__item { min-height: 44px; }`
   - `.hub-intro-sidebar-line .line-sidebar__label { font-weight: 400; }`
 
+Landing page rule:
+
+- Khi vào trang Introduction hoặc reload page, mặc định hiển thị landing trước.
+- Landing page hiện text lớn `To be update`.
+- Landing page có animation nhẹ bằng CSS tại `.hub-landing-empty`.
+- Khi bấm logo Zalopay trên desktop hoặc mobile header, mở lại landing page.
+- Logo Zalopay dùng `TargetCursor` từ React Bits cho hover/click quanh logo:
+  - Component nằm tại `src/components/hub/TargetCursor.tsx`.
+  - CSS nằm tại `src/components/hub/TargetCursor.css`.
+  - Logo target dùng class `.zalopay-logo-target`.
+  - Vùng click/hover quanh logo được nới bằng `margin: -0.75rem` và `padding: 0.75rem`.
+  - Cursor custom ẩn mặc định, chỉ fade in khi chuột vào vùng `.zalopay-logo-target`, rời vùng logo thì fade out.
+  - `TargetCursor` tự không render trên mobile/touch device; mobile vẫn dùng click logo bình thường.
+  - Khi click logo, logo zoom in/out nhẹ bằng GSAP qua helper `animateLogoClick` trong `src/pages/IntroductionPage.tsx`.
+  - Không dùng logic `prefers-reduced-motion` riêng cho logo.
+- Khi landing active:
+  - Không hiển thị desktop sidebar.
+  - Main content không dùng offset `lg:ml-[19rem]`.
+  - Header nav không đánh dấu active tab nào.
+- Khi chọn bất kỳ tab main/child từ header hoặc sidebar, thoát landing và hiển thị page tương ứng.
+
 Sidebar structure hiện tại:
 
 ```text
 Our team here
+  Tổng quan
+  Focus Areas
 UI Team
   Tổng quan
   Principles
@@ -253,12 +277,15 @@ Main item rule:
 - Main item hiện có 4 item: `Our team here`, `UI Team`, `UX Team`, `Motion Hub`.
 - Main item dùng cùng kích thước `w-full h-12`.
 - Spacing giữa các main group là `8px`.
-- Main hover dùng background `#F5FAFF`, không đổi text.
+- Main active dùng background `#FAFCFF`, nhẹ hơn child cấp 1 active.
+- Main hover dùng background `#F7FBFF`, không đổi text.
 - Main transition hiện dùng `transition-colors`; animation chỉ nhẹ ở màu nền/text state, không translate.
-- Main selected chỉ đổi weight/text theo state hiện tại, không dùng selected background.
+- Main selected đổi weight/text và dùng background nhẹ `#FAFCFF`.
 - Nếu main có children thì click main expand/collapse group con.
 - Nếu chọn main từ header nav thì tự chọn child cấp 1 đầu tiên của main đó.
 - Main không có children không render child placeholder như `Overview` hoặc `To be updated`.
+- `Our team here` và `UI Team` hiện có child cấp 1.
+- `UX Team` và `Motion Hub` hiện là main item độc lập.
 - Main item hiện render qua helper `renderMainTab`.
 
 Child cấp 1 rule:
@@ -305,6 +332,17 @@ Khi thêm item mới:
 - Nếu thêm child cấp 1 không có child cấp 2: render bằng static child row.
 - Nếu thêm child cấp 1 có child cấp 2: render child cấp 1 bằng static row, sau đó render child cấp 2 bằng `LineSidebar` ngay bên dưới.
 - Không render child cấp 1 bằng `LineSidebar`.
+
+Our Team content notes:
+
+- Our Team page vẫn dùng divider line dưới H1.
+- Hero statement `Một đội ngũ cùng xây dựng...` không dùng line/border bên dưới.
+- Cards trong section `Một đội ngũ, nhiều góc nhìn` là static cards, không hover translate/animation.
+- `Focus Areas` đã được tách thành child cấp 1 dưới `Our team here`.
+- `Tổng quan` giữ hero, Product Design và Disciplines.
+- `Focus Areas` giữ section `Những việc chúng tôi tập trung làm tốt`, các detail blocks tương ứng, sau đó tới `Design System là nền tảng...` và `Thông điệp của chúng tôi`.
+- Focus Areas không dùng card grid jump/animate; chỉ giữ detail blocks để tránh duplicate nội dung.
+- Focus detail blocks dùng cùng data `productDesignFocusAreas` với card grid cũ, nên nội dung card đã được giữ lại trong block tương ứng.
 
 ### UI Principles Data
 
