@@ -513,6 +513,9 @@ Nếu dev server đang chạy port khác, dùng đúng port Terminal hiển th�
 
 ## Login MVP
 
+Login page đang được tắt tạm bằng `LOGIN_ENABLED = false` trong `src/App.tsx`.
+Khi flag này tắt, `/`, `/login` và `/loading` đều đi thẳng vào `IntroductionPage`; code login vẫn được giữ lại để bật lại sau.
+
 Login hiện là mock authentication, không có backend thật.
 
 Route:
