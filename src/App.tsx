@@ -33,7 +33,13 @@ function App() {
 
   let pageContent
 
-  if (!LOGIN_ENABLED && (path === '/' || path === '/login' || path === '/loading')) {
+  if (
+    !LOGIN_ENABLED &&
+    (path === '/' ||
+      path === '/login' ||
+      path === '/loading' ||
+      path === '/docs/uxr/methods/survey')
+  ) {
     pageContent = <IntroductionPage />
   } else if (path !== '/' && path !== '/login') {
     pageContent = <NotFound onGoHome={handleGoHome} />

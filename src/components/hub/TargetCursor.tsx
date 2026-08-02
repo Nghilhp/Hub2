@@ -11,6 +11,7 @@ type TargetCursorProps = {
   parallaxOn?: boolean
   cursorColor?: string
   cursorColorOnTarget?: string
+  showDot?: boolean
 }
 
 type CornerPosition = {
@@ -59,6 +60,7 @@ export function TargetCursor({
   parallaxOn = true,
   cursorColor = '#ffffff',
   cursorColorOnTarget,
+  showDot = true,
 }: TargetCursorProps) {
   const cursorRef = useRef<HTMLDivElement | null>(null)
   const cornersRef = useRef<NodeListOf<HTMLDivElement> | null>(null)
@@ -515,11 +517,13 @@ export function TargetCursor({
 
   return (
     <div className="target-cursor-wrapper" ref={cursorRef}>
-      <div
-        className="target-cursor-dot"
-        ref={dotRef}
-        style={{ backgroundColor: cursorColor }}
-      />
+      {showDot && (
+        <div
+          className="target-cursor-dot"
+          ref={dotRef}
+          style={{ backgroundColor: cursorColor }}
+        />
+      )}
       <div
         className="target-cursor-corner corner-tl"
         style={{ borderColor: cursorColor }}
