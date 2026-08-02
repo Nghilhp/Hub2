@@ -36,16 +36,22 @@ http://127.0.0.1:5173/login
 Trang loading loop:
 
 ```text
-http://127.0.0.1:5173/loading?loop=true
-```
-
-Trang loading rồi transition vào login:
-
-```text
 http://127.0.0.1:5173/loading
 ```
 
+Trang full flow loading rồi transition vào landing:
+
+```text
+http://127.0.0.1:5173/
+```
+
 Nếu port khác, dùng đúng port Terminal hiển thị.
+
+Production:
+
+```text
+https://zalopay-product-design.vercel.app
+```
 
 ## Scripts
 
@@ -748,7 +754,7 @@ Nếu dev server đang chạy port khác, dùng đúng port Terminal hiển th�
 ## Login MVP
 
 Login page đang được tắt tạm bằng `LOGIN_ENABLED = false` trong `src/App.tsx`.
-Khi flag này tắt, `/`, `/login` và `/loading` đều đi thẳng vào `IntroductionPage`; code login vẫn được giữ lại để bật lại sau.
+Khi flag này tắt, `/` và `/login` hiển thị loading intro rồi reveal landing. `/loading` là trang review loading riêng, chạy loop và không tự chuyển trang. Code login vẫn được giữ lại để bật lại sau.
 
 Login hiện là mock authentication, không có backend thật.
 
@@ -758,11 +764,7 @@ Route:
 /login
 ```
 
-Khi user chưa authenticated và vào `/` hoặc `/login`, app hiển thị loading intro một lần trong browser tab hiện tại rồi mới reveal login. Trạng thái đã xem intro lưu bằng `sessionStorage` key:
-
-```text
-zalopay-ui-hub-login-intro-shown
-```
+Khi login được bật lại, có thể dùng lại loading intro cho flow authenticated.
 
 Validation hiện có:
 
