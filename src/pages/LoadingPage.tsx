@@ -8,10 +8,10 @@ type LoadingPageProps = {
   onExitStart?: () => void
 }
 
-const LOGO_REVEAL_DURATION = 1450
-const LOOP_DURATION = 1500
-const EXIT_START = 1500
-const COMPLETE_DURATION = 2380
+const LOGO_REVEAL_DURATION = 2400
+const LOOP_DURATION = 2800
+const EXIT_START = 2600
+const COMPLETE_DURATION = 3400
 
 export function LoadingPage({
   isLooping = false,

@@ -50,6 +50,10 @@ const sidebarSpacing = {
 } as const
 const pageTitleClassName =
   'text-[2rem] font-bold leading-[2.5rem] tracking-normal text-[var(--ds-text-primary)] md:text-[3rem] md:leading-[3.5rem]'
+const pageLabelPillClassName =
+  'mb-4 inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]'
+const contentLabelPillClassName =
+  'inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]'
 const headerIconButtonClassName =
   'rounded-full bg-[var(--ds-background-secondary)] text-[var(--ds-text-secondary)] hover:bg-[var(--ds-component-item-hover)] hover:text-[var(--ds-text-primary)]'
 const SEARCH_MODAL_EXIT_MS = 180
@@ -384,6 +388,12 @@ const uxTeamSections = [
             label: 'Unmoderated UT',
             description:
               'Usability testing không moderator, phù hợp khi cần scale nhanh trên nhiều participant.',
+          },
+          {
+            id: 'biweekly-interview',
+            label: 'Biweekly Interview',
+            description:
+              'Nhịp phỏng vấn định kỳ để team duy trì kết nối với user, gom tín hiệu sớm và cập nhật insight liên tục.',
           },
         ],
       },
@@ -1160,11 +1170,10 @@ function PageHeader({
       label: 'Motion Hub',
       links: [
         {
-          key: 'motion-hub-pending',
-          label: 'To be updated',
+          key: 'motion-hub-overview',
+          label: 'Tổng quan',
           level: 1,
           onSelect: () => onTeamTabChange('Motion Hub'),
-          soon: true,
         },
       ],
     },
@@ -1322,10 +1331,10 @@ function PageHeader({
     addItem({
       id: 'motion-hub',
       label: 'Motion Hub',
-      meta: 'To be updated',
+      meta: 'Motion guideline',
       description:
-        'Khu vực motion guideline, interaction motion và animation pattern sẽ được cập nhật.',
-      keywords: 'motion animation interaction transition feedback to be updated',
+        'Preview Motion Hub với Principles, Motions, Assets và Glossary.',
+      keywords: 'motion animation interaction transition feedback principles motions assets glossary',
       onSelect: () => onTeamTabChange('Motion Hub'),
     })
 
@@ -1998,7 +2007,6 @@ function SidebarContent({
       >
         <span className="flex items-center gap-2">
           {tab}
-          {tab === 'Motion Hub' && <SidebarSoonBadge />}
         </span>
         {hasChildren && (
           <ChevronDown
@@ -2478,6 +2486,9 @@ function OverviewContent({
 }) {
   return (
     <section>
+      <div className={pageLabelPillClassName}>
+        UI Team
+      </div>
       <h1 className={pageTitleClassName}>
         Principles
       </h1>
@@ -2522,6 +2533,9 @@ function OverviewIntroductionContent() {
 
   return (
     <section>
+      <div className={pageLabelPillClassName}>
+        UI Team
+      </div>
       <h1 className={pageTitleClassName}>
         Tổng quan
       </h1>
@@ -2715,6 +2729,9 @@ function OverviewBulletList({ items }: { items: string[] }) {
 function OurTeamContent() {
   return (
     <section>
+      <div className={pageLabelPillClassName}>
+        Our team here
+      </div>
       <h1 className={pageTitleClassName}>
         Our team is here
       </h1>
@@ -2876,6 +2893,9 @@ function DetailContent({ principle }: { principle: UITeamPrinciple }) {
 
   return (
     <section>
+      <div className={pageLabelPillClassName}>
+        UI Team
+      </div>
       <h1 className={pageTitleClassName}>
         {principle.number}. {principle.title}
       </h1>
@@ -3074,12 +3094,12 @@ function LandingContent({
     },
     {
       accent: 'violet',
-      eyebrow: 'Motion',
-      label: 'Motion Hub',
+      eyebrow: 'Motion Hub',
+      label: 'Interaction Hub',
       title: 'Motion như một cách dẫn dắt sản phẩm',
       description:
         'Không chỉ làm giao diện sinh động, motion giúp hướng sự chú ý, phản hồi trạng thái và nối ngữ cảnh.',
-      metric: 'Sắp cập nhật',
+      metric: 'Preview',
       onSelect: onOpenMotionHub,
     },
   ]
@@ -3239,26 +3259,6 @@ function LandingContent({
             pattern, nghiên cứu, nội dung và motion. Mục tiêu là giúp mọi người
             tìm nhanh, hiểu đúng và áp dụng nhất quán.
           </p>
-          <div className="hub-landing-hero__actions">
-            <Button
-              className="hub-landing-click-target hub-landing-hero-cta h-11 rounded-full border-[var(--ds-border-zpblue-subtle)] bg-[var(--ds-background-primary)] px-5 text-[var(--ds-text-link)] hover:bg-[var(--ds-background-primary)] hover:text-[var(--ds-text-link)]"
-              onClick={onOpenUIPrinciples}
-              type="button"
-              variant="outline"
-            >
-              Xem UI Principles
-              <ArrowUpRight aria-hidden="true" className="size-4" />
-            </Button>
-            <Button
-              className="hub-landing-click-target hub-landing-hero-cta h-11 rounded-full border-[var(--ds-border-zpblue-subtle)] bg-[var(--ds-background-primary)] px-5 text-[var(--ds-text-link)] hover:bg-[var(--ds-background-primary)] hover:text-[var(--ds-text-link)]"
-              onClick={onOpenUXTeam}
-              type="button"
-              variant="outline"
-            >
-              Khám phá UX Team
-              <ArrowUpRight aria-hidden="true" className="size-4" />
-            </Button>
-          </div>
         </div>
       </div>
 
@@ -3269,7 +3269,10 @@ function LandingContent({
           type="button"
         >
           <span>Mới</span>
-          UX Research workflow đã có method picker, hướng dẫn survey và điểm vào order research.
+          <strong>
+            UX Research workflow đã có method picker, hướng dẫn survey và điểm vào order research.
+          </strong>
+          <ArrowUpRight aria-hidden="true" className="size-4" />
         </button>
         <button
           className="hub-landing-click-target"
@@ -3277,7 +3280,10 @@ function LandingContent({
           type="button"
         >
           <span>Hướng dẫn</span>
-          UI Principles đã sẵn sàng để review clarity, trạng thái hệ thống, trust và accessibility.
+          <strong>
+            UI Principles đã sẵn sàng để review clarity, trạng thái hệ thống, trust và accessibility.
+          </strong>
+          <ArrowUpRight aria-hidden="true" className="size-4" />
         </button>
       </div>
 
@@ -3287,7 +3293,7 @@ function LandingContent({
           <h2>Chọn đúng nơi để bắt đầu.</h2>
           <p>
             Mỗi tab phục vụ một nhu cầu khác nhau: hiểu team, review UI, tra cứu
-            UX workflow hoặc chuẩn bị cho motion guideline.
+            UX workflow hoặc khám phá motion guideline.
           </p>
         </div>
 
@@ -3358,7 +3364,7 @@ function UXOverviewContent() {
   return (
     <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
       <div className="space-y-5">
-        <div className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
+        <div className={contentLabelPillClassName}>
           Tài liệu
         </div>
 
@@ -4384,159 +4390,6 @@ const uxResearchPrinciples = [
   },
 ] as const
 
-const surveyUseCases = [
-  {
-    title: 'Đo mức độ phổ biến',
-    body:
-      'Khi team đã biết một vấn đề hoặc nhu cầu có thể tồn tại, survey giúp biết nó phổ biến tới đâu trong một nhóm user lớn hơn.',
-  },
-  {
-    title: 'Ưu tiên hướng giải quyết',
-    body:
-      'Khi có nhiều option, survey giúp team hiểu option nào được chọn nhiều hơn, nhóm user nào cần ưu tiên và vì sao.',
-  },
-  {
-    title: 'Đo cảm nhận sau launch',
-    body:
-      'Dùng sau khi feature live để đo satisfaction, ease-of-use, mức độ hiểu hoặc phản ứng với thay đổi mới.',
-  },
-  {
-    title: 'Follow-up từ qualitative research',
-    body:
-      'Sau interview hoặc usability testing, survey giúp kiểm tra insight đó có lặp lại ở nhóm lớn hơn không.',
-  },
-]
-
-const surveyDoItems = [
-  'Bắt đầu bằng research question rõ ràng trước khi viết form.',
-  'Chọn đúng audience và segment để đọc kết quả có ngữ cảnh.',
-  'Giữ câu hỏi trung lập, một câu chỉ hỏi một ý.',
-  'Pilot survey với nhóm nhỏ trước khi gửi rộng.',
-  'Chuẩn bị cách phân tích trước khi launch.',
-]
-
-const surveyDontItems = [
-  'Dùng survey để khám phá sâu động cơ phức tạp thay cho interview.',
-  'Hỏi quá nhiều open-ended question khiến respondent mệt và khó phân tích.',
-  'Dẫn dắt câu trả lời bằng wording như “Bạn có đồng ý là...”.',
-  'Gom nhiều mục tiêu nghiên cứu vào một form.',
-  'Chỉ nhìn tổng số mà bỏ qua khác biệt giữa các segment.',
-]
-
-const surveyWorkflowSteps = [
-  {
-    title: 'Define goal',
-    body:
-      'Viết rõ quyết định nào cần survey hỗ trợ, research question là gì và team sẽ làm gì với kết quả.',
-  },
-  {
-    title: 'Choose audience',
-    body:
-      'Xác định nhóm respondent, tiêu chí lọc, sample kỳ vọng và các biến segment cần hỏi ở đầu form.',
-  },
-  {
-    title: 'Design questions',
-    body:
-      'Chọn loại câu hỏi phù hợp: single choice, multiple choice, rating scale, ranking hoặc open-ended.',
-  },
-  {
-    title: 'Peer review',
-    body:
-      'Nhờ ít nhất một người review wording, logic skip, bias, độ dài và cách câu trả lời sẽ được phân tích.',
-  },
-  {
-    title: 'Pilot',
-    body:
-      'Test form với nhóm nhỏ để bắt câu hỏi khó hiểu, option thiếu, lỗi logic hoặc thời lượng quá dài.',
-  },
-  {
-    title: 'Launch',
-    body:
-      'Gửi survey kèm context ngắn, thời gian đóng form, cam kết bảo mật và cách dữ liệu sẽ được dùng.',
-  },
-  {
-    title: 'Analyze',
-    body:
-      'Clean data, loại response kém chất lượng, đọc theo segment và tổng hợp pattern định lượng/định tính.',
-  },
-  {
-    title: 'Share insight',
-    body:
-      'Trả lời lại research question, nêu implication cho product/design và đề xuất next step rõ ràng.',
-  },
-]
-
-const surveyQuestionTypes = [
-  {
-    title: 'Single choice',
-    body:
-      'Dùng khi respondent chỉ nên chọn một đáp án. Ví dụ: “Bạn thường dùng tính năng nào nhất?”.',
-  },
-  {
-    title: 'Multiple choice',
-    body:
-      'Dùng khi có thể chọn nhiều option. Cần thêm “Khác” nếu option chưa bao phủ hết.',
-  },
-  {
-    title: 'Rating scale',
-    body:
-      'Dùng để đo mức độ hài lòng, dễ dùng, tin tưởng hoặc đồng ý. Giữ scale nhất quán trong cùng survey.',
-  },
-  {
-    title: 'Ranking',
-    body:
-      'Dùng để so sánh mức ưu tiên giữa các option, nhưng không nên bắt rank quá nhiều lựa chọn.',
-  },
-  {
-    title: 'Open-ended',
-    body:
-      'Dùng để hỏi lý do phía sau lựa chọn. Nên ít và đặt đúng chỗ để tránh câu trả lời hời hợt.',
-  },
-  {
-    title: 'Screening / segment',
-    body:
-      'Dùng ở đầu form để phân nhóm respondent theo hành vi, tần suất, vai trò hoặc trạng thái sử dụng.',
-  },
-]
-
-const surveyChecklistRows = [
-  {
-    item: 'Research question',
-    check:
-      'Có câu hỏi nghiên cứu cụ thể và biết quyết định nào sẽ dùng kết quả survey.',
-  },
-  {
-    item: 'Audience',
-    check:
-      'Định nghĩa respondent, tiêu chí lọc và segment cần đọc sau khi có kết quả.',
-  },
-  {
-    item: 'Question design',
-    check:
-      'Câu hỏi trung lập, không double-barreled, option đủ bao phủ và scale nhất quán.',
-  },
-  {
-    item: 'Survey length',
-    check:
-      'Form đủ ngắn để hoàn thành, ưu tiên câu hỏi cần cho quyết định thay vì hỏi cho biết.',
-  },
-  {
-    item: 'Pilot',
-    check:
-      'Đã test với nhóm nhỏ để bắt lỗi wording, logic, missing option và thời lượng.',
-  },
-  {
-    item: 'Analysis plan',
-    check:
-      'Biết trước sẽ đọc metric nào, segment nào, open-ended sẽ tag theme ra sao.',
-  },
-  {
-    item: 'Privacy',
-    check:
-      'Nói rõ phản hồi có anonymous không, dữ liệu được dùng thế nào và có follow-up không.',
-  },
-]
-
 const uxResearchWorkflowGoals = [
   'Đồng bộ quy trình xử lý task UX Research.',
   'Giúp team chọn đúng method cho từng loại requirement, kèm checklist tương ứng.',
@@ -4818,7 +4671,7 @@ function UXPrincipleContent() {
   return (
     <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
       <div className="space-y-5">
-        <div className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
+        <div className={contentLabelPillClassName}>
           Principles
         </div>
         <div className="grid gap-3">
@@ -5000,7 +4853,7 @@ function UXPatternOverviewContent() {
   return (
     <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
       <div className="space-y-5">
-        <div className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
+        <div className={contentLabelPillClassName}>
           UX Patterns
         </div>
         <div className="grid gap-3">
@@ -5072,13 +4925,10 @@ function OnboardingTaskListContent() {
   return (
     <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
       <div className="space-y-5">
-        <div className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
-          UX Patterns
+        <div className={contentLabelPillClassName}>
+          UX Pattern
         </div>
         <div className="grid gap-3">
-          <h2 className="max-w-4xl text-2xl font-bold leading-9 text-[var(--ds-text-primary)] md:text-[2rem] md:leading-[2.75rem]">
-            Onboarding Task List
-          </h2>
           <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
             Pattern dẫn dắt new user bằng danh sách nhiệm vụ có thưởng tăng
             dần, thay cho banner thụ động trên Home.
@@ -5429,13 +5279,10 @@ function WorkflowOverviewContent() {
   return (
     <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
       <div className="space-y-5">
-        <div className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
+        <div className={contentLabelPillClassName}>
           Workflow
         </div>
         <div className="grid gap-3">
-          <h2 className="max-w-4xl text-2xl font-bold leading-9 text-[var(--ds-text-primary)] md:text-[2rem] md:leading-[2.75rem]">
-            Overall
-          </h2>
           <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
             Quy trình tổng quan UX Design: phân loại project type, chọn track
             phù hợp và follow đúng checklist.
@@ -5496,13 +5343,10 @@ function OrderTicketContent() {
   return (
     <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
       <div className="space-y-5">
-        <div className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
+        <div className={contentLabelPillClassName}>
           Workflow
         </div>
         <div className="grid gap-3">
-          <h2 className="max-w-4xl text-2xl font-bold leading-9 text-[var(--ds-text-primary)] md:text-[2rem] md:leading-[2.75rem]">
-            Order Ticket
-          </h2>
           <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
             Ticket checklist giúp stakeholders điền đủ thông tin cần thiết để
             UXD hiểu problem, scope và tiêu chí thành công trước khi bắt đầu.
@@ -5675,41 +5519,206 @@ function WorkflowChecklistTable({
 }
 
 function UXResearchSurveyContent() {
+  const surveyFitItems = [
+    'Cần lượng hoá một hiện tượng đã biết sơ bộ, giờ muốn biết phổ biến tới mức nào.',
+    'Cần so sánh giữa các nhóm user, các phương án, hoặc đo lường thay đổi theo thời gian.',
+    'Cần dữ liệu từ mẫu lớn với chi phí thấp trên mỗi phản hồi.',
+    'Cần theo dõi chỉ số định kỳ như CSAT, NPS, ease-of-use.',
+  ]
+  const surveyAvoidItems = [
+    'Câu hỏi nghiên cứu chủ yếu là “tại sao” hoặc cần khám phá điều chưa biết.',
+    'Chưa hiểu đủ về vấn đề để đặt câu hỏi đóng hợp lý.',
+    'Mẫu khả thi quá nhỏ để có ý nghĩa thống kê.',
+  ]
+  const surveyMaterials = [
+    {
+      title: 'Mục tiêu & câu hỏi chính',
+      body:
+        'Viết rõ 3-5 câu hỏi nghiên cứu trước khi soạn survey. Câu nào không phục vụ mục tiêu thì cắt.',
+    },
+    {
+      title: 'Bảng hỏi',
+      body:
+        'Bộ câu hỏi đã rà về độ rõ, tránh leading question và double-barreled question.',
+    },
+    {
+      title: 'Screener',
+      body:
+        'Định nghĩa ai đủ điều kiện trả lời, ai bị loại, và segment nào cần đọc sau đó.',
+    },
+    {
+      title: 'Cỡ mẫu',
+      body:
+        'Ước lượng số phản hồi tối thiểu dựa trên độ tin cậy và sai số chấp nhận được.',
+    },
+    {
+      title: 'Kênh phân phối',
+      body:
+        'In-app, email, link, intercept... kèm cơ chế tránh trùng người trả lời.',
+    },
+    {
+      title: 'Công cụ',
+      body:
+        'Google Forms, Typeform, Qualtrics, SurveyMonkey hoặc form in-app.',
+    },
+  ]
+  const surveyProcess = [
+    {
+      title: 'Xác định mục tiêu',
+      body:
+        'Chốt mình muốn biết gì và sẽ ra quyết định gì từ dữ liệu. Đây là bước quyết định chất lượng survey.',
+    },
+    {
+      title: 'Thiết kế bảng hỏi',
+      body:
+        'Đi từ câu dễ/tổng quát tới câu nhạy cảm/cụ thể. Giữ survey ngắn và chọn đúng thang đo.',
+    },
+    {
+      title: 'Pilot test',
+      body:
+        'Cho 5-10 người trả lời thử để bắt câu hỏi mơ hồ, lỗi logic và thời gian hoàn thành thực tế.',
+    },
+    {
+      title: 'Phân phối',
+      body:
+        'Gửi tới mẫu mục tiêu qua kênh đã chọn, theo dõi tỷ lệ phản hồi và độ đại diện của mẫu.',
+    },
+    {
+      title: 'Làm sạch dữ liệu',
+      body:
+        'Loại phản hồi rác: trả lời quá nhanh, straight-lining, chọn cùng một đáp án hoặc mâu thuẫn logic.',
+    },
+    {
+      title: 'Phân tích',
+      body:
+        'Đọc phân bố, trung bình, %, rồi cắt theo segment nếu cần. So sánh có ý nghĩa thống kê khi phù hợp.',
+    },
+    {
+      title: 'Báo cáo & hành động',
+      body:
+        'Trình bày số kèm bối cảnh, nêu giới hạn và quan trọng nhất là dẫn tới khuyến nghị/quyết định.',
+    },
+  ]
+  const surveyQuestionTypes = [
+    {
+      title: 'Câu đóng',
+      body: 'Lựa chọn cố định, dễ định lượng. Nên là phần lớn của survey.',
+    },
+    {
+      title: 'Thang Likert',
+      body: 'Đo mức độ đồng ý/hài lòng, dùng nhãn cân xứng hai đầu.',
+    },
+    {
+      title: 'Single / Multiple choice',
+      body: 'Chọn một hoặc chọn nhiều. Ghi rõ loại nào để tránh hiểu nhầm.',
+    },
+    {
+      title: 'Rating / ranking',
+      body: 'Chấm điểm hoặc xếp hạng ưu tiên.',
+    },
+    {
+      title: 'Câu mở',
+      body:
+        'Thu được sắc thái và lý do, nhưng tốn công phân tích. Dùng tiết kiệm, đặt cuối.',
+    },
+  ]
+  const surveyQuestionTraps = [
+    {
+      title: 'Leading question',
+      body:
+        'câu hỏi gợi ý sẵn câu trả lời (“Bạn thấy tính năng mới tuyệt vời thế nào?”).',
+    },
+    {
+      title: 'Double-barreled',
+      body:
+        'hỏi hai thứ trong một câu (“Bạn thấy app nhanh và dễ dùng không?”) → người trả lời không biết trả lời cho vế nào.',
+    },
+    {
+      title: 'Thang không cân',
+      body: 'số lựa chọn tích cực nhiều hơn tiêu cực, kéo lệch kết quả.',
+    },
+    {
+      title: 'Thuật ngữ nội bộ',
+      body: 'dùng từ chỉ team mới hiểu.',
+    },
+  ]
+  const surveyOutputs = [
+    {
+      title: 'Báo cáo định lượng',
+      body: 'Các chỉ số chính, phân bố, biểu đồ và lát cắt theo segment.',
+    },
+    {
+      title: 'Insight & khuyến nghị',
+      body:
+        'Diễn giải con số thành hàm ý cho sản phẩm, không dừng ở việc đọc số.',
+    },
+    {
+      title: 'Bộ dữ liệu thô đã làm sạch',
+      body: 'Để team khác có thể phân tích lại nếu cần.',
+    },
+    {
+      title: 'Ghi chú giới hạn',
+      body:
+        'Cỡ mẫu, độ đại diện và các nguồn sai lệch tiềm ẩn để người đọc hiểu mức độ tin cậy.',
+    },
+  ]
+
   return (
     <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
       <div className="space-y-5">
-        <div className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
-          UX Research Method
+        <div className={contentLabelPillClassName}>
+          Methods
         </div>
-        <div className="grid gap-3">
-          <h2 className="max-w-4xl text-2xl font-bold leading-9 text-[var(--ds-text-primary)] md:text-[2rem] md:leading-[2.75rem]">
-            Survey
-          </h2>
-          <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
-            Survey là phương pháp thu thập phản hồi có cấu trúc từ nhiều user
-            cùng lúc, phù hợp để đo mức độ phổ biến, so sánh nhóm user hoặc
-            kiểm chứng một giả thuyết đã rõ.
-          </p>
-        </div>
-        <p className="max-w-4xl text-sm font-semibold leading-7 text-[var(--ds-text-primary)]">
-          “Survey không thay thế interview. Survey giúp team biết một tín hiệu
-          có rộng tới đâu, với nhóm nào, và có đủ đáng ưu tiên không.”
+        <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
+          Thu thập dữ liệu định lượng từ nhiều người dùng cùng lúc qua bộ câu
+          hỏi chuẩn hoá, để đo lường và khái quát hoá.
         </p>
       </div>
 
-      <UXArticleSection
-        description="Dùng survey khi team cần dữ liệu có cấu trúc trên nhóm user đủ lớn, không phải khi cần đào sâu động cơ phức tạp."
-        title="Khi nào dùng Survey"
-      >
-        <UXCardGrid items={surveyUseCases} />
+      <UXArticleSection title="Đây là gì">
+        <div className="grid gap-4 md:grid-cols-3">
+          <UXInfoCard
+            label="Scope"
+            text="Thu thập dữ liệu bằng một bộ câu hỏi chuẩn hoá, gửi tới nhiều người cùng lúc."
+            title="Đo ở quy mô lớn"
+          />
+          <UXInfoCard
+            label="Answer"
+            text="Trả lời tốt câu hỏi “bao nhiêu / bao nhiêu phần trăm / mức độ nào”."
+            title="Mạnh về định lượng"
+          />
+          <UXInfoCard
+            label="Limit"
+            text="Survey đo cái user nói, không đo trực tiếp cái user làm. Hành vi thật nên kết hợp analytics hoặc UT."
+            title="Có giới hạn self-report"
+          />
+        </div>
+        <p>
+          Khi mẫu đủ lớn và đại diện, survey giúp team nói về cả tập người dùng
+          thay vì chỉ vài người được phỏng vấn. Ngược lại, nếu cần hiểu{' '}
+          <strong>“tại sao”</strong> phía sau một con số, hãy dùng IDI/FGD để
+          đào sâu trước.
+        </p>
       </UXArticleSection>
 
-      <UXArticleSection
-        description="Một survey tốt bắt đầu từ quyết định cần ra, không bắt đầu từ danh sách câu hỏi."
-        title="Quy trình chạy Survey"
-      >
-        <div className="grid gap-3 md:grid-cols-2">
-          {surveyWorkflowSteps.map((step, index) => (
+      <UXArticleSection title="Khi nào dùng">
+        <div className="grid gap-4 md:grid-cols-2">
+          <UXDoDontList items={surveyFitItems} title="Dùng survey khi" variant="do" />
+          <UXDoDontList
+            items={surveyAvoidItems}
+            title="Không nên dùng khi"
+            variant="dont"
+          />
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Material">
+        <UXCardGrid items={surveyMaterials} variant="numbered" />
+      </UXArticleSection>
+
+      <UXArticleSection title="Process">
+        <div className="grid gap-3">
+          {surveyProcess.map((step, index) => (
             <UXInfoCard
               key={step.title}
               label={String(index + 1).padStart(2, '0')}
@@ -5720,81 +5729,1740 @@ function UXResearchSurveyContent() {
         </div>
       </UXArticleSection>
 
-      <UXArticleSection
-        description="Chọn loại câu hỏi theo cách team muốn phân tích câu trả lời sau đó."
-        title="Loại câu hỏi thường dùng"
-      >
-        <UXCardGrid items={surveyQuestionTypes} variant="numbered" />
-      </UXArticleSection>
-
-      <UXArticleSection
-        description="Hai danh sách này dùng để review nhanh trước khi gửi survey cho user."
-        title="Do / Don't"
-      >
-        <div className="grid gap-4 md:grid-cols-2">
-          <UXDoDontList items={surveyDoItems} title="Do" variant="do" />
-          <UXDoDontList items={surveyDontItems} title="Don't" variant="dont" />
+      <UXArticleSection title="Loại câu hỏi & thang đo">
+        <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+          <UXCardGrid items={surveyQuestionTypes} variant="numbered" />
+          <UXArticlePanel title="Lỗi cần tránh">
+            <ul className="space-y-3 text-sm leading-7 text-[var(--ds-text-secondary)]">
+              {surveyQuestionTraps.map((trap) => (
+                <li key={trap.title} className="flex gap-3">
+                  <span className="mt-3 size-1.5 shrink-0 rounded-full bg-[var(--ds-border-zpblue)]" />
+                  <span>
+                    <strong className="font-semibold text-[var(--ds-text-primary)]">
+                      {trap.title}
+                    </strong>{' '}
+                    - {trap.body}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </UXArticlePanel>
         </div>
       </UXArticleSection>
 
-      <UXArticleSection
-        description="Checklist tối thiểu để survey không chỉ có response, mà có insight dùng được cho product/design."
-        title="Pre-launch checklist"
-      >
-        <SurveyChecklistTable rows={surveyChecklistRows} />
+      <UXArticleSection title="Output">
+        <UXCardGrid items={surveyOutputs} />
       </UXArticleSection>
 
-      <UXArticleSection
-        description="Sau khi đóng form, đừng chỉ report số. Hãy biến kết quả thành quyết định tiếp theo."
-        title="Cách đọc kết quả"
-      >
-        <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-          <UXArticlePanel title="Phân tích định lượng">
-            <OverviewBulletList
-              items={[
-                'Clean data và loại response kém chất lượng.',
-                'Đọc tổng quan trước: tỷ lệ chọn, trung bình, phân bố điểm.',
-                'So sánh theo segment quan trọng như user mới/cũ, tần suất sử dụng hoặc trạng thái KYC.',
-                'Không kết luận từ mẫu quá nhỏ hoặc nhóm respondent bị lệch.',
-              ]}
-            />
-          </UXArticlePanel>
-          <UXArticlePanel title="Phân tích định tính">
-            <OverviewBulletList
-              items={[
-                'Tag theme cho câu trả lời open-ended.',
-                'Đếm tần suất theme nhưng vẫn đọc quote để hiểu sắc thái.',
-                'Tách rõ insight, evidence và recommendation.',
-                'Kết thúc bằng implication: team nên giữ, bỏ, ưu tiên hay nghiên cứu tiếp điều gì.',
-              ]}
-            />
-          </UXArticlePanel>
+      <UXArticleSection title="Case Study">
+        <div className="border-l-2 border-[var(--ds-border-zpblue)] pl-4">
+          <p className="text-sm font-semibold italic leading-7 text-[var(--ds-text-primary)]">
+            “Phần này để team điền case thật từ Zalopay sau - ví dụ một survey
+            đo mức độ ưu tiên tính năng hoặc một đợt đo CSAT định kỳ, kèm bài
+            học rút ra.”
+          </p>
         </div>
       </UXArticleSection>
     </article>
   )
 }
 
-function SurveyChecklistTable({
-  rows,
-}: {
-  rows: typeof surveyChecklistRows
-}) {
+function UXResearchInDepthInterviewContent() {
+  const idiFitItems = [
+    'Câu hỏi nghiên cứu là “tại sao / như thế nào”, cần hiểu động cơ và bối cảnh.',
+    'Đang ở giai đoạn khám phá, chưa biết đủ để đặt câu hỏi đóng.',
+    'Chủ đề nhạy cảm hoặc cá nhân, user cần không gian 1:1 an toàn hơn nhóm.',
+    'Cần hiểu hành trình/trải nghiệm trọn vẹn của một cá nhân theo mạch riêng của họ.',
+  ]
+  const idiAvoidItems = [
+    'Cần con số đại diện cho cả tập user → dùng survey.',
+    'Muốn quan sát phản ứng hoặc tranh luận giữa nhiều người → dùng FGD.',
+    'Muốn đo xem user có làm được việc trên giao diện hay không → dùng usability test.',
+  ]
+  const idiMaterials = [
+    {
+      title: 'Mục tiêu & câu hỏi chính',
+      body:
+        'Chốt 3-5 câu hỏi nghiên cứu trước, làm xương sống cho toàn bộ buổi phỏng vấn.',
+    },
+    {
+      title: 'Discussion guide',
+      body:
+        'Dàn ý câu hỏi theo chủ đề, không phải kịch bản đọc thuộc. Đi từ tổng quát/làm quen -> cụ thể -> nhạy cảm. Chừa chỗ cho câu probe: “Bạn kể rõ hơn được không?”, “Lúc đó bạn nghĩ gì?”.',
+    },
+    {
+      title: 'Tiêu chí tuyển & screener',
+      body:
+        'Chân dung cần gặp và bộ câu hỏi sàng lọc để chọn đúng người.',
+    },
+    {
+      title: 'Lịch & consent',
+      body:
+        'Xác nhận lịch, người tham gia, quyền ghi hình/ghi âm và cách lưu dữ liệu.',
+    },
+    {
+      title: 'Thiết bị ghi chú',
+      body:
+        'Recording nếu được phép, note template và nơi gom quote sau buổi.',
+    },
+    {
+      title: 'Incentive',
+      body:
+        'Quà hoặc phí cảm ơn cho người tham gia nếu có.',
+    },
+  ]
+  const idiProcess = [
+    {
+      title: 'Xác định mục tiêu',
+      body:
+        'Chốt muốn hiểu điều gì và quyết định gì sẽ dựa trên dữ liệu này.',
+    },
+    {
+      title: 'Tuyển đúng người',
+      body:
+        'Dùng screener để chọn participant đúng bối cảnh. Tuyển sai người sẽ tạo dữ liệu lệch.',
+    },
+    {
+      title: 'Soạn guide & pilot',
+      body:
+        'Phỏng vấn thử 1 người để bắt câu hỏi mơ hồ, kiểm tra thời lượng và mạch dẫn.',
+    },
+    {
+      title: 'Tiến hành phỏng vấn',
+      body:
+        'Tạo không khí thoải mái, hỏi câu mở, lắng nghe nhiều hơn nói và probe khi gặp điểm thú vị.',
+    },
+    {
+      title: 'Ghi chú & gỡ băng',
+      body:
+        'Ghi lại ngay sau buổi khi trí nhớ còn tươi; transcript cho phần quan trọng.',
+    },
+    {
+      title: 'Phân tích định tính',
+      body:
+        'Mã hoá dữ liệu, gom thành theme/pattern, tìm điểm lặp lại và điểm lệch đáng chú ý.',
+    },
+    {
+      title: 'Tổng hợp & báo cáo',
+      body:
+        'Trình bày insight theo theme, kèm trích dẫn nguyên văn và dẫn tới khuyến nghị.',
+    },
+  ]
+  const idiTechniques = [
+    {
+      title: 'Câu hỏi mở, không gợi ý',
+      body:
+        'Hỏi “Bạn thường thanh toán thế nào?” thay vì “Bạn có thấy thanh toán dễ không?”.',
+    },
+    {
+      title: 'Probing',
+      body:
+        'Đào sâu bằng “Vì sao vậy?”, “Kể mình nghe rõ hơn”, “Lần gần nhất là khi nào?”.',
+    },
+    {
+      title: 'Hỏi hành vi cụ thể',
+      body:
+        'Hỏi về việc đã xảy ra trong quá khứ, không hỏi giả định tương lai.',
+    },
+    {
+      title: 'Tránh leading & double-barreled',
+      body:
+        'Đừng gài sẵn câu trả lời, đừng hỏi hai thứ trong cùng một câu.',
+    },
+    {
+      title: 'Im lặng có chủ đích',
+      body:
+        'Dừng vài nhịp để user có khoảng trống nghĩ thêm và nói thêm.',
+    },
+    {
+      title: 'Trung lập',
+      body:
+        'Không gật gù tán thành hoặc phản đối khiến user trả lời theo ý mình.',
+    },
+  ]
+  const idiOutputs = [
+    {
+      title: 'Báo cáo theo theme',
+      body:
+        'Các phát hiện chính được nhóm thành chủ đề có ý nghĩa.',
+    },
+    {
+      title: 'Verbatim quotes',
+      body:
+        'Trích dẫn nguyên văn để giữ được giọng nói và bối cảnh thật của user.',
+    },
+    {
+      title: 'Khuyến nghị',
+      body:
+        'Diễn giải insight thành hàm ý cụ thể cho sản phẩm hoặc thiết kế.',
+    },
+    {
+      title: 'Artefact tổng hợp',
+      body:
+        'Persona, journey map hoặc affinity map nếu phù hợp với mục tiêu.',
+    },
+  ]
+  const idiComparisons = [
+    {
+      title: 'IDI vs Survey',
+      body:
+        'IDI hiểu tại sao với mẫu nhỏ; survey đo bao nhiêu với mẫu lớn. Hay đi cặp: IDI khám phá, survey lượng hoá.',
+    },
+    {
+      title: 'IDI vs FGD',
+      body:
+        'IDI có chiều sâu cá nhân, hợp chủ đề nhạy cảm. FGD cho phản ứng và tương tác nhóm.',
+    },
+    {
+      title: 'IDI vs Usability Test',
+      body:
+        'IDI hỏi về thái độ và trải nghiệm user nói; UT quan sát user làm trên giao diện thật.',
+    },
+  ]
+
   return (
-    <div className="overflow-hidden rounded-2xl border border-[var(--ds-border-stroke2)] bg-[var(--ds-background-primary)]">
-      {rows.map((row) => (
-        <div
-          className="grid gap-2 border-b border-[var(--ds-border-stroke2)] p-5 last:border-b-0 md:grid-cols-[0.35fr_1fr]"
-          key={row.item}
-        >
-          <p className="font-bold leading-7 text-[var(--ds-text-primary)]">
-            {row.item}
-          </p>
-          <p className="text-sm leading-6 text-[var(--ds-text-secondary)]">
-            {row.check}
+    <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
+      <div className="space-y-5">
+        <div className={contentLabelPillClassName}>
+          Methods
+        </div>
+        <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
+          Phỏng vấn sâu 1-1 để hiểu lý do, động cơ và bối cảnh đằng sau hành vi
+          của một người dùng.
+        </p>
+      </div>
+
+      <UXArticleSection title="Đây là gì">
+        <div className="grid gap-4 md:grid-cols-3">
+          <UXInfoCard
+            label="Depth"
+            text="Đào sâu lý do, động cơ, cảm xúc và bối cảnh phía sau hành vi."
+            title="Hiểu “tại sao”"
+          />
+          <UXInfoCard
+            label="Format"
+            text="Một researcher trò chuyện 1:1 với một user trong không gian an toàn."
+            title="Phỏng vấn sâu cá nhân"
+          />
+          <UXInfoCard
+            label="Sample"
+            text="Thường 5-8 người mỗi nhóm để tìm pattern, không nhằm đại diện thống kê."
+            title="Mẫu nhỏ, insight sâu"
+          />
+        </div>
+        <p>
+          Khác với survey đo <strong>bao nhiêu</strong>, IDI cho chiều sâu: thay
+          vì biết 60% user gặp vấn đề, team hiểu vì sao họ gặp, họ xoay xở thế
+          nào và điều gì ảnh hưởng tới họ. Khi cần lượng hoá mức độ phổ biến,
+          hãy dùng survey sau.
+        </p>
+      </UXArticleSection>
+
+      <UXArticleSection title="Khi nào dùng">
+        <div className="grid gap-4 md:grid-cols-2">
+          <UXDoDontList items={idiFitItems} title="Dùng IDI khi" variant="do" />
+          <UXDoDontList
+            items={idiAvoidItems}
+            title="Không nên dùng IDI khi"
+            variant="dont"
+          />
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Material">
+        <UXCardGrid items={idiMaterials} variant="numbered" />
+      </UXArticleSection>
+
+      <UXArticleSection title="Process">
+        <div className="grid gap-3">
+          {idiProcess.map((step, index) => (
+            <UXInfoCard
+              key={step.title}
+              label={String(index + 1).padStart(2, '0')}
+              text={step.body}
+              title={step.title}
+            />
+          ))}
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Kỹ thuật phỏng vấn cần nắm">
+        <UXCardGrid items={idiTechniques} />
+      </UXArticleSection>
+
+      <UXArticleSection title="Output">
+        <UXCardGrid items={idiOutputs} />
+      </UXArticleSection>
+
+      <UXArticleSection title="IDI vs các method gần kề">
+        <UXCardGrid items={idiComparisons} />
+      </UXArticleSection>
+
+      <UXArticleSection title="Case Study">
+        <div className="border-l-2 border-[var(--ds-border-zpblue)] pl-4">
+          <p className="text-sm font-semibold italic leading-7 text-[var(--ds-text-primary)]">
+            “Phần này để team điền case thật từ Zalopay sau - ví dụ một đợt IDI
+            hiểu hành vi/động cơ của một nhóm user, kèm bài học rút ra.”
           </p>
         </div>
+      </UXArticleSection>
+    </article>
+  )
+}
+
+function UXResearchFocusGroupContent() {
+  const fgdFitItems = [
+    'Muốn thu nhiều góc nhìn nhanh quanh một chủ đề, concept hoặc thông điệp.',
+    'Quan tâm tới phản ứng và tương tác giữa các user: họ đồng tình, tranh luận hoặc bổ sung nhau ra sao.',
+    'Muốn nghe ngôn ngữ tự nhiên user dùng để nói về vấn đề, hữu ích cho content/marketing.',
+    'Khám phá ban đầu không gian vấn đề, gom ý tưởng và giả thuyết để đào sâu sau.',
+  ]
+  const fgdAvoidItems = [
+    'Chủ đề nhạy cảm hoặc cá nhân như tài chính, riêng tư → user khó nói thật trước đám đông, nên dùng IDI.',
+    'Cần hiểu chiều sâu cá nhân theo mạch riêng của từng người → dùng IDI.',
+    'Cần con số đại diện → dùng survey.',
+    'Cần đo user làm được việc trên giao diện → dùng usability test.',
+  ]
+  const fgdMaterials = [
+    {
+      title: 'Mục tiêu & câu hỏi chính',
+      body:
+        'Chốt trước muốn biết gì, nhóm câu hỏi nào là quan trọng nhất cho decision.',
+    },
+    {
+      title: 'Discussion guide',
+      body:
+        'Dàn ý chủ đề theo trình tự, có hoạt động hoặc stimulus như concept, mockup, thẻ phân loại. Đi từ làm quen -> chính -> tổng kết.',
+    },
+    {
+      title: 'Tiêu chí tuyển & screener',
+      body:
+        'Chọn đúng nhóm. Cân nhắc độ đồng nhất: nhóm nên đủ giống để thoải mái nói, nhưng đủ khác để có góc nhìn đa dạng.',
+    },
+    {
+      title: 'Người tham gia & lịch',
+      body:
+        'Tuyển dư 1-2 người phòng vắng. Mỗi nhóm thường 6-8 người là vừa.',
+    },
+    {
+      title: 'Phòng/không gian',
+      body:
+        'Bàn tròn hoặc bố trí để mọi người nhìn nhau; phòng quan sát hoặc setup ghi hình nếu cần.',
+    },
+    {
+      title: 'Moderator team',
+      body:
+        'Moderator dẫn nhóm; co-moderator hoặc note-taker ghi chú riêng để moderator tập trung điều phối.',
+    },
+    {
+      title: 'Incentive',
+      body:
+        'Quà hoặc phí cảm ơn cho người tham gia.',
+    },
+  ]
+  const fgdProcess = [
+    {
+      title: 'Xác định mục tiêu',
+      body:
+        'Quyết định gì sẽ ra từ buổi này và câu hỏi nghiên cứu nào cần trả lời.',
+    },
+    {
+      title: 'Thiết kế guide',
+      body:
+        'Bao gồm hoạt động kích thích thảo luận, không chỉ hỏi suông.',
+    },
+    {
+      title: 'Tuyển & xếp nhóm',
+      body:
+        'Dùng screener. Thường chạy 2-3 nhóm cho mỗi phân khúc để thấy pattern lặp lại.',
+    },
+    {
+      title: 'Pilot nếu được',
+      body:
+        'Chạy thử guide để căn thời lượng, độ rõ của câu hỏi và stimulus.',
+    },
+    {
+      title: 'Điều phối thảo luận',
+      body:
+        'Mở màn, đặt luật chơi, khơi thảo luận và giữ cân bằng phát biểu, không để một người lấn át.',
+    },
+    {
+      title: 'Ghi chú & gỡ băng',
+      body:
+        'Ghi nội dung lẫn động lực nhóm: ai dẫn dắt, điểm nào gây tranh luận, điểm nào được đồng thuận.',
+    },
+    {
+      title: 'Phân tích định tính',
+      body:
+        'Mã hoá, gom theme. Phân biệt ý kiến đồng thuận thật với ý kiến chỉ do một người áp đặt.',
+    },
+    {
+      title: 'Tổng hợp & báo cáo',
+      body:
+        'Insight theo theme, kèm verbatim và ghi chú mức đồng thuận, dẫn tới khuyến nghị.',
+    },
+  ]
+  const moderatorRoles = [
+    {
+      title: 'Giữ cân bằng phát biểu',
+      body:
+        'Chủ động mời người im lặng, nhẹ nhàng tiết chế người nói quá nhiều.',
+    },
+    {
+      title: 'Trung lập',
+      body:
+        'Không để quan điểm hay tán thưởng một phía làm lệch cả nhóm.',
+    },
+    {
+      title: 'Khơi tương tác',
+      body:
+        'Để user phản hồi lẫn nhau, tránh biến FGD thành chuỗi IDI nối tiếp.',
+    },
+    {
+      title: 'Quản groupthink',
+      body:
+        'Khi cả nhóm đồng ý quá nhanh, hỏi “Có ai thấy khác không?” để lộ quan điểm thiểu số.',
+    },
+    {
+      title: 'Bám mục tiêu',
+      body:
+        'Cho thảo luận đi xa vừa đủ rồi kéo về, quản thời gian từng phần.',
+    },
+  ]
+  const fgdOutputs = [
+    {
+      title: 'Báo cáo theo theme',
+      body:
+        'Phát hiện chính, kèm ghi chú mức đồng thuận hoặc chia rẽ trong nhóm.',
+    },
+    {
+      title: 'Verbatim quotes',
+      body:
+        'Trích dẫn minh hoạ, giữ ngôn ngữ tự nhiên của user.',
+    },
+    {
+      title: 'Ghi chú động lực nhóm',
+      body:
+        'Điểm nào gây tranh luận, ý nào lan toả, ý nào bị bác.',
+    },
+    {
+      title: 'Khuyến nghị',
+      body:
+        'Diễn giải insight thành hàm ý cho sản phẩm, concept hoặc thông điệp.',
+    },
+  ]
+  const fgdComparisonTable = {
+    headers: ['', 'FGD', 'IDI'],
+    rows: [
+      ['Số người / buổi', '6-8', '1'],
+      ['Thế mạnh', 'Tương tác, nhiều góc nhìn nhanh', 'Chiều sâu cá nhân, theo mạch riêng'],
+      ['Chủ đề nhạy cảm', 'Kém, ngại nói thật', 'Tốt, riêng tư và an toàn'],
+      ['Rủi ro chính', 'Groupthink, người áp đảo', 'Tốn thời gian, ít người'],
+      ['Hợp khi', 'Khơi ý tưởng, đo phản ứng concept', 'Hiểu sâu động cơ, hành vi'],
+    ],
+  }
+
+  return (
+    <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
+      <div className="space-y-5">
+        <div className={contentLabelPillClassName}>
+          Methods
+        </div>
+        <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
+          Thảo luận nhóm có điều phối để thu nhiều góc nhìn và quan sát phản
+          ứng, tương tác giữa các người dùng.
+        </p>
+      </div>
+
+      <UXArticleSection title="Đây là gì">
+        <div className="grid gap-4 md:grid-cols-3">
+          <UXInfoCard
+            label="Group"
+            text="Một moderator dẫn 6-8 user trao đổi quanh chủ đề, concept hoặc thông điệp."
+            title="Thảo luận có điều phối"
+          />
+          <UXInfoCard
+            label="Strength"
+            text="Mạnh ở tương tác nhóm: user phản ứng, đồng tình hoặc phản biện lẫn nhau."
+            title="Nhiều góc nhìn nhanh"
+          />
+          <UXInfoCard
+            label="Limit"
+            text="Không phải công cụ khái quát hoá thống kê và dễ bị groupthink nếu điều phối yếu."
+            title="Cần quản động lực nhóm"
+          />
+        </div>
+        <p>
+          FGD giúp team quan sát ngôn ngữ tự nhiên, mức độ đồng thuận/chia rẽ
+          quanh một ý tưởng và phản ứng tức thời với concept. Khi cần hiểu sâu
+          sắc thái cá nhân hoặc chủ đề nhạy cảm, hãy chuyển sang IDI.
+        </p>
+      </UXArticleSection>
+
+      <UXArticleSection title="Khi nào dùng">
+        <div className="grid gap-4 md:grid-cols-2">
+          <UXDoDontList items={fgdFitItems} title="Dùng FGD khi" variant="do" />
+          <UXDoDontList
+            items={fgdAvoidItems}
+            title="Không nên dùng FGD khi"
+            variant="dont"
+          />
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Material">
+        <UXCardGrid items={fgdMaterials} variant="numbered" />
+      </UXArticleSection>
+
+      <UXArticleSection title="Process">
+        <div className="grid gap-3">
+          {fgdProcess.map((step, index) => (
+            <UXInfoCard
+              key={step.title}
+              label={String(index + 1).padStart(2, '0')}
+              text={step.body}
+              title={step.title}
+            />
+          ))}
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Vai trò Moderator">
+        <UXCardGrid items={moderatorRoles} />
+      </UXArticleSection>
+
+      <UXArticleSection title="Output">
+        <UXCardGrid items={fgdOutputs} />
+      </UXArticleSection>
+
+      <UXArticleSection title="FGD vs IDI">
+        <div className="space-y-4">
+          <UXSimpleTable table={fgdComparisonTable} />
+          <p>
+            Khi phân vân: chủ đề riêng tư hoặc cần đào sâu từng người thì chọn
+            IDI; cần phản ứng tập thể, va chạm quan điểm và ngôn ngữ tự nhiên
+            thì chọn FGD.
+          </p>
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Case Study">
+        <div className="border-l-2 border-[var(--ds-border-zpblue)] pl-4">
+          <p className="text-sm font-semibold italic leading-7 text-[var(--ds-text-primary)]">
+            “Phần này để team điền case thật từ Zalopay sau - ví dụ một buổi FGD
+            test phản ứng với concept tính năng mới, kèm bài học rút ra.”
+          </p>
+        </div>
+      </UXArticleSection>
+    </article>
+  )
+}
+
+function UXResearchUsabilityTestingContent() {
+  const utFitItems = [
+    'Cần biết user có dùng được một luồng/tính năng không, vướng ở đâu.',
+    'Có prototype hoặc bản chạy đủ thao tác để user thực hiện task.',
+    'Muốn hiểu vì sao user vướng; moderated UT cho phép hỏi tại chỗ.',
+    'Cần kiểm chứng thiết kế trước khi build hoặc đánh giá bản đã ra.',
+  ]
+  const utAvoidItems = [
+    'Chưa có gì để thao tác, vấn đề còn quá mở → dùng IDI/discovery trước.',
+    'Cần biết user muốn gì hoặc nghĩ gì về vấn đề → dùng IDI.',
+    'Cần con số đại diện trên mẫu lớn → dùng unmoderated UT hoặc survey.',
+  ]
+  const utMaterials = [
+    {
+      title: 'Mục tiêu & câu hỏi nghiên cứu',
+      body:
+        'Xác định luồng nào, task nào cần kiểm và team muốn trả lời câu hỏi gì.',
+    },
+    {
+      title: 'Prototype / bản test',
+      body:
+        'Figma prototype bấm được, staging hoặc production. Đảm bảo các luồng cần test chạy được.',
+    },
+    {
+      title: 'Test plan / task script',
+      body:
+        'Viết task theo mục tiêu user, dưới dạng kịch bản thực tế chứ không chỉ dẫn từng bước.',
+    },
+    {
+      title: 'Tiêu chí thành công',
+      body:
+        'Định nghĩa thế nào là hoàn thành, lỗi, cần trợ giúp hoặc mắc kẹt.',
+    },
+    {
+      title: 'Tiêu chí tuyển & screener',
+      body:
+        'Chọn đúng đối tượng người dùng cho flow cần kiểm.',
+    },
+    {
+      title: 'Người tham gia & lịch',
+      body:
+        'Thường 5 người/nhóm; tuyển dư phòng no-show.',
+    },
+    {
+      title: 'Thiết bị ghi',
+      body:
+        'Ghi màn hình, ghi âm nếu được phép, note template và công cụ ghi chú.',
+    },
+    {
+      title: 'Incentive',
+      body:
+        'Quà hoặc phí cảm ơn cho người tham gia nếu có.',
+    },
+  ]
+  const utProcess = [
+    {
+      title: 'Xác định mục tiêu & luồng',
+      body:
+        'Ưu tiên luồng quan trọng hoặc rủi ro nhất, không ôm quá nhiều task.',
+    },
+    {
+      title: 'Viết task & tiêu chí thành công',
+      body:
+        'Task realistic, theo mục tiêu user, không mớm thao tác hay tên nút.',
+    },
+    {
+      title: 'Chuẩn bị prototype',
+      body:
+        'Đảm bảo mọi đường đi trong task đều bấm được và không gây lỗi setup.',
+    },
+    {
+      title: 'Pilot test',
+      body:
+        'Chạy thử 1 người để bắt task mơ hồ, lỗi prototype và canh thời lượng. Đây là bước bắt buộc.',
+    },
+    {
+      title: 'Điều phối buổi test',
+      body:
+        'Mở màn trấn an user rằng mình test sản phẩm, không test họ. Giao từng task và khuyến khích think-aloud.',
+    },
+    {
+      title: 'Ghi chú',
+      body:
+        'Ghi nơi user vướng, đường đi sai, câu user thốt ra, biểu cảm bối rối và mức trợ giúp.',
+    },
+    {
+      title: 'Phân tích',
+      body:
+        'Gom phát hiện theo vấn đề usability, xếp severity và tìm vấn đề lặp lại ở nhiều user.',
+    },
+    {
+      title: 'Báo cáo & hành động',
+      body:
+        'Liệt kê vấn đề theo độ nghiêm trọng, kèm bằng chứng và khuyến nghị sửa cụ thể.',
+    },
+  ]
+  const facilitationTechniques = [
+    {
+      title: 'Test sản phẩm, không test user',
+      body:
+        'Câu mở màn bắt buộc để user thoải mái và không tự trách khi vướng.',
+    },
+    {
+      title: 'Think-aloud',
+      body:
+        'Mời user nói suy nghĩ. Nếu họ im, hỏi nhẹ “Bạn đang nghĩ gì vậy?”.',
+    },
+    {
+      title: 'Không mớm, không cứu',
+      body:
+        'Khi user kẹt, im lặng quan sát. Chỉ can thiệp khi thật sự bế tắc và đã ghi nhận đủ.',
+    },
+    {
+      title: 'Task theo mục tiêu',
+      body:
+        'Đừng vô tình chỉ đường trong cách đặt task.',
+    },
+    {
+      title: 'Probe sau task',
+      body:
+        'Không probe giữa task làm gián đoạn. Hỏi sau khi xong task: “Vì sao bạn thấy vậy?”.',
+    },
+    {
+      title: 'Trung lập',
+      body:
+        'Không gật gù khen/chê khiến user đổi hành vi.',
+    },
+  ]
+  const severityItems = [
+    {
+      title: 'Nghiêm trọng / chặn đứng',
+      body:
+        'User không hoàn thành được task. Cần sửa ngay.',
+    },
+    {
+      title: 'Trung bình',
+      body:
+        'User xong được nhưng rất vất vả, mất nhiều thời gian hoặc đi sai rồi quay lại.',
+    },
+    {
+      title: 'Nhỏ / thẩm mỹ',
+      body:
+        'Gây khó chịu nhẹ, không cản hoàn thành. Sửa khi có nguồn lực.',
+    },
+  ]
+  const utOutputs = [
+    {
+      title: 'Danh sách vấn đề usability',
+      body:
+        'Xếp theo mức nghiêm trọng, mỗi vấn đề kèm bằng chứng như số user gặp, clip hoặc quote.',
+    },
+    {
+      title: 'Khuyến nghị sửa cụ thể',
+      body:
+        'Không dừng ở “chỗ này khó dùng”, mà nêu hướng xử lý rõ ràng.',
+    },
+    {
+      title: 'Chỉ số tuỳ chọn',
+      body:
+        'Tỷ lệ hoàn thành task, thời gian, số lỗi nếu có đo.',
+    },
+    {
+      title: 'Highlight clip / quote',
+      body:
+        'Bằng chứng trực quan để thuyết phục team.',
+    },
+  ]
+  const utComparisons = [
+    {
+      title: 'UT vs IDI',
+      body:
+        'UT quan sát user làm trên giao diện; IDI hỏi user nghĩ/nói về trải nghiệm. Hay đi cặp: phỏng vấn ngắn đầu buổi rồi test task.',
+    },
+    {
+      title: 'Moderated vs Unmoderated UT',
+      body:
+        'Moderated có người dẫn, đào được vì sao, mẫu nhỏ và tốn công. Unmoderated tự động, mẫu lớn hơn nhưng khó hỏi sâu.',
+    },
+    {
+      title: 'UT vs Survey',
+      body:
+        'UT tìm lỗi và lý do ở mức định tính; survey đo mức độ ở mức định lượng.',
+    },
+  ]
+
+  return (
+    <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
+      <div className="space-y-5">
+        <div className={contentLabelPillClassName}>
+          Methods
+        </div>
+        <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
+          Quan sát người dùng thật thao tác trên sản phẩm để phát hiện chỗ họ
+          vướng, đo xem giao diện có dùng được không.
+        </p>
+      </div>
+
+      <UXArticleSection title="Đây là gì">
+        <div className="grid gap-4 md:grid-cols-3">
+          <UXInfoCard
+            label="Observe"
+            text="User thực hiện task trên prototype hoặc bản chạy thật, researcher quan sát họ làm."
+            title="Quan sát hành vi thật"
+          />
+          <UXInfoCard
+            label="Goal"
+            text="Tìm chỗ user vướng, vì sao họ vướng và cần sửa trước hay sau khi ra mắt."
+            title="Phát hiện usability issue"
+          />
+          <UXInfoCard
+            label="Sample"
+            text="Khoảng 5 user đã có thể lộ 80-85% vấn đề usability nghiêm trọng."
+            title="Mẫu nhỏ, thấy lỗi nhanh"
+          />
+        </div>
+        <p>
+          Usability Testing khác phỏng vấn ở điểm cốt lõi: UT đo cái user{' '}
+          <strong>làm</strong>, không chỉ cái user <strong>nói</strong>. Trang
+          này nói về moderated UT, nơi moderator giao task, quan sát và hỏi thêm
+          khi cần để hiểu nguyên nhân phía sau điểm vướng.
+        </p>
+      </UXArticleSection>
+
+      <UXArticleSection title="Khi nào dùng">
+        <div className="grid gap-4 md:grid-cols-2">
+          <UXDoDontList items={utFitItems} title="Dùng UT khi" variant="do" />
+          <UXDoDontList
+            items={utAvoidItems}
+            title="Không nên dùng UT khi"
+            variant="dont"
+          />
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Material">
+        <UXCardGrid items={utMaterials} variant="numbered" />
+      </UXArticleSection>
+
+      <UXArticleSection title="Process">
+        <div className="grid gap-3">
+          {utProcess.map((step, index) => (
+            <UXInfoCard
+              key={step.title}
+              label={String(index + 1).padStart(2, '0')}
+              text={step.body}
+              title={step.title}
+            />
+          ))}
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Kỹ thuật điều phối cần nắm">
+        <UXCardGrid items={facilitationTechniques} />
+      </UXArticleSection>
+
+      <UXArticleSection title="Mức độ nghiêm trọng">
+        <div className="space-y-4">
+          <p>
+            Xếp loại vấn đề để team biết sửa gì trước, tránh biến report thành
+            danh sách lỗi ngang hàng.
+          </p>
+          <div className="grid gap-3">
+            {severityItems.map((item) => (
+              <UXInfoCard
+                key={item.title}
+                label="Note"
+                text={item.body}
+                title={item.title}
+              />
+            ))}
+          </div>
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Output">
+        <UXCardGrid items={utOutputs} />
+      </UXArticleSection>
+
+      <UXArticleSection title="UT vs các method gần kề">
+        <UXCardGrid items={utComparisons} />
+      </UXArticleSection>
+
+      <UXArticleSection title="Case Study">
+        <div className="border-l-2 border-[var(--ds-border-zpblue)] pl-4">
+          <p className="text-sm font-semibold italic leading-7 text-[var(--ds-text-primary)]">
+            “Phần này để team điền case thật từ Zalopay sau - ví dụ một đợt UT
+            luồng thanh toán/nạp tiền, các vấn đề tìm ra và cách sửa, kèm bài
+            học rút ra.”
+          </p>
+        </div>
+      </UXArticleSection>
+    </article>
+  )
+}
+
+function UXResearchUnmoderatedUTContent() {
+  const unmoderatedFitItems = [
+    'Cần mẫu lớn hoặc muốn lượng hoá usability: tỷ lệ hoàn thành, thời gian, tỷ lệ click đúng.',
+    'Task rõ ràng, độc lập, user tự hiểu được mà không cần giải thích.',
+    'Cần nhanh và rẻ, không đủ thời gian hoặc nguồn lực điều phối từng buổi.',
+    'User ở nhiều múi giờ/địa điểm, khó hẹn lịch trực tiếp.',
+    'Cần test A/B hai phương án thiết kế trên số đông để so sánh.',
+  ]
+  const unmoderatedAvoidItems = [
+    'Cần hiểu vì sao user vướng, cần probe linh hoạt → dùng moderated UT.',
+    'Luồng/task phức tạp, mơ hồ, dễ hiểu sai nếu không có người giải thích.',
+    'Prototype còn nhiều lỗi, hay đứt flow → moderated UT sẽ xoay xở tốt hơn.',
+    'Chủ đề cần quan sát biểu cảm hoặc ngữ cảnh tinh tế.',
+  ]
+  const unmoderatedMaterials = [
+    {
+      title: 'Mục tiêu & câu hỏi nghiên cứu',
+      body:
+        'Chốt rõ team muốn đo gì, so sánh gì và decision nào sẽ dựa trên kết quả.',
+    },
+    {
+      title: 'Nền tảng unmoderated',
+      body:
+        'Maze, UserTesting, Useberry, Lookback hoặc tool tương đương tuỳ nhu cầu ghi màn hình, heatmap hay metric.',
+    },
+    {
+      title: 'Prototype / bản test',
+      body:
+        'Phải rất chắc. Mọi đường đi cần bấm được vì không có moderator cứu khi prototype gãy giữa chừng.',
+    },
+    {
+      title: 'Task & hướng dẫn cực rõ',
+      body:
+        'User đọc một mình, không hỏi lại được. Mỗi task cần tự giải thích, không mơ hồ và không mớm thao tác.',
+    },
+    {
+      title: 'Tiêu chí thành công & metric',
+      body:
+        'Định nghĩa rõ hoàn thành là gì và đo bằng chỉ số nào.',
+    },
+    {
+      title: 'Câu hỏi kèm theo',
+      body:
+        'Câu hỏi sau mỗi task và cuối buổi để bù phần không probe được.',
+    },
+    {
+      title: 'Tiêu chí tuyển',
+      body:
+        'Câu hỏi sàng lọc ngay trên nền tảng hoặc panel có sẵn.',
+    },
+  ]
+  const unmoderatedProcess = [
+    {
+      title: 'Xác định mục tiêu & metric',
+      body:
+        'Vì không hỏi sâu được, phải biết trước sẽ đo con số gì.',
+    },
+    {
+      title: 'Viết task & hướng dẫn',
+      body:
+        'Dầu tư mạnh vào độ rõ. Viết như thể người đọc không có ai bên cạnh. Tránh thuật ngữ nội bộ.',
+    },
+    {
+      title: 'Chuẩn bị prototype chắc chắn',
+      body:
+        'Kiểm mọi nhánh trong task, tránh lỗi setup làm nhiễu kết quả.',
+    },
+    {
+      title: 'Pilot bắt buộc',
+      body:
+        'Chạy thử một nhóm nhỏ để phát hiện task gây hiểu nhầm. Với unmoderated, pilot gần như là phòng tuyến duy nhất.',
+    },
+    {
+      title: 'Phóng launch',
+      body:
+        'Mở cho mẫu mục tiêu, theo dõi phản hồi đầu xem user có hiểu task không và kịp dừng nếu cần.',
+    },
+    {
+      title: 'Thu & làm sạch dữ liệu',
+      body:
+        'Loại phản hồi rác: chạy quá nhanh, bỏ ngang, rõ ràng hiểu sai task.',
+    },
+    {
+      title: 'Phân tích',
+      body:
+        'Đọc completion rate, time, path, misclick hoặc heatmap. Xem clip/think-aloud để hiểu ngữ cảnh điểm trượt.',
+    },
+    {
+      title: 'Báo cáo & hành động',
+      body:
+        'Trình metric kèm vấn đề usability suy ra, xếp mức nghiêm trọng và khuyến nghị.',
+    },
+  ]
+  const taskWritingTips = [
+    {
+      title: 'Tự giải thích hoàn toàn',
+      body:
+        'User đọc một lần là hiểu, không hỏi lại được.',
+    },
+    {
+      title: 'Theo mục tiêu, không mớm thao tác',
+      body:
+        'Viết “Tìm cách nạp 200k vào ví”, không phải “Bấm nút X rồi Y”.',
+    },
+    {
+      title: 'Tránh thuật ngữ nội bộ',
+      body:
+        'Ưu tiên ngôn ngữ tự nhiên mà người dùng thật sẽ hiểu.',
+    },
+    {
+      title: 'Một task một mục tiêu',
+      body:
+        'Đừng nhồi nhiều việc vào một task, vì sẽ khó biết user trượt ở đâu.',
+    },
+    {
+      title: 'Post-task ngắn',
+      body:
+        'Đặt câu hỏi như “Việc vừa rồi dễ hay khó? Vì sao?” để bù phần không probe được.',
+    },
+  ]
+  const unmoderatedOutputs = [
+    {
+      title: 'Metric usability',
+      body:
+        'Completion rate, time-on-task, misclick rate, path analysis và đôi khi heatmap.',
+    },
+    {
+      title: 'Danh sách vấn đề',
+      body:
+        'Xếp theo mức nghiêm trọng, kèm số liệu: bao nhiêu % trượt ở bước nào.',
+    },
+    {
+      title: 'Clip / verbatim',
+      body:
+        'Nếu nền tảng ghi think-aloud, trích để minh hoạ vì sao user vướng.',
+    },
+    {
+      title: 'Khuyến nghị sửa',
+      body:
+        'Cụ thể, dẫn từ dữ liệu thay vì chỉ nhận xét chung.',
+    },
+  ]
+  const moderatedComparisonTable = {
+    headers: ['', 'Moderated', 'Unmoderated'],
+    rows: [
+      ['Người điều phối', 'Có', 'Không'],
+      ['Mẫu', 'Nhỏ (~5)', 'Lớn hơn, chục đến trăm'],
+      ['Thiên về', 'Định tính, vì sao', 'Định lượng, bao nhiêu'],
+      ['Probe tại chỗ', 'Được', 'Không'],
+      ['Tốc độ / chi phí', 'Chậm, đắt hơn/người', 'Nhanh, rẻ hơn/người'],
+      ['Hợp khi', 'Cần hiểu sâu, task phức tạp', 'Cần quy mô, task rõ ràng'],
+    ],
+  }
+
+  return (
+    <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
+      <div className="space-y-5">
+        <div className={contentLabelPillClassName}>
+          Methods
+        </div>
+        <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
+          Cho người dùng tự thực hiện task trên sản phẩm không có người điều
+          phối, thu kết quả ở quy mô lớn và nhanh.
+        </p>
+      </div>
+
+      <UXArticleSection title="Đây là gì">
+        <div className="grid gap-4 md:grid-cols-3">
+          <UXInfoCard
+            label="Self-run"
+            text="User nhận hướng dẫn và task trên nền tảng, rồi tự thao tác một mình."
+            title="Không có moderator"
+          />
+          <UXInfoCard
+            label="Scale"
+            text="Chạy được hàng chục đến hàng trăm người song song, nhanh và tiết kiệm hơn."
+            title="Mở rộng quy mô & tốc độ"
+          />
+          <UXInfoCard
+            label="Trade-off"
+            text="Không probe tại chỗ, nên task/prototype phải cực rõ và dữ liệu cần được làm sạch kỹ."
+            title="Đổi chiều sâu lấy quy mô"
+          />
+        </div>
+        <p>
+          Unmoderated UT vẫn là usability test: user thực hiện task, hệ thống
+          ghi lại màn hình, click, thời gian, đôi khi cả giọng nói think-aloud.
+          Điểm khác là không có người dẫn. Vì vậy method này biết{' '}
+          <strong>bao nhiêu</strong> user trượt ở đâu rất tốt, còn{' '}
+          <strong>vì sao</strong> thì chỉ suy đoán được từ dữ liệu phụ.
+        </p>
+      </UXArticleSection>
+
+      <UXArticleSection title="Khi nào dùng">
+        <div className="grid gap-4 md:grid-cols-2">
+          <UXDoDontList
+            items={unmoderatedFitItems}
+            title="Dùng Unmoderated UT khi"
+            variant="do"
+          />
+          <UXDoDontList
+            items={unmoderatedAvoidItems}
+            title="Không nên dùng khi"
+            variant="dont"
+          />
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Material">
+        <UXCardGrid items={unmoderatedMaterials} variant="numbered" />
+      </UXArticleSection>
+
+      <UXArticleSection title="Process">
+        <div className="grid gap-3">
+          {unmoderatedProcess.map((step, index) => (
+            <UXInfoCard
+              key={step.title}
+              label={String(index + 1).padStart(2, '0')}
+              text={step.body}
+              title={step.title}
+            />
+          ))}
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Viết task cho unmoderated">
+        <div className="space-y-4">
+          <p>
+            Vì không có moderator, <strong>chất lượng task</strong> gần như
+            quyết định chất lượng dữ liệu.
+          </p>
+          <UXCardGrid items={taskWritingTips} />
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Output">
+        <UXCardGrid items={unmoderatedOutputs} />
+      </UXArticleSection>
+
+      <UXArticleSection title="Moderated vs Unmoderated UT">
+        <div className="space-y-4">
+          <UXSimpleTable table={moderatedComparisonTable} />
+          <p>
+            Cách dùng hay gặp: moderated trước để hiểu sâu và làm sạch
+            luồng/task, rồi unmoderated sau để lượng hoá trên mẫu lớn. Hai cái
+            bổ sung nhau, không thay thế nhau.
+          </p>
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Case Study">
+        <div className="border-l-2 border-[var(--ds-border-zpblue)] pl-4">
+          <p className="text-sm font-semibold italic leading-7 text-[var(--ds-text-primary)]">
+            “Phần này để team điền case thật từ Zalopay sau - ví dụ một đợt
+            unmoderated test đo completion rate của một luồng trên mẫu lớn, kèm
+            bài học rút ra.”
+          </p>
+        </div>
+      </UXArticleSection>
+    </article>
+  )
+}
+
+function UXResearchBiweeklyInterviewContent() {
+  const biweeklyOverview = [
+    {
+      title: 'Cadence định kỳ',
+      body:
+        'Diễn ra 2 tuần/lần, liên tục, không phụ thuộc project cycle hay một research brief cụ thể.',
+    },
+    {
+      title: 'PO gặp user trực tiếp',
+      body:
+        'PO là người quan sát và phỏng vấn user, từ đó giữ nhịp gần user đều đặn hơn.',
+    },
+    {
+      title: 'Mass user, không segment sâu',
+      body:
+        'User được tuyển rộng, có dùng sản phẩm fintech hoặc các dịch vụ liên quan như bill, telco, movie, transfer.',
+    },
+    {
+      title: 'Không thay thế research chính thống',
+      body:
+        'Không dùng để validate hypothesis, không thay UT khi cần evidence để ship, không report high-level như project research.',
+    },
+  ]
+  const researchComparisonTable = {
+    headers: ['', 'Bi-weekly', 'Research truyền thống'],
+    rows: [
+      ['Segment', 'General, 18-35 tuổi', 'Cụ thể, tuyển đúng yêu cầu theo project'],
+      ['Tần suất', 'Mỗi 2 tuần, liên tục', 'Theo project, có điểm kết thúc'],
+      ['Thời gian', 'Mỗi PO hỏi 30 phút, mỗi user có 90 phút', '1h30 phút mỗi user, 12 user mỗi dự án'],
+      ['Mục tiêu', 'Bắt friction sớm, giữ PO gần user', 'Trả lời câu hỏi research cụ thể'],
+      ['Agenda', 'Không có script cứng', 'Có discussion guide / task scenario'],
+      ['Người dẫn', 'PO', 'UXR'],
+    ],
+  }
+  const roles = [
+    {
+      title: 'UXR điều phối xuyên suốt',
+      body:
+        'Host và điều phối: kết nối nguồn user, vận hành lịch, review objective của PO, giữ nhịp và chất lượng trong buổi. UXR không hỏi chính, chỉ đỡ nhịp khi PO bí.',
+    },
+    {
+      title: 'PO là người phỏng vấn chính',
+      body:
+        'PO tự dẫn 30 phút của mình theo objective đã đăng ký và chịu trách nhiệm cho phần insight thuộc product của mình.',
+    },
+    {
+      title: 'Mục tiêu dài hạn',
+      body:
+        'Giúp PO ngày càng tự tin tự nói chuyện với user và đưa ngữ cảnh thật vào quyết định product.',
+    },
+  ]
+  const sessionStructure = [
+    {
+      title: 'Định kỳ',
+      body: '2 tuần / lần.',
+    },
+    {
+      title: 'Mỗi buổi',
+      body: '4 user. Mỗi user ngồi 90 phút.',
+    },
+    {
+      title: 'Trong 90 phút',
+      body:
+        '3 PO xoay vòng, mỗi PO phỏng vấn 30 phút, tương ứng 3 product/context khác nhau.',
+    },
+    {
+      title: 'Đăng ký trước làm trước',
+      body:
+        'PO đăng ký slot theo thứ tự; ai đăng ký sớm được ưu tiên.',
+    },
+  ]
+  const recruitNotes = [
+    {
+      title: 'Pool user chung',
+      body:
+        'UXR kết nối với agency quản một pool user chung để có nguồn user đều đặn.',
+    },
+    {
+      title: 'Tiêu chí tuyển rộng',
+      body:
+        'Không quá chi tiết. Điều kiện cơ bản là có dùng ví điện tử hoặc function liên quan. Không siết screener chặt theo từng product, vì user được chia sẻ chung cho cả 3 PO trong buổi.',
+    },
+    {
+      title: 'Câu hỏi phù hợp user mass',
+      body:
+        'Vì pool dùng chung, PO tránh đi quá sâu vào một segment hiếm hoặc context quá niche.',
+    },
+  ]
+  const beforeSession = [
+    {
+      title: 'PO điền objective',
+      body:
+        'Nếu có objective rõ, PO chuẩn bị script, discussion guide hoặc flow phù hợp.',
+    },
+    {
+      title: 'UXR review objective',
+      body:
+        'Giúp câu hỏi đi đúng hướng, ưu tiên friction product, tránh leading và vừa với 30 phút.',
+    },
+    {
+      title: 'Chuẩn bị context',
+      body:
+        'Nếu không có objective, PO cần chuẩn bị flow hoặc function cần test.',
+    },
+    {
+      title: 'Setup ngữ cảnh thực tế',
+      body:
+        'Nếu có thể, setup office hoặc môi trường gần với usecase thật, ví dụ đi mua hàng 7-11.',
+    },
+    {
+      title: 'Chuẩn bị ghi âm/note-taking',
+      body:
+        'UXR chuẩn bị ghi âm/note-taking. Cần ít nhất 1 người observe riêng để hỗ trợ PO.',
+    },
+  ]
+  const duringSession = [
+    {
+      title: 'Hỏi trên môi trường production thật',
+      body:
+        'Cho user mở app và thao tác thực tế. Nếu tính năng chưa lên prod thì mới dùng prototype.',
+    },
+    {
+      title: 'Ưu tiên product friction',
+      body:
+        'Chờ user vướng, bước bỏ cuộc hoặc điểm khó hiểu; hỏi về hành vi và trải nghiệm thật.',
+    },
+    {
+      title: 'Quan sát task tự nhiên',
+      body:
+        'Không hướng dẫn user đi đúng flow quá sớm. Chú ý friction vô hình như vì sao user ngại, lỡ tay hoặc nghĩ sai.',
+    },
+    {
+      title: 'Hỏi mở sau task',
+      body:
+        'Ví dụ: “Vừa rồi bạn đang nghĩ gì khi làm X?”, “Bạn nghĩ gì khi bấm vào Y?”.',
+    },
+    {
+      title: 'Giữ đúng 30 phút',
+      body:
+        'PO giữ khung thời gian; UXR canh nhịp chuyển PO để không lố giờ của user kế tiếp.',
+    },
+  ]
+  const afterSession = [
+    {
+      title: 'Debrief của từng PO',
+      body:
+        'PO liệt kê insight, painpoint và next action cho product của mình. Đây là output chính.',
+    },
+    {
+      title: 'Retrospect chương trình',
+      body:
+        'Nhìn lại chất lượng user, objective, timing và phối hợp giữa các PO để cải thiện buổi sau.',
+    },
+  ]
+  const opsNotes = [
+    {
+      title: '30 phút rất ngắn',
+      body:
+        'PO nên vào thẳng friction trọng tâm, tránh hỏi lan man. Objective rõ giúp tiết kiệm thời gian.',
+    },
+    {
+      title: 'User dùng chung 3 PO',
+      body:
+        'Tránh ba PO hỏi trùng một thứ; UXR có thể điều phối để câu hỏi không giẫm chân nhau.',
+    },
+    {
+      title: 'Mệt mỏi sau 90 phút',
+      body:
+        'PO ở slot cuối cần ý thức user có thể đã giảm tập trung, nên ưu tiên câu quan trọng trước.',
+    },
+    {
+      title: 'Cadence, không phải nghiên cứu sâu',
+      body:
+        'Biweekly giúp bắt friction đều đặn và giữ PO gần user. Khi cần đào sâu một vấn đề cụ thể vẫn nên chạy IDI/UT riêng.',
+    },
+  ]
+
+  return (
+    <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
+      <div className="space-y-5">
+        <div className={contentLabelPillClassName}>
+          Methods
+        </div>
+        <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
+          Chương trình định kỳ 2 tuần/lần để PO trực tiếp gặp user, nhằm mục
+          tiêu được nói chuyện với user thường xuyên hơn.
+        </p>
+      </div>
+
+      <UXArticleSection title="Đây là gì">
+        <UXCardGrid items={biweeklyOverview} />
+        <p>
+          Biweekly Interview không hẳn chỉ là một method, mà còn là một cadence
+          vận hành: giữ PO tiếp xúc với user thật đều đặn, bắt friction sớm và
+          đưa bối cảnh sử dụng thật vào sản phẩm.
+        </p>
+        <div className="border-l-2 border-[var(--ds-border-zpblue)] pl-4">
+          <p className="text-sm font-semibold leading-7 text-[var(--ds-text-primary)]">
+            “Bi-weekly In-person không hẳn chỉ là 1 method, đây còn là mindset -
+            thói quen giữ PO gần user một cách đều đặn.”
+          </p>
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="So sánh với research truyền thống">
+        <UXSimpleTable table={researchComparisonTable} />
+      </UXArticleSection>
+
+      <UXArticleSection title="Vai trò">
+        <UXCardGrid items={roles} />
+      </UXArticleSection>
+
+      <UXArticleSection title="Cấu trúc một buổi">
+        <div className="space-y-5">
+          <UXCardGrid items={sessionStructure} />
+          <pre className="overflow-x-auto rounded-2xl border border-[var(--ds-border-stroke2)] bg-[var(--ds-background-secondary)] p-5 text-sm leading-7 text-[var(--ds-text-primary)]">
+            <code>{`User (90 phút)
+  - PO Product A: 30 phút
+  - PO Product B: 30 phút
+  - PO Product C: 30 phút`}</code>
+          </pre>
+        </div>
+      </UXArticleSection>
+
+      <UXArticleSection title="Tuyển user">
+        <UXCardGrid items={recruitNotes} />
+      </UXArticleSection>
+
+      <UXArticleSection title="Trước buổi">
+        <UXCardGrid items={beforeSession} variant="numbered" />
+      </UXArticleSection>
+
+      <UXArticleSection title="Trong buổi">
+        <UXCardGrid items={duringSession} variant="numbered" />
+      </UXArticleSection>
+
+      <UXArticleSection title="Sau buổi">
+        <UXCardGrid items={afterSession} />
+      </UXArticleSection>
+
+      <UXArticleSection title="Lưu ý vận hành">
+        <UXCardGrid items={opsNotes} />
+      </UXArticleSection>
+
+      <UXArticleSection title="Case Study">
+        <div className="border-l-2 border-[var(--ds-border-zpblue)] pl-4">
+          <p className="text-sm font-semibold italic leading-7 text-[var(--ds-text-primary)]">
+            “TBU”
+          </p>
+        </div>
+      </UXArticleSection>
+    </article>
+  )
+}
+
+const uxResearchMethodArticles = {
+  'in-depth-interview': {
+    label: 'Methods',
+    intro:
+      'Phỏng vấn sâu 1:1 để hiểu lý do, động cơ và bối cảnh đằng sau hành vi của một người dùng.',
+    quote:
+      'Dùng IDI khi team cần hiểu vì sao user hành động như vậy, không chỉ biết họ đã chọn gì.',
+    sections: [
+      {
+        title: 'Đây là gì',
+        paragraphs: [
+          'In-depth Interview là buổi trò chuyện có cấu trúc mềm giữa researcher và một user, tập trung vào bối cảnh, động cơ, kỳ vọng, nỗi đau và cách user ra quyết định.',
+          'Method này phù hợp khi vấn đề còn mở, cần đào sâu mental model hoặc cần nghe ngôn ngữ thật của user trước khi đóng thành survey, concept hoặc flow.',
+        ],
+      },
+      {
+        title: 'Khi nào dùng',
+        items: [
+          'Cần hiểu tại sao user làm hoặc không làm một hành vi cụ thể.',
+          'Đang ở giai đoạn problem discovery, concept early hoặc chưa đủ cơ sở để thiết kế câu hỏi đóng.',
+          'Cần gom insight sâu để định hình opportunity, journey hoặc hypothesis cho bước tiếp theo.',
+        ],
+      },
+      {
+        title: 'Material',
+        items: [
+          'Research objective và 3-5 câu hỏi nghiên cứu chính.',
+          'Discussion guide theo luồng mở, có câu hỏi follow-up và probe.',
+          'Tiêu chí tuyển participant và screener ngắn.',
+          'Consent, note-taking template và nơi lưu recording/quote.',
+        ],
+      },
+      {
+        title: 'Process',
+        items: [
+          'Chốt objective, đối tượng cần gặp và tiêu chí tuyển.',
+          'Viết discussion guide theo thứ tự warm-up, context, behavior, painpoint, expectation.',
+          'Pilot guide với 1-2 người nội bộ để tránh câu hỏi dẫn dắt hoặc quá dài.',
+          'Phỏng vấn, ghi note theo theme và tách rõ quote, observation, interpretation.',
+          'Synthesis thành pattern, insight, implication và next action.',
+        ],
+      },
+      {
+        title: 'Output',
+        items: [
+          'Insight themes kèm evidence/quote.',
+          'Painpoint, motivation, expectation và language của user.',
+          'Recommendation hoặc hypothesis cần validate tiếp.',
+          'Giới hạn mẫu và phần chưa đủ chắc để kết luận.',
+        ],
+      },
+    ],
+  },
+  'focus-group': {
+    label: 'Methods',
+    intro:
+      'Thảo luận nhóm có điều phối để thu nhiều góc nhìn và quan sát phản ứng giữa các participant.',
+    quote:
+      'Focus Group giúp team nghe cách nhiều người phản ứng cùng lúc, nhưng không thay thế phỏng vấn sâu khi cần hiểu động cơ cá nhân.',
+    sections: [
+      {
+        title: 'Đây là gì',
+        paragraphs: [
+          'Focus Group là buổi thảo luận có moderator, thường 4-6 participant cùng trao đổi về một chủ đề, concept, ngôn ngữ hoặc phản ứng với một trải nghiệm.',
+          'Điểm mạnh của method này là tạo ra tương tác giữa participant: người này nhắc người kia nhớ thêm ngữ cảnh, đồng ý, phản biện hoặc dùng cách diễn đạt khác.',
+        ],
+      },
+      {
+        title: 'Khi nào dùng',
+        items: [
+          'Cần khám phá perception, vocabulary, reaction hoặc trade-off ở mức nhóm.',
+          'Muốn nghe nhiều góc nhìn nhanh trước khi đóng hướng concept, content hoặc proposition.',
+          'Chủ đề không quá nhạy cảm và participant có thể thoải mái trao đổi trước người khác.',
+        ],
+      },
+      {
+        title: 'Material',
+        items: [
+          'Discussion guide có opener, stimulus, activity và prompt thảo luận.',
+          'Stimulus/concept/prototype đủ rõ để mọi người cùng phản ứng.',
+          'Screener để tránh nhóm quá lệch hoặc một persona áp đảo toàn bộ discussion.',
+          'Role rõ: moderator dẫn nhịp, note-taker ghi theme và quote.',
+        ],
+      },
+      {
+        title: 'Process',
+        items: [
+          'Set rule đầu buổi: không có câu trả lời đúng/sai, khuyến khích góc nhìn khác nhau.',
+          'Warm-up ngắn để participant quen nói trước nhóm.',
+          'Đi từ trải nghiệm hiện tại tới phản ứng với stimulus/concept.',
+          'Moderator kéo lại những người ít nói và tránh để một người dẫn dắt toàn bộ nhóm.',
+          'Synthesis theo theme, tension, language pattern và implication.',
+        ],
+      },
+      {
+        title: 'Output',
+        items: [
+          'Theme nổi bật và khác biệt giữa nhóm participant.',
+          'Quote/ngôn ngữ user dùng để mô tả vấn đề.',
+          'Reaction với concept, điểm gây hứng thú hoặc hoài nghi.',
+          'Câu hỏi cần đào sâu bằng IDI/UT nếu còn rủi ro.',
+        ],
+      },
+    ],
+  },
+  'usability-testing': {
+    label: 'Methods',
+    intro:
+      'Quan sát người dùng thật thao tác trên flow để phát hiện điểm vướng, hiểu nhầm và rủi ro trước khi ship.',
+    quote:
+      'UT không hỏi user thích hay không thích, UT quan sát họ có làm được việc cần làm hay không.',
+    sections: [
+      {
+        title: 'Đây là gì',
+        paragraphs: [
+          'Usability Testing là method quan sát participant thực hiện task trên prototype hoặc sản phẩm thật, từ đó phát hiện friction, misunderstanding, missing affordance và lỗi logic trong flow.',
+          'Method này đặc biệt hữu ích khi solution đã đủ cụ thể để user thao tác, nhưng team cần evidence trước khi finalize hoặc ship.',
+        ],
+      },
+      {
+        title: 'Khi nào dùng',
+        items: [
+          'Có prototype/flow đủ rõ để user thực hiện task.',
+          'Cần biết user có hiểu, tìm thấy, thao tác và hoàn tất bước quan trọng hay không.',
+          'Flow có rủi ro cao: tiền, xác thực, consent, form dài, decision quan trọng.',
+        ],
+      },
+      {
+        title: 'Material',
+        items: [
+          'Prototype hoặc build đủ ổn định cho task chính.',
+          'Task scenario viết theo mục tiêu user, không chỉ tên feature.',
+          'Success criteria: hoàn thành, lỗi, thời gian, mức trợ giúp, điểm khó hiểu.',
+          'Moderator guide, note sheet và consent/recording setup.',
+        ],
+      },
+      {
+        title: 'Process',
+        items: [
+          'Chốt task và rủi ro cần kiểm trước buổi.',
+          'Pilot prototype/task để tránh lỗi setup làm nhiễu kết quả.',
+          'Cho participant nghĩ thành tiếng khi thao tác, moderator chỉ probe khi cần.',
+          'Ghi observation theo task: nơi dừng, nơi hiểu sai, nơi cần hỏi lại.',
+          'Phân loại issue theo severity và đề xuất fix.',
+        ],
+      },
+      {
+        title: 'Output',
+        items: [
+          'Usability issues theo severity.',
+          'Task success/failure và pattern lỗi lặp lại.',
+          'Recommendation cho flow, copy, hierarchy hoặc state.',
+          'Evidence bằng clip/quote/screenshot nếu cần thuyết phục stakeholder.',
+        ],
+      },
+    ],
+  },
+  'unmoderated-ut': {
+    label: 'Methods',
+    intro:
+      'Cho user tự thực hiện task từ xa để kiểm tra flow ở scale lớn hơn, không có moderator can thiệp.',
+    quote:
+      'Unmoderated UT phù hợp khi task đã rõ và setup đủ chặt để user tự đi qua mà không cần người dẫn.',
+    sections: [
+      {
+        title: 'Đây là gì',
+        paragraphs: [
+          'Unmoderated UT là usability testing không có moderator trong buổi test. Participant nhận task, tự thao tác và hệ thống ghi lại hành vi, câu trả lời hoặc video/session recording.',
+          'Method này giúp scale số lượng participant nhanh hơn moderated UT, nhưng cần task rõ, prototype ổn định và câu hỏi không phụ thuộc vào probe sâu.',
+        ],
+      },
+      {
+        title: 'Khi nào dùng',
+        items: [
+          'Flow/prototype đã đủ ổn định, task ngắn và ít cần giải thích.',
+          'Cần kiểm trên nhiều participant để thấy pattern lỗi có lặp lại không.',
+          'Muốn so sánh nhanh nhiều variant hoặc kiểm task success ở mức rộng hơn.',
+        ],
+      },
+      {
+        title: 'Material',
+        items: [
+          'Task script cực rõ, không dùng thuật ngữ nội bộ.',
+          'Prototype/build có thể tự chạy không cần người hỗ trợ.',
+          'Câu hỏi trước/sau task: expectation, difficulty, confidence, open feedback.',
+          'Tool ghi màn hình/session, tracking event hoặc survey form.',
+        ],
+      },
+      {
+        title: 'Process',
+        items: [
+          'Pilot với vài người để bắt lỗi task/prototype trước khi gửi rộng.',
+          'Recruit participant theo tiêu chí tối thiểu và phân bổ device nếu cần.',
+          'Gửi task, thu recording/log/survey response.',
+          'Loại response kém chất lượng hoặc không hoàn thành setup.',
+          'Review pattern lỗi, task success và quote/open feedback.',
+        ],
+      },
+      {
+        title: 'Output',
+        items: [
+          'Task success, drop-off, confusion point và severity.',
+          'Pattern lỗi theo participant/variant/device.',
+          'Clip hoặc screenshot minh họa issue điển hình.',
+          'Recommendation cho fix trước khi ship hoặc test sâu tiếp.',
+        ],
+      },
+    ],
+  },
+  'biweekly-interview': {
+    label: 'Methods',
+    intro:
+      'Chương trình định kỳ 2 tuần/lần để PO trực tiếp gặp user, nhằm mục tiêu được nói chuyện với user thường xuyên hơn.',
+    quote:
+      'Bi-weekly In-person không hẳn chỉ là 1 method, đây còn là mindset - thói quen giữ PO gần user một cách đều đặn.',
+    sections: [
+      {
+        title: 'Đây là gì',
+        paragraphs: [
+          'Biweekly Interview là một dự án tiếp xúc người dùng định kỳ 2 tuần một lần, liên tục, không phụ thuộc vào project cycle.',
+          'Mỗi session sẽ có 4 users đến office hoặc setup ngữ cảnh theo usecase, mỗi user phỏng vấn trong vòng 90 phút, chia làm 3 session. Mỗi PO đều được hỏi 4 người, mỗi người 30 phút.',
+          'User được tuyển không theo tiêu chí cụ thể, không chia segment như một project research truyền thống, chỉ có các tiêu chí cơ bản như có dùng sản phẩm fintech, có dùng các dịch vụ như bill, telco, movie, transfer.',
+          'PO sẽ là người được quan sát và phỏng vấn trực tiếp user, có thêm cơ hội tiếp xúc với user thực tế với nhịp độ thường xuyên để gần hơn và thấu hiểu ngữ cảnh sử dụng của user hơn.',
+          'Không có agenda cứng. Nội dung hỏi xoay quanh trải nghiệm của user với sản phẩm/tính năng của Zalopay trên môi trường prod hiện tại, hoặc đánh giá concept sản phẩm mới / thiết kế mới dành cho mass user.',
+          'Không thay thế UT khi cần evidence để ship. Không dùng để validate hypothesis. Không report lên high-level như research chính thống.',
+        ],
+      },
+      {
+        title: 'So sánh với research truyền thống',
+        table: {
+          headers: ['', 'Bi-weekly', 'Research truyền thống'],
+          rows: [
+            ['Segment', 'General, 18-35 tuổi', 'Cụ thể, tuyển đúng yêu cầu theo project'],
+            ['Tần suất', 'Mỗi 2 tuần, liên tục', 'Theo project, có điểm kết thúc'],
+            ['Thời gian', 'Mỗi PO hỏi 30 phút, mỗi user có 90 phút', '1h30 phút mỗi user, 12 user mỗi dự án'],
+            ['Mục tiêu', 'Bắt friction sớm, giữ PO gần user', 'Trả lời câu hỏi research cụ thể'],
+            ['Agenda', 'Không có script cứng', 'Có discussion guide / task scenario'],
+            ['Người dẫn', 'PO', 'UXR'],
+          ],
+        },
+      },
+      {
+        title: 'Vai trò',
+        items: [
+          'UXR điều phối xuyên suốt: host, quản lý lịch user, đảm bảo consent, vận hành flow, review objective của PO, giữ nhịp và chất lượng trong buổi.',
+          'PO là người phỏng vấn chính. PO tự dẫn 30 phút của mình, hỏi theo objective đã đăng ký.',
+          'Mục tiêu dài hạn là PO ngày càng tự tin tự nói chuyện với user.',
+        ],
+      },
+      {
+        title: 'Cấu trúc một buổi',
+        items: [
+          'Định kỳ: 2 tuần / lần.',
+          'Mỗi buổi: 4 user. Mỗi user ngồi 90 phút.',
+          'Trong 90 phút đó, 3 PO xoay vòng, mỗi PO phỏng vấn 30 phút.',
+          'Đăng ký trước làm trước: PO đăng ký slot theo thứ tự, ai đăng ký trước được ưu tiên.',
+        ],
+        code:
+          'User (90 phút)\\n├─ PO Product A — 30 phút\\n├─ PO Product B — 30 phút\\n└─ PO Product C — 30 phút',
+      },
+      {
+        title: 'Tuyển user',
+        items: [
+          'UXR kết nối với agency quản một pool user chung.',
+          'Tiêu chí tuyển rộng, không quá chi tiết: điều kiện cơ bản như có dùng sản phẩm fintech, có dùng dịch vụ bill/telco/movie/transfer.',
+          'Vì pool dùng chung, PO cần thiết kế câu hỏi phù hợp với user mass/general, không đi quá sâu vào một segment hiếm.',
+        ],
+      },
+      {
+        title: 'Trước buổi: Objective',
+        items: [
+          'PO điền objective trước khi vào buổi. Nếu có objective rõ thì PO chuẩn bị script/prototype/flow phù hợp.',
+          'UXR review qua objective để đảm bảo câu hỏi đi đúng hướng và tránh biến buổi thành research project nặng.',
+          'Nếu không có objective thì PO cần chuẩn bị flow, feature hoặc product context muốn học từ user.',
+        ],
+      },
+      {
+        title: 'Trong buổi',
+        items: [
+          'Hỏi kiểu một trường production thật: nói chuyện với user như đang học từ họ, quan sát friction thật, hỏi bối cảnh dùng app hằng ngày.',
+          'PO giữ trong khung 30 phút; UXR canh nhịp chuyển PO để không lố giờ của user kế tiếp.',
+          'UXR chỉ đỡ nhịp khi PO bí, không lấn vai.',
+        ],
+      },
+      {
+        title: 'Sau buổi: Output',
+        items: [
+          'Debrief của từng PO: liệt kê insight, painpoint và next action cho product của mình.',
+          'File retrospecs: nhìn lại chương trình, chất lượng user, objective, timing và phối hợp giữa các PO.',
+        ],
+      },
+      {
+        title: 'Lưu ý vận hành',
+        items: [
+          '30 phút rất ngắn, PO nên vào thẳng friction trọng tâm.',
+          'User dùng chung 3 PO, tránh ba PO hỏi trùng một thứ.',
+          'User slot cuối có thể mệt hơn sau 90 phút, nên ưu tiên câu hỏi quan trọng trước.',
+          'Đây là cadence, không phải nghiên cứu sâu. Khi cần đào sâu một vấn đề cụ thể vẫn nên chạy IDI/UT riêng.',
+        ],
+      },
+    ],
+  },
+} as const
+
+function UXResearchMethodArticle({
+  article,
+}: {
+  article: (typeof uxResearchMethodArticles)[keyof typeof uxResearchMethodArticles]
+}) {
+  return (
+    <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
+      <div className="space-y-5">
+        <div className={contentLabelPillClassName}>
+          {article.label}
+        </div>
+        <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
+          {article.intro}
+        </p>
+        {article.quote && (
+          <p className="max-w-4xl border-l-2 border-[var(--ds-border-zpblue)] pl-4 text-sm font-semibold leading-7 text-[var(--ds-text-primary)]">
+            “{article.quote}”
+          </p>
+        )}
+      </div>
+
+      {article.sections.map((section) => (
+        <UXArticleSection key={section.title} title={section.title}>
+          {'paragraphs' in section && section.paragraphs ? (
+            <div className="space-y-4">
+              {section.paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+          ) : null}
+
+          {'items' in section && section.items ? (
+            <OverviewBulletList items={[...section.items]} />
+          ) : null}
+
+          {'table' in section && section.table ? (
+            <UXSimpleTable table={section.table} />
+          ) : null}
+
+          {'code' in section && section.code ? (
+            <pre className="overflow-x-auto rounded-2xl border border-[var(--ds-border-stroke2)] bg-[var(--ds-background-secondary)] p-5 text-sm leading-7 text-[var(--ds-text-primary)]">
+              <code>{section.code}</code>
+            </pre>
+          ) : null}
+        </UXArticleSection>
       ))}
+    </article>
+  )
+}
+
+function UXSimpleTable({
+  table,
+}: {
+  table: { headers: readonly string[]; rows: readonly (readonly string[])[] }
+}) {
+  return (
+    <div className="overflow-x-auto rounded-2xl border border-[var(--ds-border-stroke2)] bg-[var(--ds-background-primary)]">
+      <table className="min-w-[720px] w-full border-collapse text-left text-sm">
+        <thead className="bg-[var(--ds-background-zpblue-subtle)] text-[var(--ds-text-primary)]">
+          <tr>
+            {table.headers.map((header) => (
+              <th className="px-4 py-3 font-bold" key={header || 'empty'}>
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {table.rows.map((row) => (
+            <tr
+              className="border-t border-[var(--ds-border-stroke2)]"
+              key={row.join('-')}
+            >
+              {row.map((cell, index) => (
+                <td
+                  className={cn(
+                    'px-4 py-3 text-[var(--ds-text-secondary)]',
+                    index === 0 && 'font-semibold text-[var(--ds-text-primary)]'
+                  )}
+                  key={`${cell}-${index}`}
+                >
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }
@@ -5803,7 +7471,7 @@ function UXResearchWorkflowOverviewContent() {
   return (
     <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
       <div className="space-y-5">
-        <div className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
+        <div className={contentLabelPillClassName}>
           Workflow
         </div>
         <div className="grid gap-3">
@@ -5864,13 +7532,10 @@ function UXResearchMethodPickerContent() {
   return (
     <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
       <div className="space-y-5">
-        <div className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
+        <div className={contentLabelPillClassName}>
           Workflow
         </div>
         <div className="grid gap-3">
-          <h2 className="max-w-4xl text-2xl font-bold leading-9 text-[var(--ds-text-primary)] md:text-[2rem] md:leading-[2.75rem]">
-            Method Picker Matrix
-          </h2>
           <p className="max-w-4xl text-base leading-8 text-[var(--ds-text-secondary)] md:text-xl md:leading-9">
             Tra cứu nên dùng method nào theo trạng thái sản phẩm và loại câu
             hỏi cần trả lời.
@@ -5891,10 +7556,7 @@ function UXResearchMethodPickerContent() {
         </p>
       </div>
 
-      <UXArticleSection
-        description="Chọn nhanh trạng thái sản phẩm và loại câu hỏi để thấy method gợi ý trước khi đọc toàn bộ matrix."
-        title="Pick nhanh method"
-      >
+      <div className="mt-10 max-w-5xl">
         <UXResearchMethodWizard
           selectedCell={selectedCell}
           selectedColumn={selectedColumn}
@@ -5904,14 +7566,7 @@ function UXResearchMethodPickerContent() {
           onQuestionChange={setSelectedQuestion}
           onStateChange={setSelectedState}
         />
-      </UXArticleSection>
-
-      <UXArticleSection
-        description="Đi theo hàng trước, rồi đọc qua cột để tránh chọn method chỉ vì team đang quen dùng."
-        title="Ma trận chọn method"
-      >
-        <UXResearchMethodPickerMatrix />
-      </UXArticleSection>
+      </div>
 
       <UXArticleSection
         description="Bốn nhóm câu hỏi này là trục chính để xác định loại research cần làm."
@@ -6040,7 +7695,7 @@ function UXResearchMethodWizard({
       </div>
 
       <div className="rounded-2xl border border-[var(--ds-border-zpblue-subtle)] bg-[var(--ds-background-primary)] p-6">
-        <span className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
+        <span className={contentLabelPillClassName}>
           Recommended
         </span>
         <div className="mt-4 grid gap-2">
@@ -6083,7 +7738,7 @@ function UXResearchOrderContent() {
   return (
     <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
       <div className="space-y-5">
-        <div className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
+        <div className={contentLabelPillClassName}>
           Workflow
         </div>
         <div className="grid gap-3">
@@ -6168,105 +7823,6 @@ function UXResearchOrderContent() {
   )
 }
 
-function UXResearchMethodPickerMatrix() {
-  return (
-    <div className="overflow-x-auto rounded-2xl border border-[var(--ds-border-stroke2)] bg-[var(--ds-background-primary)]">
-      <table className="min-w-[980px] w-full border-collapse text-left text-sm">
-        <thead>
-          <tr className="bg-[var(--ds-background-zpblue-subtle)] text-[var(--ds-text-primary)]">
-            <th className="w-[180px] px-4 py-4 align-bottom font-bold">
-              <span className="block text-xs uppercase leading-4 text-[var(--ds-text-link)]">
-                Trạng thái
-              </span>
-              <span className="mt-1 block text-sm">Câu hỏi</span>
-            </th>
-            {uxResearchMethodPickerColumns.map((column) => (
-              <th className="min-w-[200px] px-4 py-4 align-top" key={column.key}>
-                <span className="block font-bold leading-6">
-                  {column.label}
-                </span>
-                <span className="mt-1 block text-xs font-medium leading-5 text-[var(--ds-text-secondary)]">
-                  {column.subtitle}
-                </span>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {uxResearchMethodPickerRows.map((row) => (
-            <tr
-              className="border-t border-[var(--ds-border-stroke2)]"
-              key={row.state}
-            >
-              <th className="bg-[#FFFCF4] px-4 py-5 align-top text-left">
-                <span className="block font-bold leading-6 text-[var(--ds-text-primary)]">
-                  {row.state}
-                </span>
-                <span className="mt-2 block text-sm font-medium leading-6 text-[var(--ds-text-secondary)]">
-                  {row.context}
-                </span>
-              </th>
-              {uxResearchMethodPickerColumns.map((column) => (
-                <td
-                  className="border-l border-[var(--ds-border-stroke2)] px-4 py-5 align-top"
-                  key={`${row.state}-${column.key}`}
-                >
-                  <UXResearchMethodCell cell={row.cells[column.key]} />
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
-function UXResearchMethodCell({
-  cell,
-}: {
-  cell: {
-    body?: string
-    empty?: string
-    method?: string
-    note?: string
-    warning?: string
-  }
-}) {
-  if (cell.empty) {
-    return (
-      <div className="flex min-h-[104px] items-center justify-center text-center text-sm font-medium leading-6 text-[var(--ds-text-tertiary)]">
-        {cell.empty}
-      </div>
-    )
-  }
-
-  return (
-    <div className="space-y-3">
-      <div>
-        <p className="font-bold leading-6 text-[var(--ds-text-link)]">
-          {cell.method}
-        </p>
-        {cell.body && (
-          <p className="mt-2 text-sm leading-6 text-[var(--ds-text-secondary)]">
-            {cell.body}
-          </p>
-        )}
-      </div>
-      {cell.note && (
-        <p className="rounded-xl border border-[#B8DCFF] bg-[#F1F8FF] px-3 py-2 text-xs font-medium leading-5 text-[#0057B8]">
-          {cell.note}
-        </p>
-      )}
-      {cell.warning && (
-        <p className="rounded-xl border border-[#F5D6A0] bg-[#FFF8EA] px-3 py-2 text-xs font-medium leading-5 text-[#7A5C18]">
-          {cell.warning}
-        </p>
-      )}
-    </div>
-  )
-}
-
 function UXResearchDowngradeTable({
   rows,
 }: {
@@ -6319,7 +7875,7 @@ function UXResearchPrincipleContent() {
   return (
     <article className="overview-article mt-10 max-w-6xl text-[var(--ds-text-primary)]">
       <div className="space-y-5">
-        <div className="inline-flex rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-[11px] font-semibold uppercase leading-4 text-[var(--ds-text-link)]">
+        <div className={contentLabelPillClassName}>
           Principles
         </div>
         <div className="grid gap-3">
@@ -6506,6 +8062,40 @@ function UXTeamContent({ view }: { view: UXTeamView }) {
     parent.id === 'ux-research' &&
     child?.id === 'methods' &&
     grandchild?.id === 'survey'
+  const isInDepthInterview =
+    parent.id === 'ux-research' &&
+    child?.id === 'methods' &&
+    grandchild?.id === 'in-depth-interview'
+  const isFocusGroup =
+    parent.id === 'ux-research' &&
+    child?.id === 'methods' &&
+    grandchild?.id === 'focus-group'
+  const isUsabilityTesting =
+    parent.id === 'ux-research' &&
+    child?.id === 'methods' &&
+    grandchild?.id === 'usability-testing'
+  const isUnmoderatedUT =
+    parent.id === 'ux-research' &&
+    child?.id === 'methods' &&
+    grandchild?.id === 'unmoderated-ut'
+  const isBiweeklyInterview =
+    parent.id === 'ux-research' &&
+    child?.id === 'methods' &&
+    grandchild?.id === 'biweekly-interview'
+  const uxResearchMethodArticle =
+    parent.id === 'ux-research' &&
+    child?.id === 'methods' &&
+    grandchild &&
+    grandchild.id !== 'survey' &&
+    grandchild.id !== 'in-depth-interview' &&
+    grandchild.id !== 'focus-group' &&
+    grandchild.id !== 'usability-testing' &&
+    grandchild.id !== 'unmoderated-ut' &&
+    grandchild.id !== 'biweekly-interview'
+      ? uxResearchMethodArticles[
+          grandchild.id as keyof typeof uxResearchMethodArticles
+        ]
+      : undefined
   const isUXResearchPrinciple =
     parent.id === 'ux-research' && child?.id === 'principle'
   const isUXResearchWorkflow =
@@ -6538,9 +8128,13 @@ function UXTeamContent({ view }: { view: UXTeamView }) {
     : child
       ? child.description
       : parent.description
+  const sectionLabel = isOverview ? 'UX Team' : parent.label
 
   return (
     <section>
+      <div className={pageLabelPillClassName}>
+        {sectionLabel}
+      </div>
       <h1 className={pageTitleClassName}>
         {title}
       </h1>
@@ -6552,6 +8146,18 @@ function UXTeamContent({ view }: { view: UXTeamView }) {
         <UXResearchPrincipleContent />
       ) : isSurvey ? (
         <UXResearchSurveyContent />
+      ) : isInDepthInterview ? (
+        <UXResearchInDepthInterviewContent />
+      ) : isFocusGroup ? (
+        <UXResearchFocusGroupContent />
+      ) : isUsabilityTesting ? (
+        <UXResearchUsabilityTestingContent />
+      ) : isUnmoderatedUT ? (
+        <UXResearchUnmoderatedUTContent />
+      ) : isBiweeklyInterview ? (
+        <UXResearchBiweeklyInterviewContent />
+      ) : uxResearchMethodArticle ? (
+        <UXResearchMethodArticle article={uxResearchMethodArticle} />
       ) : isUXResearchWorkflowOverview ? (
         <UXResearchWorkflowOverviewContent />
       ) : isUXResearchMethodPicker ? (
@@ -6697,17 +8303,205 @@ function UXTeamContent({ view }: { view: UXTeamView }) {
 }
 
 function PendingContent({ label }: { label: string }) {
+  const isMotionHub = label === 'Motion Hub'
+
+  if (isMotionHub) {
+    return <MotionHubPreviewContent />
+  }
+
   return (
     <section>
+      <div className={pageLabelPillClassName}>
+        {label}
+      </div>
       <h1 className={pageTitleClassName}>
         {label}
       </h1>
       <Separator className="mt-9 bg-[var(--ds-border-zpblue-subtle)]" />
       <Card className="mt-16 rounded-xl border-[var(--ds-border-stroke2)] bg-[var(--ds-background-secondary)] p-8 shadow-none">
-        <CardContent className="px-0 text-base font-medium leading-6 text-[var(--ds-text-tertiary)]">
-          To be updated
+        <CardContent className="grid gap-5 px-0 text-base font-medium leading-6 text-[var(--ds-text-tertiary)]">
+          {isMotionHub ? (
+            <>
+              <div className="grid gap-2">
+                <p className="text-xl font-bold leading-8 text-[var(--ds-text-primary)]">
+                  Khám phá Motion Hub
+                </p>
+                <p className="max-w-2xl text-base font-medium leading-7 text-[var(--ds-text-secondary)]">
+                  Truy cập Motion Hub để xem guideline, nguyên tắc chuyển động
+                  và các ví dụ animation đang được tách riêng cho team.
+                </p>
+              </div>
+              <a
+                className="inline-flex h-11 w-fit items-center justify-center gap-1.5 rounded-full bg-[var(--ds-background-zpblue)] px-5 text-sm font-medium text-white transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[var(--ds-border-zpblue-subtle)]"
+                href="https://zlp-motionhub.netlify.app/"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Mở Motion Hub
+                <ArrowUpRight aria-hidden="true" className="size-4" />
+              </a>
+            </>
+          ) : (
+            'To be updated'
+          )}
         </CardContent>
       </Card>
+    </section>
+  )
+}
+
+function MotionHubPreviewContent() {
+  const hubUrl = 'https://zlp-motionhub.netlify.app/'
+  const motionSections = [
+    {
+      eyebrow: 'Principles',
+      title: 'Motion principles',
+      description:
+        'Nguyên tắc giúp motion có mục đích: dẫn chú ý, phản hồi trạng thái và giữ ngữ cảnh khi người dùng thao tác.',
+      href: `${hubUrl}principles`,
+    },
+    {
+      eyebrow: 'Motions',
+      title: 'Interaction patterns',
+      description:
+        'Các mẫu chuyển động dùng lại cho trạng thái, chuyển cảnh và feedback trong sản phẩm Zalopay.',
+      href: `${hubUrl}motions`,
+    },
+    {
+      eyebrow: 'Assets',
+      title: 'Motion assets',
+      description:
+        'Thư viện Rive/Lottie để preview, replay và tải asset như loading, icon động hoặc illustration motion.',
+      href: `${hubUrl}assets`,
+    },
+    {
+      eyebrow: 'Glossary',
+      title: 'Motion glossary',
+      description:
+        'Các thuật ngữ motion chung để team trao đổi rõ hơn khi review animation và handoff.',
+      href: `${hubUrl}glossary`,
+    },
+  ]
+  const assetSamples = [
+    'Toro Mystery Box',
+    'Explore ZaloPay Icon',
+    'Profile Loading',
+    'PayLater Reminder',
+  ]
+
+  return (
+    <section>
+      <div className={pageLabelPillClassName}>
+        Motion Hub
+      </div>
+      <h1 className={pageTitleClassName}>
+        Motion Hub
+      </h1>
+      <Separator className="mt-9 bg-[var(--ds-border-zpblue-subtle)]" />
+
+      <article className="mt-14 grid gap-8">
+        <div className="motion-hub-tagline-card">
+          <div className="grid gap-6">
+            <div>
+              <h2 className="motion-hub-tagline max-w-5xl text-4xl font-bold leading-[1.08] text-[var(--ds-text-primary)] md:text-6xl">
+                Make every interaction go{' '}
+                <span
+                  className="motion-hub-tagline-accent"
+                  data-crystal-glow="cha-ching"
+                >
+                  cha-ching
+                  <span aria-hidden="true" data-crystal-sparkle />
+                  <span aria-hidden="true" data-crystal-sparkle />
+                  <span aria-hidden="true" data-crystal-sparkle />
+                  <span aria-hidden="true" data-crystal-sparkle />
+                  <span aria-hidden="true" data-crystal-sparkle />
+                  <span aria-hidden="true" data-crystal-sparkle />
+                  <span aria-hidden="true" data-crystal-sparkle />
+                  <span aria-hidden="true" data-crystal-sparkle />
+                </span>
+              </h2>
+              <p className="mt-4 max-w-3xl text-base font-medium leading-7 text-[var(--ds-text-secondary)]">
+                Motion là cách sản phẩm phản hồi người dùng và thể hiện cá tính
+                thương hiệu. Khám phá nguyên tắc đằng sau từng chuyển động, lấy
+                code và asset của chung biến thành của riêng.
+              </p>
+            </div>
+            <div className="flex flex-wrap">
+              <a
+                className="motion-hub-open-cta inline-flex h-11 w-fit items-center justify-center gap-1.5 rounded-full bg-[var(--ds-background-zpblue)] px-5 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[var(--ds-border-zpblue-subtle)]"
+                href={hubUrl}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Mở MotionHub
+                <ArrowUpRight aria-hidden="true" className="size-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {motionSections.map((section) => (
+            <a
+              className="group rounded-2xl border border-[var(--ds-border-stroke2)] bg-[var(--ds-background-primary)] p-5 text-left transition-[background-color,border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-[var(--ds-border-zpblue-subtle)] hover:bg-[#fbfdff] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[var(--ds-border-zpblue-subtle)]"
+              href={section.href}
+              key={section.title}
+              rel="noreferrer"
+              target="_blank"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="rounded-full bg-[var(--ds-background-zpblue-subtle)] px-3 py-1 text-xs font-bold text-[var(--ds-text-link)]">
+                  {section.eyebrow}
+                </span>
+                <ArrowUpRight
+                  aria-hidden="true"
+                  className="size-4 text-[var(--ds-text-link)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
+              </div>
+              <h3 className="mt-8 text-xl font-bold leading-7 text-[var(--ds-text-primary)]">
+                {section.title}
+              </h3>
+              <p className="mt-3 text-sm font-medium leading-6 text-[var(--ds-text-secondary)]">
+                {section.description}
+              </p>
+            </a>
+          ))}
+        </div>
+
+        <section className="grid gap-5 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--ds-text-link)]">
+              Asset examples
+            </p>
+            <h2 className="mt-3 text-2xl font-bold leading-8 text-[var(--ds-text-primary)]">
+              Một vài motion asset đang có
+            </h2>
+            <p className="mt-3 text-base font-medium leading-7 text-[var(--ds-text-secondary)]">
+              Demo này chỉ bóc vài entry nổi bật để người xem biết Motion Hub đã
+              có nội dung thật. Asset đầy đủ vẫn nằm ở site Motion Hub.
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            {assetSamples.map((asset) => (
+              <a
+                className="rounded-2xl border border-[var(--ds-border-stroke2)] bg-[#fbfdff] p-4 transition-[background-color,border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-[var(--ds-border-zpblue-subtle)] hover:bg-[var(--ds-background-primary)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[var(--ds-border-zpblue-subtle)]"
+                href={`${hubUrl}assets`}
+                key={asset}
+                rel="noreferrer"
+                target="_blank"
+              >
+                <span className="text-xs font-bold uppercase leading-4 text-[var(--ds-text-link)]">
+                  Rive asset
+                </span>
+                <p className="mt-4 text-base font-bold leading-6 text-[var(--ds-text-primary)]">
+                  {asset}
+                </p>
+              </a>
+            ))}
+          </div>
+        </section>
+      </article>
     </section>
   )
 }

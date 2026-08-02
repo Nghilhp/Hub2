@@ -33,11 +33,17 @@ export function LoginLoadingScreen({
           <span className="sr-only">Đang tải {HUB_NAME}</span>
         </h1>
 
-        <img
-          alt=""
-          className="loading-motion-brand-lockup"
-          src="/zalopay-design-hub-logo-color.svg"
-        />
+        <div className="loading-motion-brand-lockup" aria-hidden="true">
+          <span className="loading-motion-logo-part loading-motion-logo-mark">
+            <img alt="" src="/loading-zmark.svg" />
+          </span>
+          <span className="loading-motion-logo-part loading-motion-logo-divider">
+            <img alt="" src="/loading-divider.svg" />
+          </span>
+          <span className="loading-motion-logo-part loading-motion-logo-wordmark">
+            <img alt="" src="/loading-zalopay-wordmark.svg" />
+          </span>
+        </div>
       </section>
     </main>
   )

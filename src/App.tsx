@@ -3,6 +3,7 @@ import { Agentation } from 'agentation'
 
 import { NotFound } from '@/components/hub/NotFound'
 import { IntroductionPage } from '@/pages/IntroductionPage'
+import { LoadingPage } from '@/pages/LoadingPage'
 
 const LOGIN_ENABLED = false
 
@@ -10,8 +11,17 @@ function getInitialPath() {
   return window.location.pathname
 }
 
+function shouldShowLandingIntro(path: string) {
+  const hash = window.location.hash.replace('#', '')
+
+  return path !== '/loading' && (!hash || hash === 'landing')
+}
+
 function App() {
   const [path, setPath] = useState(getInitialPath)
+  const [showLandingIntro, setShowLandingIntro] = useState(() =>
+    shouldShowLandingIntro(getInitialPath())
+  )
 
   useEffect(() => {
     function handlePopState() {
@@ -31,9 +41,38 @@ function App() {
     navigate('/#introduction')
   }
 
+  function handleLandingIntroComplete() {
+    setShowLandingIntro(false)
+    if (!window.location.hash) {
+      window.history.replaceState(null, '', '/#landing')
+      setPath('/')
+    }
+  }
+
   let pageContent
 
-  if (
+  if (path === '/loading') {
+    pageContent = <LoadingPage isLooping onComplete={() => undefined} />
+  } else if (
+    !LOGIN_ENABLED &&
+    (path === '/' || path === '/login')
+  ) {
+    pageContent = (
+      <div className="login-intro-stack">
+        <div
+          className="login-intro-page"
+          aria-hidden={showLandingIntro ? 'true' : undefined}
+        >
+          <IntroductionPage />
+        </div>
+        {showLandingIntro && (
+          <div className="login-intro-loading">
+            <LoadingPage onComplete={handleLandingIntroComplete} />
+          </div>
+        )}
+      </div>
+    )
+  } else if (
     !LOGIN_ENABLED &&
     (path === '/' ||
       path === '/login' ||

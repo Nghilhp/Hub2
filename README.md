@@ -156,15 +156,23 @@ src/pages/IntroductionPage.tsx
 ### Quick Handoff
 
 - Route local:
+  - Landing: `#landing`
+  - Our team here: `#our-team-overview`
   - UI Team: `#introduction`, `#principles`, `#clear-hierarchy`
   - UX Team overview: `#ux-team-overview`
   - UX Design: `#ux-team-ux-design--ux-principle`, `#ux-team-ux-design--ux-pattern--overview`, `#ux-team-ux-design--workflow--overview`
-  - UX Research: `#ux-team-ux-research--principle`, `#docs-uxr-methods-survey`, `#ux-team-ux-research--workflow--method-picker-matrix`
+  - UX Research principle: `#ux-team-ux-research--principle`
+  - UX Research methods: `#docs-uxr-methods-survey`, `#ux-team-ux-research--methods--in-depth-interview`, `#ux-team-ux-research--methods--focus-group`, `#ux-team-ux-research--methods--usability-testing`, `#ux-team-ux-research--methods--unmoderated-ut`, `#ux-team-ux-research--methods--biweekly-interview`
+  - UX Research workflow: `#ux-team-ux-research--workflow--overview`, `#ux-team-ux-research--workflow--method-picker-matrix`, `#ux-team-ux-research--workflow--order-research`
   - UX Writing: `#ux-team-ux-writing--principles`, `#ux-team-ux-writing--workflow`, `#ux-team-ux-writing--glossary`
+  - Motion Hub: `#motion-hub`
 - File chính: `src/pages/IntroductionPage.tsx`
+- CSS chính của page/cursor/landing/motion: `src/index.css`
 - Sidebar/header behavior hiện tại: xem mục `Current Introduction Structure` và `Sidebar`
 - Card spec theo Figma node: `1397:11356`
 - Graphic palette tím theo Figma node: `1393:8574`
+- Landing H1 và dot background theo Figma node: `1422:22893`
+- UX Research Methods theo Figma node: `1423:6206`; Biweekly detail theo subnode `1423:5379`
 - Asset images: `public/principles/`
 - UX Research workflow map asset: `public/ux-research-workflow-map.svg`
 - Script recolor: `scripts/recolor-principle-assets.mjs`
@@ -176,12 +184,25 @@ src/pages/IntroductionPage.tsx
 Route local sau khi login:
 
 ```text
-http://127.0.0.1:5174/#introduction
-http://127.0.0.1:5174/#principles
-http://127.0.0.1:5174/#clear-hierarchy
+http://127.0.0.1:5173/#landing
+http://127.0.0.1:5173/#introduction
+http://127.0.0.1:5173/#docs-uxr-methods-survey
+http://127.0.0.1:5173/#ux-team-ux-research--methods--biweekly-interview
 ```
 
-Nếu dev server đang chạy port khác, dùng đúng port Terminal hiển thị, ví dụ `5173`.
+Nếu dev server/build preview đang chạy port khác, dùng đúng port Terminal hiển thị. Bản build static gần nhất có thể serve bằng:
+
+```bash
+npm run build
+ruby -run -e httpd dist -p 4173 -b 127.0.0.1
+```
+
+Review build:
+
+```text
+http://127.0.0.1:4173/#landing
+http://127.0.0.1:4173/#ux-team-ux-research--methods--biweekly-interview
+```
 
 ### Current Introduction Structure
 
@@ -195,8 +216,13 @@ Nếu dev server đang chạy port khác, dùng đúng port Terminal hiển th�
   - `Motion Hub`
 - Khi chọn một tab trên header nav, page sẽ chọn trang con đầu tiên của tab main đó nếu tab có children.
 - Reload giữ đúng tab/hash hiện tại. Chỉ khi bấm logo Zalopay mới quay về landing.
-- `UI Team` và `UX Team` đang có sidebar/content.
-- `Motion Hub` hiện là main tab `To be updated`.
+- `UI Team`, `UX Team` và `Motion Hub` đang có sidebar/content.
+- `Motion Hub` hiện có preview page riêng, dẫn ra Motion Hub external.
+- Page content dùng 2 cấp label pill:
+  - label trên H1 là tab cấp 1/main section hiện tại, ví dụ `UI Team`, `UX Design`, `UX Research`, `UX Writing`, `Motion Hub`.
+  - label bên trong article/content là tab cấp 2 hiện tại, ví dụ `Workflow`, `Methods`, `UX Pattern`, `UX Principle`.
+  - nếu title trong content bị trùng với H1 phía trên thì bỏ title dưới, chỉ giữ label cấp 2 và mô tả/body.
+  - shared class: `pageLabelPillClassName` cho label trên H1, `contentLabelPillClassName` cho label trong article.
 - Header nav dùng pill animation kiểu React Bits `PillNav`:
   - hover có nền tròn trượt lên
   - text trượt đổi màu
@@ -207,6 +233,7 @@ Nếu dev server đang chạy port khác, dùng đúng port Terminal hiển th�
   - không có stroke nav container
 - Header nav text size hiện là `16px`.
 - Search icon dùng icon button style để đồng bộ màu nền, màu icon và hover state.
+- Search icon vẫn hiển thị cursor pill `You` khi landing active vì cursor tracking chạy ở window level và portal lên body.
 - Search mở command modal:
   - click search icon hoặc dùng `Cmd/Ctrl + K`
   - `Esc` đóng modal
@@ -258,6 +285,7 @@ Landing page rule:
 - Khi vào trang Introduction hoặc reload page, mặc định hiển thị landing trước.
 - Landing page là trang overview của Design Hub, chứa entry point tới các main tab chính.
 - Landing hero dùng full-bleed background `100vw`, không bị padding/max-width hai bên.
+- Landing hero cao gần full viewport; cụm text align left nhưng nằm giữa vùng hero, không dính bottom.
 - Landing hero dùng animated DotGrid trên nền trắng:
   - component: `src/components/DotGrid.tsx`
   - wrapper CSS: `.hub-landing-dot-background`, `.hub-landing-dot-grid`
@@ -270,10 +298,26 @@ Landing page rule:
   - text chính: `#001f3e`
   - `Product Design`: `#0033c9`
   - `team`: `#00cf6a`
-  - desktop size/line-height: `64px / 90px`
-- Landing CTA hover không đổi background/text; chỉ zoom nhẹ:
-  - hover: `scale(1.045)`
-  - active: `scale(0.98)`
+  - desktop size/line-height: `84px / 96px`
+  - tablet breakpoint size/line-height: `64px / 74px`
+  - mobile size/line-height: `3.5rem / 3.85rem`
+  - hero heading không dùng text animation.
+- Landing hero hiện không render 2 CTA trong hero; các entry point nằm ở card/news bên dưới.
+- Landing news strip:
+  - class: `.hub-landing-news`
+  - mỗi item là card riêng nền trắng, radius `0.875rem`, border `var(--ds-border-stroke2)`
+  - layout `label pill + nội dung + arrow`
+  - label pill không bold (`font-weight: 500`)
+  - hover/focus: nền `#fbfdff`, border xanh nhẹ, lift `-2px`
+  - mobile tự stack 1 cột, không dùng divider dài giữa các item.
+- Landing main cards:
+  - class: `.hub-landing-card`
+  - radius `0.875rem`, nền trắng, border nhẹ, không shadow khi chọn/hover
+  - min height desktop khoảng `15.5rem`
+  - top line gồm dot màu + label + arrow, dot/text align center theo hàng
+  - label không dùng Black/bold nặng; card title mới là phần nhấn chính
+  - hover/focus: nền rất nhẹ `#fbfdff`, border xanh nhẹ, lift nhẹ
+  - `Motion Hub` đã có nội dung nên không còn label `Soon`
 - Khi bấm logo Zalopay trên desktop hoặc mobile header, mở lại landing page.
 - Logo Zalopay dùng `TargetCursor` từ React Bits cho hover/click quanh logo:
   - Component nằm tại `src/components/hub/TargetCursor.tsx`.
@@ -291,11 +335,17 @@ Landing page rule:
   - DOM reuse class `.login-you-cursor`, `.login-you-cursor-arrow`, `.login-you-cursor-pill`.
   - Render bằng `createPortal(..., document.body)` để luôn nằm trên header/nav.
   - Cursor dùng `position: fixed` qua `.hub-landing-you-cursor`.
+  - Cursor pill nằm trên header/nav/search bằng z-index cao; không bị header đè.
   - Khi landing active, body có class `.hub-landing-cursor-active` để tắt cursor mặc định toàn document.
   - Cursor position đọc từ CSS vars trên `document.documentElement`: `--login-you-cursor-x`, `--login-you-cursor-y`, `--login-you-cursor-opacity`.
   - Cursor vẫn hiện khi rê lên header/search icon vì tracking dùng `window.pointermove`.
+  - Text `You` align center trong pill và không có shadow.
   - Không gắn `onPointerLeave` để tắt cursor ở `.hub-landing`; nếu tắt tại landing boundary thì rê lên header/nav sẽ làm pill `You` biến mất.
   - Chỉ tắt cursor khi pointer rời khỏi window hoặc khi landing unmount/không active.
+- Landing interactive targets:
+  - Các card/news/click target dưới landing vẫn dùng custom cursor/target affordance, không hiện cursor mặc định.
+  - Logo giữ target dot ở giữa.
+  - Các card/click target bên dưới dùng target frame nhưng bỏ dot giữa (`showDot={false}`).
 - Khi landing active:
   - Không hiển thị desktop sidebar.
   - Main content không dùng offset `lg:ml-[19rem]`.
@@ -306,6 +356,33 @@ Landing page rule:
   - opacity `0 -> 1`
   - translateY `10px -> 0`
   - respect `prefers-reduced-motion`.
+
+Motion Hub preview:
+
+- Route/hash: `#motion-hub`.
+- Không còn badge `Soon` ở main tab Motion Hub.
+- `Motion Hub` là main tab độc lập, có content preview riêng trong Introduction Page.
+- Hero preview lấy tagline từ Motion Hub external:
+  - headline: `Make every interaction go cha-ching`
+  - body: `Motion là cách sản phẩm phản hồi người dùng và thể hiện cá tính thương hiệu. Khám phá nguyên tắc đằng sau từng chuyển động, lấy code và asset của chung biến thành của riêng.`
+- Cụm tagline không dùng background card; nằm trực tiếp trên page để nhẹ hơn.
+- Không render eyebrow `Interaction Hub` trong tagline card vì đã có page label `Motion Hub` phía trên.
+- Từ `cha-ching` dùng crystal hover animation giống Motion Hub:
+  - hover vào headline mới chạy animation
+  - accent depth màu xanh `#00CF6A`
+  - blink/sparkle màu xanh `#00CF6A`
+  - glare quét chữ dùng cùng xanh brand
+  - respect `prefers-reduced-motion`
+- CTA chỉ có một nút `Mở MotionHub`, dẫn tới:
+
+```text
+https://zlp-motionhub.netlify.app/
+```
+
+- CTA hover/focus chỉ zoom nhẹ cả nút, không slide text/icon:
+  - selector: `.motion-hub-open-cta`
+  - hover/focus: `scale(1.025)`
+- Preview bên dưới có các card nhanh tới `Principles`, `Motions`, `Assets`, `Glossary` và nhóm asset sample.
 
 Sidebar structure hiện tại:
 
@@ -346,6 +423,7 @@ UX Team
       Focus Group
       Usability Testing
       Unmoderated UT
+      Biweekly Interview
     Workflow
       Tổng quan
       Method Picker Matrix
@@ -380,7 +458,7 @@ Main item rule:
 - Main không có children không render child placeholder như `Overview` hoặc `To be updated`.
 - `Our team here` và `UI Team` hiện có child cấp 1.
 - `UX Team` hiện có child cấp 1/cấp 2/cấp 3.
-- `Motion Hub` hiện là main item độc lập và có badge `Soon`.
+- `Motion Hub` hiện là main item độc lập, không có badge `Soon`.
 - Main item hiện render qua helper `renderMainTab`.
 
 Child cấp 1 rule:
@@ -421,7 +499,7 @@ Child cấp 2 rule:
   - line không kéo quá dài
 - Child cấp 2 hiện render qua helper `renderSidebarLineList`.
 - 8 tiêu chí principle phải nằm ngay sau tab con `Principles`, trước `UI Pattern`, `Design System`, `Illus System`.
-- Các mục chưa có content gắn badge `Soon`: `UI Pattern`, `Design System`, `Illus System`, `UX Writing`, `Motion Hub`.
+- Các mục chưa có content gắn badge `Soon`: `UI Pattern`, `Design System`, `Illus System`, `UX Writing`.
 - Các trang con của `UX Writing` render body `To be updated`.
 
 Mobile hamburger menu:
@@ -458,12 +536,42 @@ Our Team content notes:
 
 UX Team content notes:
 
+- Label trên H1 của UX Team luôn là cấp 1:
+  - `UX Team` cho overview.
+  - `UX Design`, `UX Research`, `UX Writing` cho các nhóm con.
+- Label trong article là cấp 2 tương ứng:
+  - `UX Principle`, `UX Pattern`, `Workflow`, `Principle`, `Methods`.
+- Các page bị trùng title giữa H1 và H2 dưới đã bỏ H2 dưới, ví dụ `Overall`, `Order Ticket`, `Survey`, `Method Picker Matrix`, `Onboarding Task List`.
 - `Tổng quan` đã fill introduction từ Figma working file và được cấu trúc lại thành article sections.
 - `UX Design / UX Principle` đã fill nội dung principle, có block click tới từng principle detail và Do/Don't card có màu/icon theo trạng thái.
 - `UX Design / UX Pattern / Tổng quan` và `Onboarding task list` đã có nội dung theo Figma.
 - `UX Design / Workflow / Tổng quan` đã có process map native theo UI web; card trong flow là static, không shadow/click affordance.
 - `UX Research / Principle` đã fill nội dung, có table principle và block click tới từng principle detail.
-- `UX Research / Methods / Survey` đã fill nội dung theo link `/docs/uxr/methods/survey`; hash survey vẫn map về `#docs-uxr-methods-survey`.
+- `UX Research / Methods` hiện đã fill đủ 6 method và mỗi method quan trọng dùng layout riêng để dễ đọc hơn thay vì renderer generic:
+  - `Survey`: card định nghĩa, do/don't, material, process, loại câu hỏi, lỗi cần tránh, output, case study. Hash survey vẫn map về `#docs-uxr-methods-survey`.
+  - `In-depth Interview`: card định nghĩa, khi nào dùng/không dùng, material, process, kỹ thuật phỏng vấn, output, so sánh với method gần kề, case study.
+  - `Focus Group`: card định nghĩa, khi nào dùng/không dùng, material, process, vai trò moderator, output, bảng `FGD vs IDI`, case study.
+  - `Usability Testing`: card định nghĩa, khi nào dùng/không dùng, material, process, kỹ thuật điều phối, mức độ nghiêm trọng xếp dọc theo `Nghiêm trọng -> Trung bình -> Nhỏ`, output, so sánh method, case study.
+  - `Unmoderated UT`: card định nghĩa, khi nào dùng/không dùng, material, process, hướng dẫn viết task, output, bảng `Moderated vs Unmoderated UT`, case study.
+  - `Biweekly Interview`: card định nghĩa, bảng so sánh với research truyền thống, vai trò, cấu trúc buổi, tuyển user, trước/trong/sau buổi, lưu ý vận hành, case study.
+- UX Research Methods route/component map:
+
+| Method | Hash | Component |
+| --- | --- | --- |
+| Survey | `#docs-uxr-methods-survey` | `UXResearchSurveyContent` |
+| In-depth Interview | `#ux-team-ux-research--methods--in-depth-interview` | `UXResearchInDepthInterviewContent` |
+| Focus Group | `#ux-team-ux-research--methods--focus-group` | `UXResearchFocusGroupContent` |
+| Usability Testing | `#ux-team-ux-research--methods--usability-testing` | `UXResearchUsabilityTestingContent` |
+| Unmoderated UT | `#ux-team-ux-research--methods--unmoderated-ut` | `UXResearchUnmoderatedUTContent` |
+| Biweekly Interview | `#ux-team-ux-research--methods--biweekly-interview` | `UXResearchBiweeklyInterviewContent` |
+
+- Các method trên không còn dùng `UXResearchMethodArticle` generic, trừ khi có method mới chưa tách layout riêng.
+- Content `UX Research / Methods` lấy từ Figma node `1423:6206`; riêng `Biweekly Interview` dùng content chi tiết từ subnode `1423:5379`.
+- `Biweekly Interview` notes mới nhất:
+  - Section `Đây là gì` dùng card full width theo container, không bọc thêm grid làm card bị bó.
+  - Recruit không siết screener chặt theo từng product vì user được chia sẻ chung cho cả 3 PO trong buổi.
+  - Trước buổi tách rõ `Chuẩn bị context`, `Setup ngữ cảnh thực tế`, và `Chuẩn bị ghi âm/note-taking`.
+  - `Chuẩn bị ghi âm/note-taking`: UXR chuẩn bị ghi âm/note-taking, cần ít nhất 1 người observe riêng để hỗ trợ PO.
 - `UX Research / Workflow / Tổng quan` dùng exported SVG từ Figma node `1422:22757`, lưu tại `public/ux-research-workflow-map.svg`.
 - `UX Research / Workflow / Method Picker Matrix` có decision wizard ở đầu, matrix đầy đủ, `Bốn loại câu hỏi`, `Out-of-scope`, và `Downgrade Table`.
 - `UX Research / Workflow / Order Research` đã có content theo workflow order research.
