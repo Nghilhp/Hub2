@@ -3949,39 +3949,6 @@ const workflowGoals = [
   'Giúp stakeholders hiểu quy trình tổng quan của UXD và phân loại đúng requirement.',
 ]
 
-const workflowFlowProjectNodes = [
-  {
-    title: 'Quick Fix',
-    track: 'Fast Track',
-    deliverable: 'Bypass UX',
-    tone: 'violet',
-  },
-  {
-    title: 'Adjust',
-    track: 'Fast Track',
-    deliverable: 'UX Brief',
-    tone: 'blue',
-  },
-  {
-    title: 'New Func',
-    track: 'Standard Track',
-    deliverable: 'UX Detailed',
-    tone: 'green',
-  },
-  {
-    title: 'Revamp',
-    track: 'Standard Track',
-    deliverable: 'UX Detailed',
-    tone: 'amber',
-  },
-  {
-    title: 'New Product',
-    track: 'Deep Track',
-    deliverable: 'UX Full',
-    tone: 'red',
-  },
-] as const
-
 const workflowProjectTypes = [
   {
     level: 'Quick Fix',
@@ -5103,161 +5070,17 @@ function UXMetricTable({
   )
 }
 
-function WorkflowFlowDiagram() {
-  const nodeToneClassNames = {
-    amber: 'border-[#F5D6A0] bg-[#FFF8EA] text-[#7A5C18]',
-    blue: 'border-[#B8DCFF] bg-[#F1F8FF] text-[#0057B8]',
-    green: 'border-[#AFEAD7] bg-[#F0FFF9] text-[#007A52]',
-    red: 'border-[#FFD0C8] bg-[#FFF5F2] text-[#A11B10]',
-    violet: 'border-[#D8D2FF] bg-[#F5F3FF] text-[#4138A5]',
-  } as const
-
+function UXDesignWorkflowMap() {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-[var(--ds-border-stroke2)] bg-[var(--ds-background-secondary)] p-4 md:p-6">
-      <div className="mx-auto grid min-w-[760px] max-w-[920px] gap-4">
-        <div className="mx-auto w-[280px]">
-          <WorkflowFlowNode
-            description="Nhận brief, align scope với PO/biz"
-            title="Kick-off"
-          />
-        </div>
-        <div className="mx-auto w-[280px]">
-          <WorkflowFlowNode
-            description="Đề bài đã đặt đúng vấn đề chưa?"
-            title="Problem Framing"
-          />
-        </div>
-
-        <div className="grid grid-cols-[1fr_64px_1fr] items-start gap-4">
-          <div className="grid content-start gap-3">
-            <WorkflowFlowLabel label="No" />
-            <WorkflowFlowNode
-              description="Check lại với stakeholder để clear đề bài"
-              title="Re-Define"
-            />
-            <WorkflowFlowLabel label="Infeasible" />
-            <WorkflowFlowNode
-              className="mx-auto w-[150px]"
-              title="Pending"
-              variant="muted"
-            />
-          </div>
-
-          <div className="flex min-h-[132px] items-end justify-center">
-            <span className="rounded-full border border-[var(--ds-border-stroke2)] bg-[var(--ds-background-primary)] px-3 py-1 text-xs font-semibold text-[var(--ds-text-secondary)]">
-              Done
-            </span>
-          </div>
-
-          <div className="grid content-start gap-3">
-            <WorkflowFlowLabel label="Yes" />
-            <WorkflowFlowNode
-              description="Phân loại project type và pass checklist"
-              title="Categorization"
-            />
-          </div>
-        </div>
-
-        <WorkflowBranchLabel label="Project type" />
-        <div className="grid grid-cols-5 gap-3">
-          {workflowFlowProjectNodes.map((node) => (
-            <WorkflowFlowNode
-              className={nodeToneClassNames[node.tone]}
-              key={node.title}
-              title={node.title}
-              variant="tinted"
-            />
-          ))}
-        </div>
-
-        <WorkflowBranchLabel label="Track" />
-        <div className="grid grid-cols-5 gap-3">
-          {workflowFlowProjectNodes.map((node) => (
-            <WorkflowFlowNode
-              className="min-h-[56px]"
-              key={`${node.title}-${node.track}`}
-              title={node.track}
-              variant="muted"
-            />
-          ))}
-        </div>
-
-        <WorkflowBranchLabel label="UX output" />
-        <div className="grid grid-cols-5 gap-3">
-          {workflowFlowProjectNodes.map((node) => (
-            <WorkflowFlowNode
-              className={nodeToneClassNames[node.tone]}
-              key={`${node.title}-${node.deliverable}`}
-              title={node.deliverable}
-              variant="tinted"
-            />
-          ))}
-        </div>
-
-        <div className="mx-auto w-[360px]">
-          <WorkflowFlowNode
-            description="Logic, Problem Statement, Userflow, IA..."
-            title="Internal UX Review"
-          />
-        </div>
-        <div className="mx-auto w-[160px]">
-          <WorkflowFlowNode title="Deliver" variant="muted" />
-        </div>
-      </div>
+    <div className="rounded-2xl border border-[var(--ds-border-stroke2)] bg-white px-3 py-4">
+      <img
+        alt="Sơ đồ quy trình tổng quan UX Design từ kick-off tới deliver"
+        className="mx-auto block h-auto w-full max-w-[944px]"
+        height={2883}
+        src="/ux-design-workflow-overview.png"
+        width={1888}
+      />
     </div>
-  )
-}
-
-function WorkflowFlowNode({
-  className,
-  description,
-  title,
-  variant = 'default',
-}: {
-  className?: string
-  description?: string
-  title: string
-  variant?: 'default' | 'muted' | 'tinted'
-}) {
-  return (
-    <div
-      className={cn(
-        'flex min-h-[72px] flex-col items-center justify-center rounded-2xl border px-4 py-3 text-center',
-        variant === 'default' &&
-          'border-[var(--ds-border-stroke2)] bg-[var(--ds-background-primary)] text-[var(--ds-text-primary)]',
-        variant === 'muted' &&
-          'border-[var(--ds-border-stroke2)] bg-[#FFFCF4] text-[#786A43]',
-        variant === 'tinted' && 'font-bold',
-        className
-      )}
-    >
-      <p className="text-base font-bold leading-6">{title}</p>
-      {description && (
-        <p className="mt-1 text-xs font-medium leading-5 text-[var(--ds-text-secondary)]">
-          {description}
-        </p>
-      )}
-    </div>
-  )
-}
-
-function WorkflowBranchLabel({ label }: { label: string }) {
-  return (
-    <div className="relative flex items-center py-1">
-      <span className="h-px flex-1 bg-[var(--ds-border-stroke2)]" />
-      <span className="mx-3 rounded-full bg-[var(--ds-background-primary)] px-3 py-1 text-xs font-bold uppercase leading-4 text-[var(--ds-text-link)]">
-        {label}
-      </span>
-      <span className="h-px flex-1 bg-[var(--ds-border-stroke2)]" />
-    </div>
-  )
-}
-
-function WorkflowFlowLabel({ label }: { label: string }) {
-  return (
-    <span className="mx-auto rounded-full border border-[var(--ds-border-stroke2)] bg-[var(--ds-background-primary)] px-3 py-1 text-xs font-semibold text-[var(--ds-text-secondary)]">
-      {label}
-    </span>
   )
 }
 
@@ -5303,7 +5126,7 @@ function WorkflowOverviewContent() {
         description="Đây là đường đi tổng quát từ lúc nhận brief tới lúc deliver output."
         title="Quy trình tổng quan"
       >
-        <WorkflowFlowDiagram />
+        <UXDesignWorkflowMap />
       </UXArticleSection>
 
       <UXArticleSection
