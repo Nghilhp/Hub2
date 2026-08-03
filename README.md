@@ -180,6 +180,7 @@ src/pages/IntroductionPage.tsx
 - Landing H1 và dot background theo Figma node: `1422:22893`
 - UX Research Methods theo Figma node: `1423:6206`; Biweekly detail theo subnode `1423:5379`
 - Asset images: `public/principles/`
+- UX Design workflow overview asset: `public/ux-design-workflow-overview.png`
 - UX Research workflow map asset: `public/ux-research-workflow-map.svg`
 - Script recolor: `scripts/recolor-principle-assets.mjs`
 - Verify:
@@ -551,7 +552,7 @@ UX Team content notes:
 - `Tổng quan` đã fill introduction từ Figma working file và được cấu trúc lại thành article sections.
 - `UX Design / UX Principle` đã fill nội dung principle, có block click tới từng principle detail và Do/Don't card có màu/icon theo trạng thái.
 - `UX Design / UX Pattern / Tổng quan` và `Onboarding task list` đã có nội dung theo Figma.
-- `UX Design / Workflow / Tổng quan` đã có process map native theo UI web; card trong flow là static, không shadow/click affordance.
+- `UX Design / Workflow / Tổng quan` dùng exported PNG từ Figma node `1425:6585`, lưu tại `public/ux-design-workflow-overview.png`.
 - `UX Research / Principle` đã fill nội dung, có table principle và block click tới từng principle detail.
 - `UX Research / Methods` hiện đã fill đủ 6 method và mỗi method quan trọng dùng layout riêng để dễ đọc hơn thay vì renderer generic:
   - `Survey`: card định nghĩa, do/don't, material, process, loại câu hỏi, lỗi cần tránh, output, case study. Hash survey vẫn map về `#docs-uxr-methods-survey`.
